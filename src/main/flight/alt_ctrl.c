@@ -30,7 +30,7 @@ controller_t height_controller;
 
 state_check_t state_check;
 
-static float throttle_init = 0.18;
+static float throttle_init = 0.235;
 float height_error_range = 0.02;
 float vel_error_range = 0.01;
 
