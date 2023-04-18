@@ -150,9 +150,21 @@
 
 #define USE_TRANSPONDER
 
+// *************** WIFI *****************************
+#define USE_WIFI_ESP8266
+
+// *************** TELEMETER_MAVLINK *****************************
+#define USE_TELEMETRY
+#define USE_TELEMETRY_MAVLINK
+
+// *************** RANGEFINDER *****************************
+#define USE_ALT_HOLD
+#define USE_POSITION_HOLD
+
 #define USE_RANGEFINDER
 #define USE_RANGEFINDER_HCSR04
 #define USE_RANGEFINDER_TF
+
 
 #define USE_RX_EXPRESSLRS
 #define RX_EXPRESSLRS_TIMER_INSTANCE     TIM5
@@ -185,3 +197,7 @@
 #define USE_ADC
 
 #define USE_CUSTOM_DEFAULTS
+
+#define USABLE_TIMER_CHANNEL_COUNT 18
+#define USED_TIMERS    (TIM_N(1)|TIM_N(2)|TIM_N(3)|TIM_N(4)|TIM_N(5)|TIM_N(8)|TIM_N(15)|TIM_N(16)|TIM_N(17))
+
