@@ -821,7 +821,7 @@ void init(void)
         }
     }
 #endif
-    blackboxInit();
+    // blackboxInit();
 #endif
 
 #ifdef USE_ACC

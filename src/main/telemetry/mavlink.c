@@ -98,8 +98,8 @@
 // #define WIFI_CWJAP      "AT+CWJAP=\"NeSC\",\"nesc2022\"\r\n"
 #define WIFI_CIPMUX     "AT+CIPMUX=0\r\n"
 // #define WIFI_CIPSTART   "AT+CIPSTART=\"UDP\",\"192.168.31.142\",14555,9000,0\r\n"
-// #define WIFI_CIPSTART   "AT+CIPSTART=\"UDP\",\"192.168.50.24\",14555,9000,0\r\n"
-#define WIFI_CIPSTART   "AT+CIPSTART=\"UDP\",\"192.168.50.109\",14555,9000,0\r\n"
+#define WIFI_CIPSTART   "AT+CIPSTART=\"UDP\",\"192.168.50.24\",14555,9000,0\r\n"
+//#define WIFI_CIPSTART   "AT+CIPSTART=\"UDP\",\"192.168.50.109\",14555,9000,0\r\n"
 #define WIFI_CIPMODE    "AT+CIPMODE=1\r\n"
 #define WIFI_CIPSEND    "AT+CIPSEND\r\n"
 

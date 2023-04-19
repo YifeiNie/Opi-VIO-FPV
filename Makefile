@@ -16,7 +16,7 @@
 #
 
 # The target to build, see VALID_TARGETS below
-TARGET    ?= STM32F405
+TARGET    ?= STM32H743
 BOARD     ?= 
 
 # Compile-time options
