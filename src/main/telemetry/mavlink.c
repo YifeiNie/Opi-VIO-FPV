@@ -88,8 +88,8 @@
 #pragma GCC diagnostic pop
 
 #define TELEMETRY_MAVLINK_INITIAL_PORT_MODE MODE_RXTX
-#define TELEMETRY_MAVLINK_MAXRATE 100
-#define TELEMETRY_MAVLINK_DELAY ((100 * 10) / TELEMETRY_MAVLINK_MAXRATE) //1000/100us=0.01ms
+#define TELEMETRY_MAVLINK_MAXRATE 200
+#define TELEMETRY_MAVLINK_DELAY ((1000 * 1000) / TELEMETRY_MAVLINK_MAXRATE) //1000*1000/200us=5ms
 
 #define WIFI_AT         "AT\r\n"
 #define WIFI_CWMODE     "AT+CWMODE=1\r\n"
@@ -127,9 +127,9 @@ static const uint8_t mavRates[] = {
 static uint8_t mavTicks[MAXSTREAMS];
 static mavlink_message_t mavMsg;
 static uint8_t mavBuffer[MAVLINK_MAX_PACKET_LEN];
-//static uint32_t lastMavlinkMessage = 0;
+static uint32_t lastMavlinkMessage = 0;
 static uint32_t mavlinkstate_position = 0;
-//static uint8_t wifi_uart_baud = 1;
+static uint8_t cm4_receive = 0;
 
 //串口接收触发函数
 static void mavlinkReceive(uint16_t c, void* data) {
@@ -147,20 +147,21 @@ static void mavlinkReceive(uint16_t c, void* data) {
     if (mavlink_parse_char(MAVLINK_COMM_0, (uint8_t)c, &msg, &status)) {
         switch(msg.msgid) {
             // receive heartbeat
-            // case 0: {
-            //     mavlink_heartbeat_t command;
-            //     mavlink_msg_heartbeat_decode(&msg,&command);
-            //     mav_custommode = command.custom_mode;
-            //     mav_type = command.type;
-            //     mav_autopilot = command.autopilot;
-            //     mav_basemode = command.base_mode;
-            //     mav_systemstatus = command.custom_mode;
-            //     mav_version = command.mavlink_version;
-            //     // mavlinkSendHeartbeat();
-            //     // mavlinkSendHUD();
-            //     // mavlinkSendAttitude();
-            //     break;
-            // }
+            case 0: {
+                cm4_receive = 1;
+                // mavlink_heartbeat_t command;
+                // mavlink_msg_heartbeat_decode(&msg,&command);
+                // mav_custommode = command.custom_mode;
+                // mav_type = command.type;
+                // mav_autopilot = command.autopilot;
+                // mav_basemode = command.base_mode;
+                // mav_systemstatus = command.custom_mode;
+                // mav_version = command.mavlink_version;
+                // mavlinkSendHeartbeat();
+                // mavlinkSendHUD();
+                // mavlinkSendAttitude();
+                break;
+            }
             // setpoint command
             // case 81: {
             //     mavlink_manual_setpoint_t command;
@@ -253,6 +254,7 @@ static void mavlinkReceive(uint16_t c, void* data) {
             //     break;
             // }
             default:
+                cm4_receive = 0;
                 // attitude_controller.sum = 0;
                 break;
         }
@@ -336,11 +338,11 @@ void configureMAVLinkTelemetryPort(void)
     }
 
     mavlinkTelemetryEnabled = true;
-    if(mavlinkstate_position < 1)
-    {
-        WifiInitHardware_Esp8266();
-        mavlinkstate_position++;
-    }
+    // if(mavlinkstate_position < 1)
+    // {
+    //     WifiInitHardware_Esp8266();
+    //     mavlinkstate_position++;
+    // }
 }
 
 void checkMAVLinkTelemetryState(void)
@@ -706,7 +708,11 @@ void handleMAVLinkTelemetry(void)
         return;
     }
 
-    processMAVLinkTelemetry();
+    uint32_t now = micros();
+    if ((now - lastMavlinkMessage) >= TELEMETRY_MAVLINK_DELAY && cm4_receive == 1) {
+        processMAVLinkTelemetry();
+        lastMavlinkMessage = now;
+    }
 }
 
 void WifiInitHardware_Esp8266(void)

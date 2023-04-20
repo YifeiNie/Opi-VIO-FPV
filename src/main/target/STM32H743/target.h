@@ -80,7 +80,6 @@
 #if !defined(CLOUD_BUILD)
 
 #define USE_MAG
-#define USE_BARO
 
 #define USE_ACC
 #define USE_GYRO
@@ -91,13 +90,11 @@
 #define USE_GYRO_SPI_MPU6000
 // #define USE_ACC_SPI_MPU6500
 // #define USE_GYRO_SPI_MPU6500
-#define USE_ACC_SPI_ICM20689
-#define USE_GYRO_SPI_ICM20689
+// #define USE_ACC_SPI_ICM20689
+// #define USE_GYRO_SPI_ICM20689
 #define USE_ACCGYRO_LSM6DSO
 #define USE_ACCGYRO_BMI270
-// #define USE_GYRO_SPI_ICM42605
-// #define USE_GYRO_SPI_ICM42688P
-// #define USE_ACC_SPI_ICM42605
+// #define USE_GYRO_SPI_ICM42605systemInit
 // #define USE_ACC_SPI_ICM42688P
 
 #ifdef USE_MAG
@@ -116,7 +113,7 @@
 // #define USE_BARO_MS5611
 // #define USE_BARO_SPI_MS5611
 #define USE_BARO_BMP280
-#define USE_BARO_SPI_BMP280
+// #define USE_BARO_SPI_BMP280
 // #define USE_BARO_BMP388
 // #define USE_BARO_SPI_BMP388
 // #define USE_BARO_LPS
@@ -143,12 +140,12 @@
 // #define USE_GYRO_MPU6050
 // #define USE_ACCGYRO_BMI160
 
-#define USE_BARO_BMP085
+// #define USE_BARO_BMP085
 
 // #define USE_VTX_RTC6705
 // #define USE_VTX_RTC6705_SOFTSPI
 
-#define USE_TRANSPONDER
+// #define USE_TRANSPONDER
 
 // *************** WIFI *****************************
 #define USE_WIFI_ESP8266
