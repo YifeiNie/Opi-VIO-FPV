@@ -254,7 +254,7 @@ static void mavlinkReceive(uint16_t c, void* data) {
             //     break;
             // }
             default:
-                cm4_receive = 0;
+                //cm4_receive = 0;
                 // attitude_controller.sum = 0;
                 break;
         }
