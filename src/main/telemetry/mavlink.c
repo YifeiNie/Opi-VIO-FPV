@@ -137,12 +137,6 @@ static void mavlinkReceive(uint16_t c, void* data) {
     UNUSED(data);
     mavlink_message_t msg;
     mavlink_status_t status;
-    // uint8_t mav_type;
-    // uint8_t mav_autopilot;
-    // uint8_t mav_basemode;
-    // uint32_t mav_custommode;
-    // uint8_t mav_systemstatus;
-    // uint8_t mav_version;
 
     if (mavlink_parse_char(MAVLINK_COMM_0, (uint8_t)c, &msg, &status)) {
         switch(msg.msgid) {
@@ -159,23 +153,6 @@ static void mavlinkReceive(uint16_t c, void* data) {
             //     // mavlinkSendHeartbeat();
             //     // mavlinkSendHUD();
             //     // mavlinkSendAttitude();
-            //     break;
-            // }
-            // setpoint command
-            // case 81: {
-            //     mavlink_manual_setpoint_t command;
-            //     mavlink_msg_manual_setpoint_decode(&msg,&command);
-            //     attitude_controller.altitude_thrust = -command.thrust * 100;
-            //     attitude_controller.roll = command.roll;   //maybe need normalization but this should be done in the JeVois
-            //     attitude_controller.pitch = -command.pitch;
-            //     attitude_controller.yaw = command.yaw;
-
-            //     // DEBUG_SET(DEBUG_UART,1,command.time_boot_ms);	
-            //     // DEBUG_SET(DEBUG_UART,3,uart_altitude);
-            //     // DEBUG_SET(DEBUG_COMMAND,0,uart_altitude);
-            //     // DEBUG_SET(DEBUG_COMMAND,1,uart_roll / 3.14 * 180);
-            //     // DEBUG_SET(DEBUG_COMMAND,2,uart_pitch / 3.14 * 180);
-            //     // DEBUG_SET(DEBUG_COMMAND,3,uart_yaw / 3.14 * 180);
             //     break;
             // }
 
@@ -202,58 +179,30 @@ static void mavlinkReceive(uint16_t c, void* data) {
             case 84: {
                 mavlink_set_position_target_local_ned_t command;
                 mavlink_msg_set_position_target_local_ned_decode(&msg,&command);
-                attitude_y_controller.setpoint_input = command.afx;
-                attitude_x_controller.setpoint_input = command.afy;
+                // attitude_y_controller.setpoint_input = command.afx;
+                // attitude_x_controller.setpoint_input = command.afy;
                 attitude_controller.r_Yaw_OptiTrack = command.afz;
-                // attitude_controller.sum1++;
-                // if(attitude_controller.sum1 == 180)
-                // {
-                //     attitude_controller.sum1 = 0;
-                // }
-                // ledSet(1, state1); 
-                // state1 = !state1;
-                break;
-            }
-            case 102:{
-                mavlink_vision_position_estimate_t command;
-                mavlink_msg_vision_position_estimate_decode(&msg,&command);
-                attitude_controller.r_y = command.x;
-                attitude_controller.r_x = command.y;
-                attitude_controller.r_z = -command.z;
-                attitude_controller.sum2++;
-                if(attitude_controller.sum2 == 180)
+                attitude_controller.sum1++;
+                if(attitude_controller.sum1 == 180)
                 {
-                    attitude_controller.sum2 = 0;
+                    attitude_controller.sum1 = 0;
                 }
-                // attitude_controller.r_Roll = command.roll;
-                // attitude_controller.r_Pitch = command.pitch;
-                // attitude_controller.r_Yaw = command.yaw;
-                // attitude_controller.sum++;
-                // kalman_filter1.Z_current->element[0] = -command.z;
-                // kalman_filter1.optitrack_update = 1;
-                // attitude_controller.sum = 0;
-                // mavlinkSendHUD();
-                // if(state1 == 1)
-                // {
-                // mavlinksendAltitude();
-                //     state1 = 0;
-                // }
                 break;
             }
-            // case 141:{
-            //     mavlink_altitude_t command;
-            //     mavlink_msg_altitude_decode(&msg,&command);
-            //     attitude_controller.r_y = command.altitude_amsl;
-            //     attitude_controller.r_x = command.altitude_local;
-            //     attitude_controller.r_z = -command.altitude_monotonic;
-            //     attitude_controller.r_Roll = command.altitude_relative;
-            //     attitude_controller.r_Pitch = command.altitude_terrain;
-            //     attitude_controller.r_Yaw = command.bottom_clearance;
-            //     attitude_controller.sum++;
+            // case 102:{
+            //     mavlink_vision_position_estimate_t command;
+            //     mavlink_msg_vision_position_estimate_decode(&msg,&command);
+            //     attitude_controller.r_y = command.x;
+            //     attitude_controller.r_x = command.y;
+            //     attitude_controller.r_z = -command.z;
+            //     attitude_controller.sum2++;
+            //     if(attitude_controller.sum2 == 180)
+            //     {
+            //         attitude_controller.sum2 = 0;
+            //     }
             //     break;
             // }
             default:
-                // attitude_controller.sum = 0;
                 break;
         }
     }
@@ -482,32 +431,9 @@ void mavlinkSendAttitude(void) //ID 30
 void mavlinksendAltitude(void) //ID 141
 {
     uint16_t msgLength;
-    // float mavAltitude_Measure = 0;
-    // float mavVel_Hat_current = 0;
-    // float mavVel_Measure = 0;
-    // float mavAltitude_Hat_current = 0;
-    // float mavPID_vel_output = 0;
-    // float mavPID_height_output = 0;
-    // float mav_vel_throttle = 0;
-
-    
-    // mavVel_Measure = Get_Acc_bias_kalman(); //速度测量值  (airspeed)
-    // mavVel_Hat_current = Get_Vel_Kalman(); //速度最优估计值 (groundspeed)
-    // // mavAltitude_Measure = rangefinderGetLatestAltitude(); //高度测量值 (altitude)
-    // mavAltitude_Measure = Get_z_measure();/home/nesc/single_ws/src/quarotor_fee
-    // mavAltitude_Hat_current = Get_Alt_Kalman(); //高度最优估计值 (climb)
-    // mavPID_height_output = Get_Height_PID_Output(); //获取外环pid结果
-    // mavPID_vel_output = Get_Velocity_PID_Output(); //获取内环pid结果
-    // mav_vel_throttle = Get_Velocity_throttle();
 
     mavlink_msg_altitude_pack(0, 200, &mavMsg,
     millis(),
-    // attitude_send.ROLL/180*3.1415926,
-    // attitude_send.PITCH/180*3.1415926,
-    // attitude_send.YAW/180*3.1415926,
-    // attitude_send.ROLL_rate,
-    // -attitude_send.PITCH_rate,
-    // -attitude_send.YAW_rate
 
     -Get_Height_PID_Output(0),  //altitude_monotonic
     Get_Height_PID_Output(1),  //altitude_amsl
@@ -515,14 +441,6 @@ void mavlinksendAltitude(void) //ID 141
     Get_Velocity_PID_Output(0)*180.0/3.1415926f, //altitude_relative
     Get_Velocity_PID_Output(1)*180.0/3.1415926f,  //altitude_terrain
     Get_Velocity_PID_Output(2)  //bottom_clearance
-    // attitude_controller.r_x,  //monotonic
-    // attitude_controller.r_y,  //amsl
-    // attitude_controller.r_z, //loacl
-    // // attitude_controller.r_Roll,
-    // attitude_controller.r_Roll,  //relative
-    // // attitude_controller.r_Yaw 
-    // attitude_controller.r_Pitch,  //terrain
-    // attitude_controller.r_Yaw  //clearance
     );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);
@@ -531,33 +449,10 @@ void mavlinksendAltitude(void) //ID 141
 void mavlinkSendHUD(void) //ID 74
 {
     uint16_t msgLength;
-    // float mav_z_ierror = 0;
-    // float mav_z_throttle = 0;
-    // float mavAirSpeed = 0;
-    // float mavClimbRate = 0;
-    // float mav_Yaw = 0;
 
-
-    // mav_z_ierror = Get_Height_PID_Error();
-    // mav_z_throttle = Get_Velocity_throttle();
-    // mavClimbRate = attitude_controller.r_y;
-    // mav_Yaw = Get_vrpn_Yaw();
-    //airspeed  groundspeed  heading throttle alt climb
     mavlink_msg_vfr_hud_pack(0, 200, &mavMsg,
-        // airspeed Current airspeed in m/s
-        // Get_Velocity_throttle(0),  //roll
-        // Get_Velocity_throttle(1),  //pitch
-        // Get_Velocity_LpFiter(0),
-        // Get_Velocity_LpFiter(1),
         state_check.rc_receive,
         state_check.feedforward_apply,
-        // attitude_controller.r_x_lowpassfilter,
-        // attitude_controller.r_y_lowpassfilter,
-        // attitude_controller.r_z, //yaw
-        // attitude_controller.Error_x,
-        // attitude_controller.Error_x_filter,
-        // groundspeed Current ground speed in m/s
-        //attitude_controller.r_Pitch,
         // heading Current heading in degrees, in compass units (0..360, 0=north)
         attitude_controller.sum2,
         //headingOrScaledMilliAmpereHoursDrawn(),
@@ -577,29 +472,6 @@ void mavlinkSendHUD(void) //ID 74
     mavlinkSerialWrite(mavBuffer, msgLength);
 }
 
-
-// void mavlinkLocalPositionNed(void) //ID 32
-// {
-//     uint16_t msgLength;
-//     float r_x = Get_vrpn_x();
-//     float r_y = Get_vrpn_y();
-//     float r_z = Get_vrpn_z();
-
-//     // float r_Roll = Get_vrpn_Roll();
-//     // float r_Pitch = Get_vrpn_Pitch();
-//     // float r_Yaw = Get_vrpn_Yaw();
-//     mavlink_msg_local_position_ned_pack(0, 200, &mavMsg,
-//     micros(),
-//     Get_Alt_Kalman(),
-//     Get_Vel_Kalman(),
-//     Get_Acc_bias_kalman(),
-//     0,
-//     0,
-//     0
-//     );
-//     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
-//     mavlinkSerialWrite(mavBuffer, msgLength);
-// }
 
 void mavlinkLocalPositionNedCov(void)  //ID 64
 {
@@ -621,55 +493,10 @@ void mavlinkLocalPositionNedCov(void)  //ID 64
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);
 }
-// void mavlinkLocalPositionNedSystemGlobalOffset(void) //89
-// {
-//     uint16_t msgLength;
-//     mavlink_msg_local_position_ned_system_global_offset_pack(0, 200, &mavMsg,
-//         millis(),
-//         Get_Position_LpFiter(1),
-//         Get_Position_LpFiter(0),
-//         -Get_Position_LpFiter(2),
-//         Get_Velocity_LpFiter(0),
-//         Get_Velocity_LpFiter(1),
-//         Get_Velocity_LpFiter(2)
-//     );
-//     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
-//     mavlinkSerialWrite(mavBuffer, msgLength);
-// }
 
 void processMAVLinkTelemetry(void)
 {
 
-    // testdatanow = attitude_controller.r_Yaw;
-    // if(testdatanow != testdatalast)
-    // {
-   
-    // serialWrite(mavlinkPort,41);
-        // mavlinksendAltitude();
-    // serialPrint(mavlinkPort, "A");
-
-    // if(state == 1)
-    // {
-    //     serialPrint(mavlinkPort, "B");
-    //     state = 0;
-    // }
-    //    }
-    //     attitude_controller.sum1++;
-
-    // }
-    // testdatalast = testdatanow;
-    // is executed @ TELEMETRY_MAVLINK_MAXRATE rate
-    // if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTENDED_STATUS)) {
-    //     mavlinkSendSystemStatus();
-    // }
-    // if(mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
-    //     serialPrint(mavlinkPort,"\r\n");
-    //     serialWrite(mavlinkPort,attitude_controller.sum);
-    //     serialWrite(mavlinkPort,attitude_controller.sum1);
-    //     serialWrite(mavlinkPort,attitude_controller.sum2);
-    //     serialPrint(mavlinkPort,"\r\n");
-    // mavlinkLocalPositionNed();
-    // if(mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
     if(mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
         mavlinkSendHeartbeat();
    
@@ -677,22 +504,10 @@ void processMAVLinkTelemetry(void)
     }
 
     //mavlinkSendHUD();
-    mavlinksendAltitude();
+    // mavlinksendAltitude();
     mavlinkSendHUD();
     mavlinkSendAttitude();
-    mavlinkLocalPositionNedCov();
-    // mavlinkLocalPositionNedSystemGlobalOffset();
-    // mavlinkLocalPositionNed();
-    // serialWrite(mavlinkPort,"success");
-    // serialWrite(mavlinkPort,62);
-    // serialPrint(mavlinkPort,"abcd");
-    // mavlinkSendAttitude();
-    
-
-    // if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTRA1)) {
-    // mavlinkSendHeartbeat();
-
-    // }
+    // mavlinkLocalPositionNedCov();
 
 }
 
