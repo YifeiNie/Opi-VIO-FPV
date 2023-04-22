@@ -223,6 +223,10 @@ void get_offboard_init(get_offboard_t * get_offboard)
     get_offboard->q[2] = 0;
     get_offboard->q[3] = 0;
 
+    get_offboard->roll_angle = 0;
+    get_offboard->pitch_angle = 0;
+    get_offboard->yaw_angle = 0;
+    
     get_offboard->roll_rate = 0;
     get_offboard->pitch_rate = 0;
     get_offboard->yaw_rate = 0;
@@ -404,7 +408,7 @@ void EulerAngles(attitude_ctrl_t * ctrl, get_offboard_t * offboard)
                          1 - 2 * (offboard->q[1] * offboard->q[1] + offboard->q[2] * offboard->q[2]));
     ctrl->r_Pitch = asinf(2 * (offboard->q[0] * offboard->q[2] - offboard->q[1] * offboard->q[3]));
     ctrl->r_Yaw = atan2f(2 * (offboard->q[0] * offboard->q[3] + offboard->q[1] * offboard->q[2]), \
-    1 - 2 * (offboard->q[3] * offboard->q[3] + offboard->q[2] * offboard->q[2]));
+                        1 - 2 * (offboard->q[3] * offboard->q[3] + offboard->q[2] * offboard->q[2]));
     ctrl->r_Roll = ctrl->r_Roll * 180 / M_PI;
     ctrl->r_Pitch = - ctrl->r_Pitch * 180 / M_PI;
     ctrl->r_Yaw = ctrl->r_Yaw * 180 / M_PI;

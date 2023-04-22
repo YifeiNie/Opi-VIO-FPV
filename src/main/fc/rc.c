@@ -627,9 +627,9 @@ FAST_CODE void processRcCommand(void)
                         case 7:{
                             for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
                             {
-                                OuterSetpointAngle[0] = attitude_controller.r_Roll;
-                                OuterSetpointAngle[1] = attitude_controller.r_Pitch;
-                                OuterSetpointAngle[2] = attitude_controller.r_Yaw;
+                                OuterSetpointAngle[0] = get_offboard.roll_angle * 180 / M_PI;
+                                OuterSetpointAngle[1] = get_offboard.pitch_angle * 180 / M_PI;
+                                OuterSetpointAngle[2] = get_offboard.yaw_angle * 180 / M_PI;
 
                             }
                             mode_seclct.angle_mode = 1;

@@ -987,13 +987,13 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
         if(FLIGHT_MODE(POSITION_HOLD_MODE))
         {
             currentPidSetpoint = getOuterSetpointRate(axis);
-            // if(axis == FD_ROLL)
-            // {
-            //     attitude_controller.test_anglerate_setpoint[0] = currentPidSetpoint;
-            // }else if(axis == FD_PITCH)
-            // {
-            //     attitude_controller.test_anglerate_setpoint[1] = currentPidSetpoint;
-            // }else
+            if(axis == FD_ROLL)
+            {
+                attitude_controller.test_anglerate_setpoint[0] = currentPidSetpoint;
+            }else if(axis == FD_PITCH)
+            {
+                attitude_controller.test_anglerate_setpoint[1] = currentPidSetpoint;
+            }
             // {
             //     attitude_controller.test_anglerate_setpoint[2] = currentPidSetpoint;
             // }
@@ -1017,13 +1017,13 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
         {
             currentPidSetpoint = getSetpointRate(axis);
 
-            // if(axis == FD_ROLL)
-            // {
-            //     attitude_controller.test_anglerate_setpoint[0] = currentPidSetpoint;
-            // }else if(axis == FD_PITCH)
-            // {
-            //     attitude_controller.test_anglerate_setpoint[1] = currentPidSetpoint;
-            // }else
+            if(axis == FD_ROLL)
+            {
+                attitude_controller.test_anglerate_setpoint[0] = currentPidSetpoint;
+            }else if(axis == FD_PITCH)
+            {
+                attitude_controller.test_anglerate_setpoint[1] = currentPidSetpoint;
+            }
             // {
             //     attitude_controller.test_anglerate_setpoint[2] = currentPidSetpoint;
             // }
@@ -1075,10 +1075,15 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
  #ifdef USE_POSITION_HOLD
         if(FLIGHT_MODE(POSITION_HOLD_MODE))
         {
-            if(axis == FD_YAW)
+            if(axis == FD_YAW && (mode_seclct.angle_mode == 1) && (mode_seclct.angularrate_mode == 0))
             {
-                float errorAngle = getOuterSetpointAngle(2);
-                currentPidSetpoint = errorAngle * -6.0f;  //kp=-1.0
+                currentPidSetpoint = getOuterSetpointAngle(axis);
+                // currentPidSetpoint = errorAngle * -6.0f;  //kp=-1.0
+            }
+            if(axis == FD_YAW && (mode_seclct.angle_mode == 0) && (mode_seclct.angularrate_mode == 1))
+            {
+                currentPidSetpoint = getOuterSetpointRate(axis);
+                // currentPidSetpoint = errorAngle * -6.0f;
             }
         }
 #endif
@@ -1087,7 +1092,7 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
         const float gyroRate = gyro.gyroADCf[axis];      // Process variable from gyro output in deg/sec
         float errorRate = currentPidSetpoint - gyroRate; // r - y
 
-        attitude_controller.error_angle_rate[axis] = errorRate;
+        // attitude_controller.error_angle_rate[axis] = errorRate;
 
 #if defined(USE_ACC)
         handleCrashRecovery(
