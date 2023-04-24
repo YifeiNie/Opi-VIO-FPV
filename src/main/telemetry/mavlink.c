@@ -130,7 +130,7 @@ static mavlink_message_t mavMsg;
 static uint8_t mavBuffer[MAVLINK_MAX_PACKET_LEN];
 static uint32_t lastMavlinkMessage = 0;
 static uint32_t mavlinkstate_position = 0;
-static uint8_t cm4_receive = 0;
+//static uint8_t cm4_receive = 0;
 
 //串口接收触发函数
 static void mavlinkReceive(uint16_t c, void* data) {
@@ -190,6 +190,7 @@ static void mavlinkReceive(uint16_t c, void* data) {
                 }
                 get_offboard.thrust = command.thrust;
                 get_offboard.type_mask = command.type_mask;
+                // cm4_receive = 1;
                 break;
             }
 
@@ -289,11 +290,11 @@ void configureMAVLinkTelemetryPort(void)
     baudRate_e baudRateIndex = portConfig->telemetry_baudrateIndex;
     if (baudRateIndex == BAUD_AUTO) {
         // default rate for minimOSD
-        baudRateIndex = BAUD_2000000;
+        baudRateIndex = BAUD_115200;
     }
     else
     {
-        baudRateIndex = BAUD_2000000;
+        baudRateIndex = BAUD_115200;
     }
 
     mavlinkPort = openSerialPort(portConfig->identifier, FUNCTION_TELEMETRY_MAVLINK, mavlinkReceive, NULL, baudRates[baudRateIndex], TELEMETRY_MAVLINK_INITIAL_PORT_MODE, SERIAL_STOPBITS_1);
@@ -303,11 +304,11 @@ void configureMAVLinkTelemetryPort(void)
     }
 
     mavlinkTelemetryEnabled = true;
-    // if(mavlinkstate_position < 1)
-    // {
-    //     WifiInitHardware_Esp8266();
-    //     mavlinkstate_position++;
-    // }
+    if(mavlinkstate_position < 1)
+    {
+        WifiInitHardware_Esp8266();
+        mavlinkstate_position++;
+    }
 }
 
 void checkMAVLinkTelemetryState(void)
@@ -554,7 +555,7 @@ void handleMAVLinkTelemetry(void)
     }
 
     uint32_t now = micros();
-    if ((now - lastMavlinkMessage) >= TELEMETRY_MAVLINK_DELAY && cm4_receive == 1) {
+    if ((now - lastMavlinkMessage) >= TELEMETRY_MAVLINK_DELAY) {
         processMAVLinkTelemetry();
         lastMavlinkMessage = now;
     }
