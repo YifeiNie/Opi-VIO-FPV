@@ -70,8 +70,8 @@ float rcCommandDelta[XYZ_AXIS_COUNT];
 static float rawSetpoint[XYZ_AXIS_COUNT];
 static float setpointRate[3], rcDeflection[3], rcDeflectionAbs[3];
 #ifdef USE_POSITION_HOLD
-static float OptiTrack[3], OptiTrackAbs[3];
-static float OptiTrackRate[3];
+static float OuterSetpointAngle[3], OuterSetpointAngleAbs[3];
+static float OuterSetpointRate[3];
 #endif
 static bool reverseMotors = false;
 static applyRatesFn *applyRates;
@@ -145,19 +145,19 @@ float getRcDeflectionAbs(int axis)
 }
 
 #ifdef USE_POSITION_HOLD
-float getOptiTrackDeflection(int axis)
+float getOuterSetpointAngle(int axis)
 {
-    return OptiTrack[axis];
+    return OuterSetpointAngle[axis];
 }
 
-float getOptiTrackDeflectionAbs(int axis)
+float getOuterSetpointAngleAbs(int axis)
 {
-    return OptiTrackAbs[axis];
+    return OuterSetpointAngleAbs[axis];
 }
 
-float getOptiTrackRate(int axis)
+float getOuterSetpointRate(int axis)
 {
-    return OptiTrackRate[axis];
+    return OuterSetpointRate[axis];
 }
 
 #endif
@@ -606,50 +606,6 @@ FAST_CODE void processRcCommand(void)
                 const float rcCommandfAbs = fabsf(rcCommandf);
                 rcDeflectionAbs[axis] = rcCommandfAbs;
 
-// #ifdef USE_POSITION_HOLD
-//             if(FLIGHT_MODE(POSITION_HOLD_MODE))
-//             {
-//                 switch(get_offboard.type_mask)
-//                 {
-//                     case 7:{
-//                         for(int axis = FD_ROLL; axis <= FD_PITCH; axis++)
-//                         {
-//                             OptiTrack[0] = attitude_controller.r_Roll;
-//                             OptiTrack[1] = attitude_controller.r_Pitch;
-//                             // OptiTrack[0] = -5;
-//                             OptiTrack[2] = attitude_controller.r_Yaw;
-
-//                         }
-//                         mode_seclct.angle_mode = 1;
-//                         mode_seclct.angularrate_mode = 0;
-//                         break;
-//                     }
-
-//                     case 128:{
-//                         for(int axis = FD_ROLL; axis <= FD_PITCH; axis++)
-//                         {
-//                             OptiTrackRate[0] = get_offboard.roll_rate * 180 / M_PI;
-//                             OptiTrackRate[1] = get_offboard.pitch_rate * 180 / M_PI;
-//                             OptiTrackRate[2] = get_offboard.yaw_rate * 180 / M_PI;
-//                         }
-//                         mode_seclct.angle_mode = 0;
-//                         mode_seclct.angularrate_mode = 1;
-//                         break;
-//                     }
-//                 default:
-//                         // OptiTrack[2] = 0;
-//                         mode_seclct.angle_mode = 0;
-//                         mode_seclct.angularrate_mode = 0;
-//                     break;
-//                 }
-//             }
-//             // else{
-//             //     OptiTrack[2] = 0;
-//             //     mode_seclct.angle_mode = 0;
-//             //     mode_seclct.angularrate_mode = 0;
-//             // }
-// #endif
-
                 angleRate = applyRates(axis, rcCommandf, rcCommandfAbs);
             }
 
@@ -661,24 +617,7 @@ FAST_CODE void processRcCommand(void)
             scaleRawSetpointToFpvCamAngle();
         }
     }
-// #ifdef USE_POSITION_HOLD
-//     if(FLIGHT_MODE(POSITION_HOLD_MODE))
-//     {
-//         float angleRate;
-//         for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
-//         {
-//             if(axis == FD_ROLL)
-//             {
-//                 angleRate = 40;
-//                 rawSetpoint[axis] = constrainf(angleRate, -1.0f * currentControlRateProfile->rate_limit[axis], 1.0f * currentControlRateProfile->rate_limit[axis]);
-//             }
-//         }
-
-//     }
-// #endif
-
-    // if(attitude_controller.sum == 1)
-    // {
+    
     #ifdef USE_POSITION_HOLD
             if(FLIGHT_MODE(POSITION_HOLD_MODE))
             {
@@ -688,10 +627,9 @@ FAST_CODE void processRcCommand(void)
                         case 7:{
                             for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
                             {
-                                OptiTrack[0] = attitude_controller.r_Roll;
-                                OptiTrack[1] = attitude_controller.r_Pitch;
-                                // OptiTrack[0] = -5;
-                                OptiTrack[2] = attitude_controller.r_Yaw;
+                                OuterSetpointAngle[0] = get_offboard.roll_angle * 180 / M_PI;
+                                OuterSetpointAngle[1] = get_offboard.pitch_angle * 180 / M_PI;
+                                OuterSetpointAngle[2] = get_offboard.yaw_angle * 180 / M_PI;
 
                             }
                             mode_seclct.angle_mode = 1;
@@ -702,30 +640,22 @@ FAST_CODE void processRcCommand(void)
                         case 128:{
                             for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
                             {
-                                OptiTrackRate[0] = get_offboard.roll_rate * 180 / M_PI;
-                                OptiTrackRate[1] = get_offboard.pitch_rate * 180 / M_PI;
-                                OptiTrackRate[2] = get_offboard.yaw_rate * 180 / M_PI;
+                                OuterSetpointRate[0] = get_offboard.roll_rate * 180 / M_PI;
+                                OuterSetpointRate[1] = get_offboard.pitch_rate * 180 / M_PI;
+                                OuterSetpointRate[2] = get_offboard.yaw_rate * 180 / M_PI;
                             }
                             mode_seclct.angle_mode = 0;
                             mode_seclct.angularrate_mode = 1;
                             break;
                         }
                     default:
-                            // OptiTrack[2] = 0;
-                            mode_seclct.angle_mode = 0;
-                            mode_seclct.angularrate_mode = 0;
+                            // mode_seclct.angle_mode = 0;
+                            // mode_seclct.angularrate_mode = 0;
                         break;
                 }
             }
         }
-            // else{
-            //     OptiTrack[2] = 0;
-            //     mode_seclct.angle_mode = 0;
-            //     mode_seclct.angularrate_mode = 0;
-            // }
 #endif
-//    }
-
 
 #ifdef USE_RC_SMOOTHING_FILTER
     processRcSmoothingFilter();
@@ -813,40 +743,6 @@ FAST_CODE_NOINLINE void updateRcCommands(void)
         }
     }
 
-
-// #ifdef USE_POSITION_HOLD
-//     if(FLIGHT_MODE(POSITION_HOLD_MODE))
-//         {
-//             for (int axis = 0; axis < 3; axis++)
-//             {
-//                 if(axis == ROLL){
-//                     // rcCommand[ROLL] = attitude_y_controller.throttle;
-//                     rcCommand[ROLL] = 30;
-//                 }
-//                 else if (axis == PITCH)
-//                 {
-//                     //rcCommand[PITCH] = -attitude_x_controller.throttle;
-//                 }
-//                 else 
-//                 {
-//                     // rcCommand[YAW] = attitude_yaw_controller.throttle;
-//                 }
-            
-//             }
-                
-//         }
-// #endif 
-
-    // if(!IS_RC_MODE_ACTIVE(BOXRANGEFINDER))  //rx
-    // {
-    //     DISABLE_FLIGHT_MODE(RANGEFINDER_MODE);     
-    // }else{
-    //     // rcCommand[THROTTLE] = 1300;
-    //     // ENABLE_FLIGHT_MODE(RANGEFINDER_MODE);
-    //     //beeper(BEEPER_ALL);
-    //     ENABLE_FLIGHT_MODE(RANGEFINDER_MODE);
-    //     alt_ctrl_run(0);
-    // }
 }
 
 void resetYawAxis(void)

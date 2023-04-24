@@ -116,6 +116,9 @@ typedef struct selectmode
 typedef struct get_offboard
 {
     float q[4];  //w,x,y,z
+    float roll_angle;
+    float pitch_angle;
+    float yaw_angle;
     float roll_rate;
     float pitch_rate;
     float yaw_rate;

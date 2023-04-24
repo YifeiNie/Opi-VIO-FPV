@@ -1080,11 +1080,6 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
                 currentPidSetpoint = getOuterSetpointAngle(axis);
                 // currentPidSetpoint = errorAngle * -6.0f;  //kp=-1.0
             }
-            if(axis == FD_YAW && (mode_seclct.angle_mode == 0) && (mode_seclct.angularrate_mode == 1))
-            {
-                float errorAngle = getOuterSetpointRate(axis);
-                // currentPidSetpoint = errorAngle * -6.0f;
-            }
         }
 #endif
 
