@@ -294,11 +294,11 @@ void configureMAVLinkTelemetryPort(void)
     }
 
     mavlinkTelemetryEnabled = true;
-    if(mavlinkstate_position < 1)
-    {
-        WifiInitHardware_Esp8266();
-        mavlinkstate_position++;
-    }
+    // if(mavlinkstate_position < 1)
+    // {
+    //     WifiInitHardware_Esp8266();
+    //     mavlinkstate_position++;
+    // }
 }
 
 void checkMAVLinkTelemetryState(void)
