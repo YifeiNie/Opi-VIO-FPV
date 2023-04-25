@@ -290,11 +290,11 @@ void configureMAVLinkTelemetryPort(void)
     baudRate_e baudRateIndex = portConfig->telemetry_baudrateIndex;
     if (baudRateIndex == BAUD_AUTO) {
         // default rate for minimOSD
-        baudRateIndex = BAUD_115200;
+        baudRateIndex = BAUD_2000000;
     }
     else
     {
-        baudRateIndex = BAUD_115200;
+        baudRateIndex = BAUD_2000000;
     }
 
     mavlinkPort = openSerialPort(portConfig->identifier, FUNCTION_TELEMETRY_MAVLINK, mavlinkReceive, NULL, baudRates[baudRateIndex], TELEMETRY_MAVLINK_INITIAL_PORT_MODE, SERIAL_STOPBITS_1);
@@ -304,11 +304,11 @@ void configureMAVLinkTelemetryPort(void)
     }
 
     mavlinkTelemetryEnabled = true;
-    if(mavlinkstate_position < 1)
-    {
-        WifiInitHardware_Esp8266();
-        mavlinkstate_position++;
-    }
+    // if(mavlinkstate_position < 1)
+    // {
+    //     WifiInitHardware_Esp8266();
+    //     mavlinkstate_position++;
+    // }
 }
 
 void checkMAVLinkTelemetryState(void)
