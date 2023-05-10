@@ -78,7 +78,7 @@ void calculate_Estimatedvel_acc(kalman_filter_t *kalman)
     float y;
     float z;
 
-    x = (acc.accADC[X]/ scale) * 0.001953125f;
+    x = (acc.accADC[X]/ scale) * 0.001953125f;  //1/512u
     y = (acc.accADC[Y]/ scale) * 0.001953125f;
     z = (acc.accADC[Z]/ scale) * 0.001953125f;
 

@@ -113,11 +113,13 @@ static bool mavlinkTelemetryEnabled =  false;
 static portSharing_e mavlinkPortSharing;
 static uint16_t rc_offboard_mode = 0;
 
+uint16_t scale1 = 0;
+
 /* MAVLink datastream rates in Hz */
 static const uint8_t mavRates[] = {
     [MAV_DATA_STREAM_EXTENDED_STATUS] = 2, //2Hz
     [MAV_DATA_STREAM_RC_CHANNELS] = 40, //5Hz
-    [MAV_DATA_STREAM_POSITION] = 1, //100Hz
+    [MAV_DATA_STREAM_POSITION] = 20, //100Hz
     [MAV_DATA_STREAM_EXTRA1] = 40, //10Hz
     [MAV_DATA_STREAM_EXTRA2] = 100, //100Hz
     [MAV_DATA_STREAM_EXTRA3] = 5
@@ -157,9 +159,7 @@ static void mavlinkReceive(uint16_t c, void* data) {
             //     break;
             // }
             // setpoint command
-            // case 81: {
-            //     mavlink_manual_setpoint_t command;
-            //     mavlink_msg_manual_setpoint_decode(&msg,&command);
+            // case 81: {void &command);
             //     attitude_controller.altitude_thrust = -command.thrust * 100;
             //     attitude_controller.roll = command.roll;   //maybe need normalization but this should be done in the JeVois
             //     attitude_controller.pitch = -command.pitch;
@@ -208,9 +208,7 @@ static void mavlinkReceive(uint16_t c, void* data) {
             //     break;
             // }
             // case 102:{
-            //     mavlink_vision_position_estimate_t command;
-            //     mavlink_msg_vision_position_estimate_decode(&msg,&command);
-            //     attitude_controller.r_y = command.x;
+            //     mavlink_vision_position_estimate_t commandvoid 
             //     attitude_controller.r_x = command.y;
             //     attitude_controller.r_z = -command.z;
             //     attitude_controller.sum2++;
@@ -304,11 +302,20 @@ void configureMAVLinkTelemetryPort(void)
     }
 
     mavlinkTelemetryEnabled = true;
-    // if(mavlinkstate_position < 1)
-    // {
-    //     WifiInitHardware_Esp8266();
-    //     mavlinkstate_position++;
-    // }
+    if(mavlinkstate_position < 1)
+    {
+        // WifiInitHardware_Esp8266();
+    if (acc.dev.acc_1G > 512 * 4) {
+        scale1 = 8;
+    } else if (acc.dev.acc_1G > 512 * 2) {
+        scale1 = 4;
+    } else if (acc.dev.acc_1G >= 512) {
+        scale1 = 2;
+    } else {
+        scale1 = 1;
+    }
+        mavlinkstate_position++;
+    }
 }
 
 void checkMAVLinkTelemetryState(void)
@@ -415,6 +422,49 @@ void mavlinkSendHeartbeat(void)  //ID 0
 }
 
 
+
+/*
+
+ x = (acc.accADC[X]/ scale) * 0.001953125f;  //1/512u
+ y = (acc.accADC[Y]/ scale) * 0.001953125f;
+ z = (acc.accADC[Z]/ scale) * 0.001953125f;
+ uint64_t time_usec; /*< [us] Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.*/
+ int16_t xacc; /*<  X acceleration (raw)*/
+ int16_t yacc; /*<  Y acceleration (raw)*/
+ int16_t zacc; /*<  Z acceleration (raw)*/
+ int16_t xgyro; /*<  Angular speed around X axis (raw)*/
+ int16_t ygyro; /*<  Angular speed around Y axis (raw)*/
+ int16_t zgyro; /*<  Angular speed around Z axis (raw)*/
+ int16_t xmag; /*<  X Magnetic field (raw)*/
+ int16_t ymag; /*<  Y Magnetic field (raw)*/
+ int16_t zmag; /*<  Z Magnetic field (raw)*/
+ uint8_t id; /*<  Id. Ids are numbered from 0 and map to IMUs numbered from 1 (e.g. IMU1 will have a message with id=0)*/
+ int16_t temperature; /*< [cdegC] Temperature, 0: IMU does not provide temper
+ */
+
+void mavlinkSendImuRaw(void)
+{
+    uint16_t msgLength;
+    mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
+        // time_boot_ms Timestamp (milliseconds since system boot)
+            millis(),
+            (int16_t)acc.accADC[X],
+            (int16_t)acc.accADC[Y],
+            (int16_t)acc.accADC[Z],
+            (int16_t)gyro.gyroADCf[FD_ROLL],
+            (int16_t)gyro.gyroADCf[FD_PITCH],
+            (int16_t)gyro.gyroADCf[FD_YAW],
+            scale1,
+            0,
+            0,
+            18,
+            0
+        );
+        
+    msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
+    mavlinkSerialWrite(mavBuffer, msgLength);
+}
+
 void mavlinkSendAttitude(void) //ID 30
 {
     uint16_t msgLength;
@@ -428,11 +478,16 @@ void mavlinkSendAttitude(void) //ID 30
         // yaw Yaw angle (rad)
         DECIDEGREES_TO_RADIANS(attitude.values.yaw),
         // rollspeed Roll angular speed (rad/s)
-        DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL]),
-        // pitchspeed Pitch angular speed (rad/s)
-        DEGREES_TO_RADIANS(gyro.gyroADCf[FD_PITCH]),
-        // yawspeed Yaw angular speed (rad/s)
-        DEGREES_TO_RADIANS(gyro.gyroADCf[FD_YAW])
+        // DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL]),
+        // // pitchspeed Pitch angular speed (rad/s)
+        // DEGREES_TO_RADIANS(gyro.gyroADCf[FD_PITCH]),
+        // // yawspeed Yaw angular speed (rad/s)
+        // DEGREES_TO_RADIANS(gyro.gyroADCf[FD_YAW])
+        DECIDEGREES_TO_RADIANS(attitude.values.roll),
+        // pitch Pitch angle (rad)
+        DECIDEGREES_TO_RADIANS(-attitude.values.pitch),
+        // yaw Yaw angle (rad)
+        DECIDEGREES_TO_RADIANS(attitude.values.yaw)
         // attitude_controller.r_x,  //roll
         // attitude_controller.r_y,  //pitch
         // attitude_controller.r_z, //yaw
@@ -472,6 +527,8 @@ void mavlinkSendHUD(void) //ID 74
     //airspeed groundspeed heading throttle alt climb
     mavlink_msg_vfr_hud_pack(0, 200, &mavMsg,
         0,
+        // pitch Pitch angle (rad)
+        // yaw Yaw angle (rad)
         0,
         // heading Current heading in degrees, in compass units (0..360, 0=north)
         // attitude_controller.sum,
@@ -518,11 +575,11 @@ void mavlinkLocalPositionNedCov(void)  //ID 64
 void processMAVLinkTelemetry(void)
 {
 
-    // if(mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
-    //     mavlinkSendHeartbeat();
-   
-    // // mavlinkSendHUD();
-    // }
+    if(mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
+        //mavlinkSendHeartbeat();
+        mavlinkSendHUD();
+    // mavlinkSendHUD();
+    }
     if(attitude_controller.sum >= 180)
     {
         attitude_controller.sum = 0;
@@ -538,8 +595,8 @@ void processMAVLinkTelemetry(void)
 
     //mavlinkSendHUD();
     // mavlinksendAltitude();
-    mavlinkSendHUD();
     mavlinkSendAttitude();
+    mavlinkSendImuRaw();
     // mavlinkLocalPositionNedCov();
 
 }

@@ -1121,31 +1121,21 @@ static bool mspProcessOutCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, sbuf_t
 #if defined(USE_ACC)
             // Hack scale due to choice of units for sensor data in multiwii
 
-            // uint8_t scale;
-            // if (acc.dev.acc_1G > 512 * 4) {
-            //     scale = 8;
-            // } else if (acc.dev.acc_1G > 512 * 2) {
-            //     scale = 4;
-            // } else if (acc.dev.acc_1G >= 512) {
-            //     scale = 2;
-            // } else {
-            //     scale = 1;
-            // }
+            uint8_t scale;
+            if (acc.dev.acc_1G > 512 * 4) {
+                scale = 8;
+            } else if (acc.dev.acc_1G > 512 * 2) {
+                scale = 4;
+            } else if (acc.dev.acc_1G >= 512) {
+                scale = 2;
+            } else {
+                scale = 1;
+            }
 #endif
 
             for (int i = 0; i < 3; i++) {
 #if defined(USE_ACC)
-            if(i == 0)
-            {
-                sbufWriteU16(dst, lrintf(Get_Alt_Kalman()/0.001953125f));
-            }else if (i == 1)
-            {
-                sbufWriteU16(dst, lrintf(rangefinderGetLatestAltitude()/0.001953125f));
-            }else
-            {
-                sbufWriteU16(dst, lrintf(Get_Acc_bias_kalman()/0.001953125f));
-            } 
-                 
+                sbufWriteU16(dst, lrintf(acc.accADC[i] / scale));
 #else
                 sbufWriteU16(dst, 0);
 #endif

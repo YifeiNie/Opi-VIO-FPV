@@ -89,7 +89,7 @@ bool sensorsAutodetect(void)
 
 #ifdef USE_RANGEFINDER
     rangefinderInit();
-    Kalman_filter_init();
+    // Kalman_filter_init();
 #endif
 
 #ifdef USE_ADC_INTERNAL

@@ -31,3 +31,4 @@ void mavlinkSendHeartbeat(void);
 void mavlinksendAltitude(void);
 void mavlinkSendHUD(void);
 void mavlinkSendAttitude(void);
+void mavlinkSendImuRaw(void);
