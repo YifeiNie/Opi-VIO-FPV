@@ -156,7 +156,7 @@
 
 // *************** RANGEFINDER *****************************
 #define USE_ALT_HOLD
-#define USE_POSITION_HOLD
+// #define USE_POSITION_HOLD
 
 #define USE_RANGEFINDER
 // #define USE_RANGEFINDER_HCSR04

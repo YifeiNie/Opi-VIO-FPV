@@ -30,7 +30,7 @@ controller_t height_controller;
 
 state_check_t state_check;
 
-static float throttle_init = 0.235;
+static float throttle_init = 0.45;
 float height_error_range = 0.02;
 float vel_error_range = 0.01;
 
@@ -154,7 +154,7 @@ void vel_controller_init(controller_t * controller, int axis)
     memset(controller, 0, sizeof(controller_t));
     if(axis == 0)
     {
-        controller->pid.P = 10;
+        controller->pid.P = 3;
         controller->pid.I = 0.0;
         controller->pid.D = 0;
 
@@ -172,7 +172,7 @@ void vel_controller_init(controller_t * controller, int axis)
     }
     if(axis == 1)
     {
-        controller->pid.P = -8.5;
+        controller->pid.P = -3;
         controller->pid.I = 0.0;
         controller->pid.D = 0;
 
@@ -376,6 +376,7 @@ void Update_PID_Position(timeUs_t currentTimeUs) //200Hz
     //     attitude_x_controller.setpoint = 0;
     //     attitude_y_controller.setpoint = 0;
     // }
+    Update_Lowpass_Filter(currentTimeUs);
     adjust_position(&kalman_filter1);
 
     lastTimeUs = currentTimeUs;
@@ -446,9 +447,9 @@ float Get_Velocity_throttle(int n)  //Roll,Pitch,throttle_Setpoint
 {
     switch(n){
     case 0:
-        return vel_x_controller.throttle;
-    case 1:
         return vel_y_controller.throttle;
+    case 1:
+        return vel_x_controller.throttle;
     case 2:
         return vel_z_controller.throttle;
     default:

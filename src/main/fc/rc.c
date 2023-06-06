@@ -618,40 +618,40 @@ FAST_CODE void processRcCommand(void)
         }
     }
     
-    #ifdef USE_POSITION_HOLD
-            if(FLIGHT_MODE(POSITION_HOLD_MODE))
-            {
-                for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
-                    switch(get_offboard.type_mask)
-                    {
-                        case 7:{
-                            for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
-                            {
-                                OuterSetpointAngle[0] = get_offboard.roll_angle * 180 / M_PI;
-                                OuterSetpointAngle[1] = get_offboard.pitch_angle * 180 / M_PI;
-                                OuterSetpointAngle[2] = get_offboard.yaw_angle * 180 / M_PI;
+#ifdef USE_POSITION_HOLD
+        if(FLIGHT_MODE(POSITION_HOLD_MODE))
+        {
+            for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
+                switch(get_offboard.type_mask)
+                {
+                    case 7:{
+                        for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
+                        {
+                            OuterSetpointAngle[0] = get_offboard.roll_angle * 180 / M_PI;
+                            OuterSetpointAngle[1] = get_offboard.pitch_angle * 180 / M_PI;
+                            OuterSetpointAngle[2] = get_offboard.yaw_angle * 180 / M_PI;
 
-                            }
-                            mode_seclct.angle_mode = 1;
-                            mode_seclct.angularrate_mode = 0;
-                            break;
                         }
-
-                        case 128:{
-                            for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
-                            {
-                                OuterSetpointRate[0] = get_offboard.roll_rate * 180 / M_PI;
-                                OuterSetpointRate[1] = get_offboard.pitch_rate * 180 / M_PI;
-                                OuterSetpointRate[2] = get_offboard.yaw_rate * 180 / M_PI;
-                            }
-                            mode_seclct.angle_mode = 0;
-                            mode_seclct.angularrate_mode = 1;
-                            break;
-                        }
-                    default:
-                            // mode_seclct.angle_mode = 0;
-                            // mode_seclct.angularrate_mode = 0;
+                        mode_seclct.angle_mode = 1;
+                        mode_seclct.angularrate_mode = 0;
                         break;
+                    }
+
+                    case 128:{
+                        for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
+                        {
+                            OuterSetpointRate[0] = get_offboard.roll_rate * 180 / M_PI;
+                            OuterSetpointRate[1] = get_offboard.pitch_rate * 180 / M_PI;
+                            OuterSetpointRate[2] = get_offboard.yaw_rate * 180 / M_PI;
+                        }
+                        mode_seclct.angle_mode = 0;
+                        mode_seclct.angularrate_mode = 1;
+                        break;
+                    }
+                default:
+                        // mode_seclct.angle_mode = 0;
+                        // mode_seclct.angularrate_mode = 0;
+                    break;
                 }
             }
         }

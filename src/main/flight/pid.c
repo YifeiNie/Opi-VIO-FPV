@@ -404,6 +404,12 @@ STATIC_UNIT_TESTED FAST_CODE_NOINLINE float pidLevel(int axis, const pidProfile_
         angle = getOuterSetpointAngle(axis);
     }
 #endif
+#ifdef USE_ALT_HOLD
+    if(FLIGHT_MODE(RANGEFINDER_MODE))
+    {
+        angle = Get_Velocity_throttle(axis);
+    }
+#endif
     float errorAngle = angle - ((attitude.raw[axis] - angleTrim->raw[axis]) / 10.0f);
 
     if (FLIGHT_MODE(ANGLE_MODE) || FLIGHT_MODE(GPS_RESCUE_MODE) || FLIGHT_MODE(POSITION_HOLD_MODE))
@@ -984,36 +990,36 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
     for (int axis = FD_ROLL; axis <= FD_YAW; ++axis)
     {
         float currentPidSetpoint = 0;
-        if(FLIGHT_MODE(POSITION_HOLD_MODE))
-        {
-            currentPidSetpoint = getOuterSetpointRate(axis);
-            if(axis == FD_ROLL)
-            {
-                attitude_controller.test_anglerate_setpoint[0] = currentPidSetpoint;
-            }else if(axis == FD_PITCH)
-            {
-                attitude_controller.test_anglerate_setpoint[1] = currentPidSetpoint;
-            }
-            // {
-            //     attitude_controller.test_anglerate_setpoint[2] = currentPidSetpoint;
-            // }
-            if (pidRuntime.maxVelocity[axis])
-            {
-                currentPidSetpoint = accelerationLimit(axis, currentPidSetpoint);
-            }
+//         if(FLIGHT_MODE(POSITION_HOLD_MODE))
+//         {
+//             currentPidSetpoint = getOuterSetpointRate(axis);
+//             if(axis == FD_ROLL)
+//             {
+//                 attitude_controller.test_anglerate_setpoint[0] = currentPidSetpoint;
+//             }else if(axis == FD_PITCH)
+//             {
+//                 attitude_controller.test_anglerate_setpoint[1] = currentPidSetpoint;
+//             }
+//             // {
+//             //     attitude_controller.test_anglerate_setpoint[2] = currentPidSetpoint;
+//             // }
+//             if (pidRuntime.maxVelocity[axis])
+//             {
+//                 currentPidSetpoint = accelerationLimit(axis, currentPidSetpoint);
+//             }
 
-#if defined(USE_ACC)
-            if ((mode_seclct.angle_mode == 1) && (mode_seclct.angularrate_mode == 0))
-            {
+// #if defined(USE_ACC)
+//             if ((mode_seclct.angle_mode == 1) && (mode_seclct.angularrate_mode == 0))
+//             {
 
-                currentPidSetpoint = pidLevel(axis, pidProfile, angleTrim, currentPidSetpoint, horizonLevelStrength);
-                DEBUG_SET(DEBUG_ATTITUDE, axis - FD_ROLL + 2, currentPidSetpoint);
-            }
-            //new add yaw pid
-#endif
+//                 currentPidSetpoint = pidLevel(axis, pidProfile, angleTrim, currentPidSetpoint, horizonLevelStrength);
+//                 DEBUG_SET(DEBUG_ATTITUDE, axis - FD_ROLL + 2, currentPidSetpoint);
+//             }
+//             //new add yaw pid
+// #endif
 
 
-        }else
+//         }else
         {
             currentPidSetpoint = getSetpointRate(axis);
 

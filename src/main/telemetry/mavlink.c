@@ -88,7 +88,7 @@
 #pragma GCC diagnostic pop
 
 #define TELEMETRY_MAVLINK_INITIAL_PORT_MODE MODE_RXTX
-#define TELEMETRY_MAVLINK_MAXRATE 200
+#define TELEMETRY_MAVLINK_MAXRATE 150
 #define TELEMETRY_MAVLINK_DELAY ((1000 * 1000) / TELEMETRY_MAVLINK_MAXRATE) //1000*1000/200us=5ms
 
 #define WIFI_AT         "AT\r\n"
@@ -111,7 +111,7 @@ static const serialPortConfig_t *portConfig;
 
 static bool mavlinkTelemetryEnabled =  false;
 static portSharing_e mavlinkPortSharing;
-static uint16_t rc_offboard_mode = 0;
+// static uint16_t rc_offboard_mode = 0;
 
 uint16_t scale1 = 0;
 
@@ -165,48 +165,49 @@ static void mavlinkReceive(uint16_t c, void* data) {
             //     attitude_controller.pitch = -command.pitch;
             //     attitude_controller.yaw = command.yaw;
 
-            case 82:{
-                mavlink_set_attitude_target_t command;
-                mavlink_msg_set_attitude_target_decode(&msg,&command);
-                // get_offboard.q[0] = command.q[0];  //w
-                // get_offboard.q[1] = command.q[1];  //x
-                // get_offboard.q[2] = command.q[2];  //y
-                // get_offboard.q[3] = command.q[3];  //z
-                if(command.type_mask == 7) //attitude
-                {
-                    get_offboard.roll_angle = command.body_roll_rate;
-                    get_offboard.pitch_angle =  -command.body_pitch_rate;
-                    get_offboard.yaw_angle = -command.body_yaw_rate;
-                }else
-                {
-                    get_offboard.roll_rate = command.body_roll_rate;
-                    get_offboard.pitch_rate = -command.body_pitch_rate;
-                    get_offboard.yaw_rate = -command.body_yaw_rate;
-                }
-
-                if(get_offboard.thrust != command.thrust)
-                {
-                    attitude_controller.sum++;
-                }
-                get_offboard.thrust = command.thrust;
-                get_offboard.type_mask = command.type_mask;
-                // cm4_receive = 1;
-                break;
-            }
-
-            // case 84: {
-            //     mavlink_set_position_target_local_ned_t command;
-            //     mavlink_msg_set_position_target_local_ned_decode(&msg,&command);
-            //     attitude_y_controller.setpoint_input = command.afx;
-            //     attitude_x_controller.setpoint_input = command.afy;
-            //     attitude_controller.r_Yaw_OptiTrack = command.afz;
-            //     attitude_controller.sum1++;
-            //     if(attitude_controller.sum1 == 180)
+            // case 82:{
+            //     mavlink_set_attitude_target_t command;
+            //     mavlink_msg_set_attitude_target_decode(&msg,&command);
+            //     // get_offboard.q[0] = command.q[0];  //w
+            //     // get_offboard.q[1] = command.q[1];  //x
+            //     // get_offboard.q[2] = command.q[2];  //y
+            //     // get_offboard.q[3] = command.q[3];  //z
+            //     if(command.type_mask == 7) //attitude
             //     {
-            //         attitude_controller.sum1 = 0;
+            //         get_offboard.roll_angle = command.body_roll_rate;
+            //         get_offboard.pitch_angle =  -command.body_pitch_rate;
+            //         get_offboard.yaw_angle = -command.body_yaw_rate;
+            //     }else
+            //     {
+            //         get_offboard.roll_rate = command.body_roll_rate;
+            //         get_offboard.pitch_rate = -command.body_pitch_rate;
+            //         get_offboard.yaw_rate = -command.body_yaw_rate;
             //     }
+
+            //     if(get_offboard.thrust != command.thrust)
+            //     {
+            //         attitude_controller.sum++;
+            //     }
+            //     get_offboard.thrust = command.thrust;
+            //     get_offboard.type_mask = command.type_mask;
+            //     // cm4_receive = 1;
             //     break;
             // }
+
+            case 84: {
+                mavlink_set_position_target_local_ned_t command;
+                mavlink_msg_set_position_target_local_ned_decode(&msg,&command);
+                attitude_controller.r_x = command.x;
+                attitude_controller.r_y = command.y;
+                attitude_controller.r_y = command.y;
+                attitude_controller.r_Yaw_OptiTrack = command.yaw;
+                attitude_controller.sum++;
+                if(attitude_controller.sum == 180)
+                {
+                    attitude_controller.sum = 0;
+                }
+                break;
+            }
             // case 102:{
             //     mavlink_vision_position_estimate_t commandvoid 
             //     attitude_controller.r_x = command.y;
@@ -526,19 +527,20 @@ void mavlinkSendHUD(void) //ID 74
 
     //airspeed groundspeed heading throttle alt climb
     mavlink_msg_vfr_hud_pack(0, 200, &mavMsg,
-        0,
+        attitude_controller.r_x,
         // pitch Pitch angle (rad)
         // yaw Yaw angle (rad)
-        0,
+        attitude_controller.r_y,
         // heading Current heading in degrees, in compass units (0..360, 0=north)
         // attitude_controller.sum,
         // headingOrScaledMilliAmpereHoursDrawn(),
-        rc_offboard_mode,
+        attitude_controller.r_z,
+        // rc_offboard_mode,
         // throttle Current throttle setting in integer percent, 0 to 100
         scaleRange(constrain(rcData[THROTTLE], PWM_RANGE_MIN, PWM_RANGE_MAX), PWM_RANGE_MIN, PWM_RANGE_MAX, 0, 100),
         // alt Current altitude (MSL), in meters, if we have sonar or baro use them, otherwise use GPS (less accurate)
         //attitude_controller.r_Yaw,
-        0,
+        attitude_controller.r_Yaw_OptiTrack,
         //Get_Velocity_LpFiter(2), //yaw
         // attitude_controller.Error_y
         //Get_Velocity_throttle(2)
@@ -578,20 +580,20 @@ void processMAVLinkTelemetry(void)
     if(mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
         //mavlinkSendHeartbeat();
         mavlinkSendHUD();
+        if(attitude_controller.sum >= 180)
+        {
+            attitude_controller.sum = 0;
+        }
     // mavlinkSendHUD();
     }
-    if(attitude_controller.sum >= 180)
-    {
-        attitude_controller.sum = 0;
-    }
 
-    if(FLIGHT_MODE(POSITION_HOLD_MODE))
-    {
-        rc_offboard_mode = 1;
-    }else
-    {
-        rc_offboard_mode = 0;
-    }
+    // if(FLIGHT_MODE(POSITION_HOLD_MODE))
+    // {
+    //     rc_offboard_mode = 1;
+    // }else
+    // {
+    //     rc_offboard_mode = 0;
+    // }
 
     //mavlinkSendHUD();
     // mavlinksendAltitude();
