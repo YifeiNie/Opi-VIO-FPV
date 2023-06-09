@@ -1094,6 +1094,13 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
         }
 #endif
 
+#ifdef USE_ALT_HOLD
+    if(FLIGHT_MODE(RANGEFINDER_MODE) && axis == FD_YAW)
+    {
+        currentPidSetpoint = attitude_controller.r_Yaw_OptiTrack - 0;
+    }
+#endif
+
         // -----calculate error rate
         const float gyroRate = gyro.gyroADCf[axis];      // Process variable from gyro output in deg/sec
         float errorRate = currentPidSetpoint - gyroRate; // r - y

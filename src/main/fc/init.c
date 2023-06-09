@@ -759,6 +759,15 @@ void init(void)
     LED0_OFF;
     LED1_OFF;
 
+    delay(10000);
+    delay(10000);
+    delay(10000);
+    delay(10000);
+    delay(10000);
+    delay(10000);
+    delay(10000);
+    delay(10000);
+    delay(10000);
     imuInit();
 
     failsafeInit();

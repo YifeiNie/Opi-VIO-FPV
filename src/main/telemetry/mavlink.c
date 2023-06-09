@@ -197,10 +197,10 @@ static void mavlinkReceive(uint16_t c, void* data) {
             case 84: {
                 mavlink_set_position_target_local_ned_t command;
                 mavlink_msg_set_position_target_local_ned_decode(&msg,&command);
-                attitude_controller.r_x = command.x;
-                attitude_controller.r_y = command.y;
-                attitude_controller.r_y = command.y;
-                attitude_controller.r_Yaw_OptiTrack = command.yaw;
+                attitude_controller.r_y = command.x;
+                attitude_controller.r_x = command.y;
+                attitude_controller.r_z = -command.z;
+                attitude_controller.r_Yaw_OptiTrack = -command.yaw_rate * RAD_TO_DEGREES;
                 attitude_controller.sum++;
                 if(attitude_controller.sum == 180)
                 {
@@ -280,6 +280,35 @@ void initMAVLinkTelemetry(void)
     mavlinkPortSharing = determinePortSharing(portConfig, FUNCTION_TELEMETRY_MAVLINK);
 }
 
+void wifidelay(void)
+{
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+    delay(1000);
+}
+
 void configureMAVLinkTelemetryPort(void)
 {
     if (!portConfig) {
@@ -306,6 +335,7 @@ void configureMAVLinkTelemetryPort(void)
     if(mavlinkstate_position < 1)
     {
         // WifiInitHardware_Esp8266();
+        //wifidelay();
     if (acc.dev.acc_1G > 512 * 4) {
         scale1 = 8;
     } else if (acc.dev.acc_1G > 512 * 2) {
@@ -527,24 +557,24 @@ void mavlinkSendHUD(void) //ID 74
 
     //airspeed groundspeed heading throttle alt climb
     mavlink_msg_vfr_hud_pack(0, 200, &mavMsg,
-        attitude_controller.r_x,
+        Get_Velocity_throttle(1),
         // pitch Pitch angle (rad)
         // yaw Yaw angle (rad)
-        attitude_controller.r_y,
+        Get_Velocity_throttle(0),
         // heading Current heading in degrees, in compass units (0..360, 0=north)
         // attitude_controller.sum,
         // headingOrScaledMilliAmpereHoursDrawn(),
-        attitude_controller.r_z,
+        attitude_controller.sum,
         // rc_offboard_mode,
         // throttle Current throttle setting in integer percent, 0 to 100
         scaleRange(constrain(rcData[THROTTLE], PWM_RANGE_MIN, PWM_RANGE_MAX), PWM_RANGE_MIN, PWM_RANGE_MAX, 0, 100),
         // alt Current altitude (MSL), in meters, if we have sonar or baro use them, otherwise use GPS (less accurate)
         //attitude_controller.r_Yaw,
-        attitude_controller.r_Yaw_OptiTrack,
+        Get_Velocity_throttle(2),
         //Get_Velocity_LpFiter(2), //yaw
         // attitude_controller.Error_y
         //Get_Velocity_throttle(2)
-        attitude_controller.sum
+        attitude_controller.r_Yaw_OptiTrack
         //attitude_controller.sum1,
         //attitude_controller.sum
         );
@@ -619,6 +649,7 @@ void handleMAVLinkTelemetry(void)
         lastMavlinkMessage = now;
     }
 }
+
 
 void WifiInitHardware_Esp8266(void)
 {

@@ -165,8 +165,8 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -70;
-        controller->output_max = 70;
+        controller->output_min = -30;
+        controller->output_max = 30;
 
         controller->input_error_range = vel_error_range;
     }
@@ -183,8 +183,8 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -70;
-        controller->output_max = 70;
+        controller->output_min = -30;
+        controller->output_max = 30;
 
         controller->input_error_range = vel_error_range;
 
@@ -202,8 +202,8 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -0.3;
-        controller->output_max = 0.65;
+        controller->output_min = -0.45;
+        controller->output_max = 0.45;
 
         controller->input_error_range = vel_error_range;
 
