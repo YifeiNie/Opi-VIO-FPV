@@ -622,7 +622,7 @@ FAST_CODE_NOINLINE void mixTable(timeUs_t currentTimeUs)
 #endif
 
 #ifdef USE_ALT_HOLD
-    if(FLIGHT_MODE(RANGEFINDER_MODE))
+    if(FLIGHT_MODE(ALT_HOLD_MODE))
     {
         if(FLIGHT_MODE(POSITION_HOLD_MODE))
         {

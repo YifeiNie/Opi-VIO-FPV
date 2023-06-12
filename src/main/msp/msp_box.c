@@ -232,13 +232,22 @@ void initActiveBoxIds(void)
     }
 #endif
 
-#ifdef USE_POSITION_HOLD
-    BME(BOXCAMERA1);
-    // if(featureIsEnabled(FEATURE_POSITION_HOLD))
-    // {
-        // BME(BOXPOSITION); 
- //   }
+#ifdef USE_IMU_INIT
+    BME(BOXUSER1);
 #endif
+
+#ifdef USE_BOOTLOADER
+    BME(BOXUSER2);
+#endif
+
+#ifdef USE_ALT_HOLD
+    BME(BOXUSER3);
+#endif
+
+#ifdef USE_POSITION_HOLD
+    BME(BOXUSER4);
+#endif
+
 
 #ifdef USE_RANGEFINDER
     if (featureIsEnabled(FEATURE_RANGEFINDER)) { // XXX && sensors(SENSOR_RANGEFINDER)?

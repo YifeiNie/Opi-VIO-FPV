@@ -1101,21 +1101,39 @@ void processRxModes(timeUs_t currentTimeUs)
     }
 #endif
 
-#ifdef USE_POSITION_HOLD
-    if(!IS_RC_MODE_ACTIVE(BOXCAMERA1))
-    {
-        DISABLE_FLIGHT_MODE(POSITION_HOLD_MODE);     
-    }else{
-        ENABLE_FLIGHT_MODE(POSITION_HOLD_MODE); 
-    }
-#endif
-
 #ifdef USE_IMU_INIT
     if(!IS_RC_MODE_ACTIVE(BOXUSER1))
     {
         DISABLE_FLIGHT_MODE(IMU_INIT_MODE);     
     }else{
         ENABLE_FLIGHT_MODE(IMU_INIT_MODE); 
+    }
+#endif
+
+#ifdef USE_BOOTLOADER
+    if(!IS_RC_MODE_ACTIVE(BOXUSER2))
+    {
+        DISABLE_FLIGHT_MODE(BOOTLOADER_MODE);     
+    }else{
+        ENABLE_FLIGHT_MODE(BOOTLOADER_MODE); 
+    }
+#endif
+
+#ifdef USE_ALT_HOLD
+    if(!IS_RC_MODE_ACTIVE(BOXUSER3))
+    {
+        DISABLE_FLIGHT_MODE(ALT_HOLD_MODE);     
+    }else{
+        ENABLE_FLIGHT_MODE(ALT_HOLD_MODE); 
+    }
+#endif
+
+#ifdef USE_POSITION_HOLD
+    if(!IS_RC_MODE_ACTIVE(BOXUSER4))
+    {
+        DISABLE_FLIGHT_MODE(POSITION_HOLD_MODE);     
+    }else{
+        ENABLE_FLIGHT_MODE(POSITION_HOLD_MODE); 
     }
 #endif
 
