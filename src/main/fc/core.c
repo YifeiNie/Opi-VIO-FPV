@@ -1110,6 +1110,15 @@ void processRxModes(timeUs_t currentTimeUs)
     }
 #endif
 
+#ifdef USE_IMU_INIT
+    if(!IS_RC_MODE_ACTIVE(BOXUSER1))
+    {
+        DISABLE_FLIGHT_MODE(IMU_INIT_MODE);     
+    }else{
+        ENABLE_FLIGHT_MODE(IMU_INIT_MODE); 
+    }
+#endif
+
     pidSetAntiGravityState(IS_RC_MODE_ACTIVE(BOXANTIGRAVITY) || featureIsEnabled(FEATURE_ANTI_GRAVITY));
 }
 

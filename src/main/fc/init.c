@@ -562,8 +562,6 @@ void init(void)
      * receiver may share timer with motors so motors MUST be initialized here. */
     motorDevInit(&motorConfig()->dev, idlePulse, getMotorCount());
     systemState |= SYSTEM_STATE_MOTORS_READY;
-#else
-    UNUSED(idlePulse);
 #endif
 
     if (0) {}
@@ -759,15 +757,6 @@ void init(void)
     LED0_OFF;
     LED1_OFF;
 
-    delay(10000);
-    delay(10000);
-    delay(10000);
-    delay(10000);
-    delay(10000);
-    delay(10000);
-    delay(10000);
-    delay(10000);
-    delay(10000);
     imuInit();
 
     failsafeInit();

@@ -238,7 +238,10 @@ void imuInit(void)
 #ifdef USE_ALT_HOLD
     accVelScale = 9.80665f / acc.dev.acc_1G;
 #endif
-
+    q.w = 1.0;
+    q.x = 0.0;
+    q.y = 0.0;
+    q.z = 0.0;
     imuComputeRotationMatrix();
 
 #if defined(SIMULATOR_BUILD) && defined(SIMULATOR_MULTITHREAD)

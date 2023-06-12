@@ -36,6 +36,7 @@
 #include "fc/controlrate_profile.h"
 #include "fc/core.h"
 #include "fc/rc.h"
+#include "fc/init.h"
 #include "fc/rc_controls.h"
 #include "fc/rc_modes.h"
 #include "fc/runtime_config.h"
@@ -56,6 +57,7 @@
 
 #include "sensors/battery.h"
 #include "sensors/gyro.h"
+#include "sensors/initialisation.h"
 
 #include "rc.h"
 
@@ -82,6 +84,8 @@ static float rcCommandDivider = 500.0f;
 static float rcCommandYawDivider = 500.0f;
 
 static FAST_DATA_ZERO_INIT bool newRxDataForFF;
+
+bool reset_mav;
 
 enum {
     ROLL_FLAG = 1 << ROLL,
@@ -655,6 +659,14 @@ FAST_CODE void processRcCommand(void)
                 }
             }
         }
+#endif
+
+#ifdef USE_IMU_INIT
+    if(FLIGHT_MODE(IMU_INIT_MODE) && !IS_RC_MODE_ACTIVE(BOXARM))
+    {
+        // reset_mav = true;
+        imuInit();
+    }
 #endif
 
 #ifdef USE_RC_SMOOTHING_FILTER

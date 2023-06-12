@@ -280,35 +280,6 @@ void initMAVLinkTelemetry(void)
     mavlinkPortSharing = determinePortSharing(portConfig, FUNCTION_TELEMETRY_MAVLINK);
 }
 
-void wifidelay(void)
-{
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-    delay(1000);
-}
-
 void configureMAVLinkTelemetryPort(void)
 {
     if (!portConfig) {
@@ -335,7 +306,6 @@ void configureMAVLinkTelemetryPort(void)
     if(mavlinkstate_position < 1)
     {
         // WifiInitHardware_Esp8266();
-        //wifidelay();
     if (acc.dev.acc_1G > 512 * 4) {
         scale1 = 8;
     } else if (acc.dev.acc_1G > 512 * 2) {

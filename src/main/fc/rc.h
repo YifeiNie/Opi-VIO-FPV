@@ -29,6 +29,8 @@
 #define RC_SMOOTHING_AUTO_FACTOR_MAX 250
 #endif
 
+extern bool reset_mav;
+
 void processRcCommand(void);
 float getSetpointRate(int axis);
 float getRcDeflection(int axis);
