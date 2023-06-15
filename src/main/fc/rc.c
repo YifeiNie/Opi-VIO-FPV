@@ -88,7 +88,7 @@ static float rcCommandYawDivider = 500.0f;
 
 static FAST_DATA_ZERO_INIT bool newRxDataForFF;
 
-bool reset_mav;
+bool Timestamp;
 
 enum {
     ROLL_FLAG = 1 << ROLL,
@@ -677,6 +677,16 @@ FAST_CODE void processRcCommand(void)
     {
         motorShutdown();
         systemResetToBootloader(BOOTLOADER_REQUEST_ROM);
+    }
+#endif
+
+#ifdef USE_DATA_CTRL
+    if(FLIGHT_MODE(DATA_CTRL_MODE))
+    {
+        Timestamp = true;
+    }else
+    {
+        Timestamp = false;
     }
 #endif
 

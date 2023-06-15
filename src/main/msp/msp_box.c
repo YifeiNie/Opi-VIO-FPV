@@ -248,6 +248,10 @@ void initActiveBoxIds(void)
     BME(BOXUSER4);
 #endif
 
+#ifdef USE_DATA_CTRL
+    BME(BOXUSER4);
+#endif
+
 
 #ifdef USE_RANGEFINDER
     if (featureIsEnabled(FEATURE_RANGEFINDER)) { // XXX && sensors(SENSOR_RANGEFINDER)?

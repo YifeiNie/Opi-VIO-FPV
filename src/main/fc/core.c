@@ -1137,6 +1137,15 @@ void processRxModes(timeUs_t currentTimeUs)
     }
 #endif
 
+#ifdef USE_DATA_CTRL
+    if(!IS_RC_MODE_ACTIVE(BOXUSER4))
+    {
+        DISABLE_FLIGHT_MODE(DATA_CTRL_MODE);     
+    }else{
+        ENABLE_FLIGHT_MODE(DATA_CTRL_MODE); 
+    }
+#endif
+
     pidSetAntiGravityState(IS_RC_MODE_ACTIVE(BOXANTIGRAVITY) || featureIsEnabled(FEATURE_ANTI_GRAVITY));
 }
 

@@ -158,6 +158,7 @@
 #define USE_ALT_HOLD
 #define USE_IMU_INIT
 #define USE_BOOTLOADER
+#define USE_DATA_CTRL
 // #define USE_POSITION_HOLD
 
 #define USE_RANGEFINDER

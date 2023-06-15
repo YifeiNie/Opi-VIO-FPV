@@ -533,18 +533,17 @@ void mavlinkSendHUD(void) //ID 74
         Get_Velocity_throttle(0),
         // heading Current heading in degrees, in compass units (0..360, 0=north)
         // attitude_controller.sum,
-        // headingOrScaledMilliAmpereHoursDrawn(),
-        attitude_controller.sum,
+        headingOrScaledMilliAmpereHoursDrawn(),
         // rc_offboard_mode,
         // throttle Current throttle setting in integer percent, 0 to 100
         scaleRange(constrain(rcData[THROTTLE], PWM_RANGE_MIN, PWM_RANGE_MAX), PWM_RANGE_MIN, PWM_RANGE_MAX, 0, 100),
         // alt Current altitude (MSL), in meters, if we have sonar or baro use them, otherwise use GPS (less accurate)
         //attitude_controller.r_Yaw,
-        Get_Velocity_throttle(2),
+        attitude_controller.sum,
         //Get_Velocity_LpFiter(2), //yaw
         // attitude_controller.Error_y
         //Get_Velocity_throttle(2)
-        attitude_controller.r_Yaw_OptiTrack
+        Timestamp
         //attitude_controller.sum1,
         //attitude_controller.sum
         );
