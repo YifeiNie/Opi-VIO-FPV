@@ -668,36 +668,7 @@ FAST_CODE void processRcCommand(void)
     if(FLIGHT_MODE(IMU_INIT_MODE) && !IS_RC_MODE_ACTIVE(BOXARM))
     {
         motorShutdown();
-        imuInit();
-        pidInit(currentPidProfile);
         systemReset();
-
-        // systemResetToBootloader();
-
-
-        // pidRuntime.tpaFactor = 1.0f;
-
-        // pidSetItermReset(true);
-        // pidStabilisationState(PID_STABILISATION_OFF);
-        // DISABLE_ARMING_FLAG(ARMED);
-
-        // for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
-        //     pidData[axis].P = 0;
-        //     pidData[axis].I = 0;
-        //     pidData[axis].D = 0;
-        //     pidData[axis].F = 0;
-        //     pidData[axis].Sum = 0;
-        //     gyro.gyroADCf[axis] = 0;
-        // }
-        // attitude.values.roll = 0;
-        // attitude.values.pitch = 0;
-        // attitude.values.yaw = 0;
-
-        // pidInit(currentPidProfile);
-        // loadControlRateProfile();
-
-        // currentControlRateProfile->levelExpo[FD_ROLL] = 0;
-        // currentControlRateProfile->levelExpo[FD_PITCH] = 0;
     }
 #endif
 

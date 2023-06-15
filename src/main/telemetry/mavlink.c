@@ -496,7 +496,7 @@ void mavlinkSendAttitude(void) //ID 30
         // attitude_controller.r_Roll,  //rollspeed
         // // attitude_controller.r_Yaw 
         // attitude_controller.r_Pitch,  //pitchspeed
-        // attitude_controller.r_Yaw  //yawspeed
+        // attitude_controller.r_Yaw //yawspeed
         );
         
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
@@ -578,29 +578,15 @@ void processMAVLinkTelemetry(void)
 {
 
     if(mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
-        //mavlinkSendHeartbeat();
         mavlinkSendHUD();
         if(attitude_controller.sum >= 180)
         {
             attitude_controller.sum = 0;
         }
-    // mavlinkSendHUD();
     }
 
-    // if(FLIGHT_MODE(POSITION_HOLD_MODE))
-    // {
-    //     rc_offboard_mode = 1;
-    // }else
-    // {
-    //     rc_offboard_mode = 0;
-    // }
-
-    //mavlinkSendHUD();
-    // mavlinksendAltitude();
     mavlinkSendAttitude();
     mavlinkSendImuRaw();
-    // mavlinkLocalPositionNedCov();
-
 }
 
 void handleMAVLinkTelemetry(void)
@@ -612,7 +598,6 @@ void handleMAVLinkTelemetry(void)
     if (!mavlinkPort) {
         return;
     }
-
     uint32_t now = micros();
     if ((now - lastMavlinkMessage) >= TELEMETRY_MAVLINK_DELAY) {
         processMAVLinkTelemetry();

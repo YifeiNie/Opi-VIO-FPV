@@ -30,7 +30,7 @@ controller_t height_controller;
 
 state_check_t state_check;
 
-static float throttle_init = 0.45;
+static float throttle_init = 0.39;
 float height_error_range = 0.02;
 float vel_error_range = 0.01;
 
@@ -312,7 +312,7 @@ void Update_Lowpass_Filter(timeUs_t currentTimeUs)
     attitude_controller.r_y_lowpassfilter_last = attitude_controller.r_y_lowpassfilter;
     attitude_controller.r_z_lowpassfilter_last = attitude_controller.r_z_lowpassfilter;
 
-    Lowpass_Filter(&attitude_controller, 0.4, 0.4, 0);//lowpass_filter
+    Lowpass_Filter(&attitude_controller, 0.2, 0.2, 0);//lowpass_filter
 
     attitude_controller.Error_x_filter = (attitude_controller.r_x_lowpassfilter - attitude_controller.r_x_lowpassfilter_last)/dt;
     attitude_controller.Error_y_filter = (attitude_controller.r_y_lowpassfilter - attitude_controller.r_y_lowpassfilter_last)/dt;
