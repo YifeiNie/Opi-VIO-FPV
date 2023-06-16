@@ -1097,7 +1097,7 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
 #ifdef USE_ALT_HOLD
     if(FLIGHT_MODE(ALT_HOLD_MODE) && axis == FD_YAW)
     {
-        currentPidSetpoint = -3 * (attitude_controller.r_Yaw_OptiTrack - 0);
+        currentPidSetpoint = -1.0 * (attitude_controller.r_Yaw_OptiTrack - 0);
     }
 #endif
 

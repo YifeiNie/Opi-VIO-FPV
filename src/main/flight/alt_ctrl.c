@@ -107,7 +107,7 @@ void position_controller_init(controller_t * controller, int axis)
         controller->pid.Error2 = 0.0;
         controller->pid.iError = 0.0;
 
-        controller->setpoint = 0.7;
+        controller->setpoint = 0.2;
         controller->output_min = -9999;
         controller->output_max = 9999;
 
@@ -140,7 +140,7 @@ void position_controller_init(controller_t * controller, int axis)
         controller->pid.Error2 = 0.0;
         controller->pid.iError = 0.0;
 
-        controller->setpoint = 1;
+        controller->setpoint = 1.0;
         controller->output_min = -99999;
         controller->output_max = 99999;
 
@@ -165,8 +165,8 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -30;
-        controller->output_max = 30;
+        controller->output_min = -20;
+        controller->output_max = 20;
 
         controller->input_error_range = vel_error_range;
     }
@@ -183,8 +183,8 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -30;
-        controller->output_max = 30;
+        controller->output_min = -20;
+        controller->output_max = 20;
 
         controller->input_error_range = vel_error_range;
 
@@ -202,8 +202,8 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -0.45;
-        controller->output_max = 0.45;
+        controller->output_min = -0.25;
+        controller->output_max = 0.25;
 
         controller->input_error_range = vel_error_range;
 
