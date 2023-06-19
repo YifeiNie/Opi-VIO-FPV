@@ -1129,7 +1129,7 @@ void processRxModes(timeUs_t currentTimeUs)
 #endif
 
 #ifdef USE_POSITION_HOLD
-    if(!IS_RC_MODE_ACTIVE(BOXUSER4))
+    if(!IS_RC_MODE_ACTIVE(BOXPOSEHOLD))
     {
         DISABLE_FLIGHT_MODE(POSITION_HOLD_MODE);     
     }else{

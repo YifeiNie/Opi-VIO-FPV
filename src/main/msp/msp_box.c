@@ -87,10 +87,10 @@ static const box_t boxes[CHECKBOX_ITEM_COUNT] = {
     { .boxId = BOXBEEPGPSCOUNT, .boxName = "GPS BEEP SATELLITE COUNT", .permanentId = 37 },
 //    { .boxId = BOX3DONASWITCH, .boxName = "3D ON A SWITCH", .permanentId = 38 }, (removed)
     { .boxId = BOXVTXPITMODE, .boxName = "VTX PIT MODE", .permanentId = 39 },
-    { .boxId = BOXUSER1, .boxName = "USER1", .permanentId = 40 },
-    { .boxId = BOXUSER2, .boxName = "USER2", .permanentId = 41 },
-    { .boxId = BOXUSER3, .boxName = "USER3", .permanentId = 42 },
-    { .boxId = BOXUSER4, .boxName = "USER4", .permanentId = 43 },
+    { .boxId = BOXUSER1, .boxName = "IMU_INIT_MODE", .permanentId = 40 },
+    { .boxId = BOXUSER2, .boxName = "BOOTLOADER_MODE", .permanentId = 41 },
+    { .boxId = BOXUSER3, .boxName = "ALT_HOLD_MODE", .permanentId = 42 },
+    { .boxId = BOXUSER4, .boxName = "DATA_CTRL_MODE", .permanentId = 43 },
     { .boxId = BOXPIDAUDIO, .boxName = "PID AUDIO", .permanentId = 44 },
     { .boxId = BOXPARALYZE, .boxName = "PARALYZE", .permanentId = 45 },
     { .boxId = BOXGPSRESCUE, .boxName = "GPS RESCUE", .permanentId = 46 },
@@ -100,7 +100,8 @@ static const box_t boxes[CHECKBOX_ITEM_COUNT] = {
     { .boxId = BOXMSPOVERRIDE, .boxName = "MSP OVERRIDE", .permanentId = 50},
     { .boxId = BOXSTICKCOMMANDDISABLE, .boxName = "STICK COMMANDS DISABLE", .permanentId = 51},
     { .boxId = BOXBEEPERMUTE, .boxName = "BEEPER MUTE", .permanentId = 52},
-    { .boxId = BOXREADY, .boxName = "READY", .permanentId = 53}
+    { .boxId = BOXREADY, .boxName = "READY", .permanentId = 53},
+    { .boxId = BOXPOSEHOLD, .boxName = "POSE_HOLD", .permanentId = 54 }
 };
 
 // mask of enabled IDs, calculated on startup based on enabled features. boxId_e is used as bit index
@@ -245,7 +246,7 @@ void initActiveBoxIds(void)
 #endif
 
 #ifdef USE_POSITION_HOLD
-    BME(BOXUSER4);
+    BME(BOXPOSEHOLD);
 #endif
 
 #ifdef USE_DATA_CTRL
