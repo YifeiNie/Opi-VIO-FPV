@@ -446,6 +446,8 @@ void mavlinkSendHeartbeat(void)  //ID 0
 void mavlinkSendImuRaw(void)
 {
     uint16_t msgLength;
+    float r_x = attitude_controller.r_x * 1000.0f;
+    float r_y = attitude_controller.r_y * 1000.0f;
     mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
         // time_boot_ms Timestamp (milliseconds since system boot)
             millis(),
@@ -456,8 +458,8 @@ void mavlinkSendImuRaw(void)
             (int16_t)gyro.gyroADCf[FD_PITCH],
             (int16_t)gyro.gyroADCf[FD_YAW],
             scale1,
-            0,
-            0,
+            (int16_t)r_x,
+            (int16_t)r_y,
             18,
             0
         );

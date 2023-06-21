@@ -30,7 +30,7 @@ controller_t height_controller;
 
 state_check_t state_check;
 
-static float throttle_init = 0.39;
+static float throttle_init = 0.40;
 float height_error_range = 0.02;
 float vel_error_range = 0.01;
 
@@ -99,7 +99,7 @@ void position_controller_init(controller_t * controller, int axis)
     memset(controller, 0, sizeof(controller_t));
     if(axis == 0)
     {
-        controller->pid.P = 0.85;
+        controller->pid.P = 2;
         controller->pid.I = 0.0;
         controller->pid.D = 0;
 
@@ -108,15 +108,15 @@ void position_controller_init(controller_t * controller, int axis)
         controller->pid.iError = 0.0;
 
         controller->setpoint = 0.0;
-        controller->output_min = -0.5;
-        controller->output_max = 0.5;
+        controller->output_min = -9999;
+        controller->output_max = 9999;
 
         controller->input_error_range = height_error_range;
 
     }
     if(axis == 1)
     {
-        controller->pid.P = 1.1;
+        controller->pid.P = 2;
         controller->pid.I = 0.0;
         controller->pid.D = 0;
 
@@ -125,14 +125,14 @@ void position_controller_init(controller_t * controller, int axis)
         controller->pid.iError = 0.0;
 
         controller->setpoint = 0;
-        controller->output_min = -0.5;
-        controller->output_max = 0.5;
+        controller->output_min = -9999;
+        controller->output_max = 9999;
 
         controller->input_error_range = height_error_range;
     }
     if(axis == 2)
     {
-        controller->pid.P = 1.2;
+        controller->pid.P = 3;
         controller->pid.I = 0;
         controller->pid.D = 0;
 
@@ -141,8 +141,8 @@ void position_controller_init(controller_t * controller, int axis)
         controller->pid.iError = 0.0;
 
         controller->setpoint = 0.5;
-        controller->output_min = -0.3;
-        controller->output_max = 0.3;
+        controller->output_min = -9999;
+        controller->output_max = 9999;
 
         controller->input_error_range = height_error_range;
 
@@ -154,7 +154,7 @@ void vel_controller_init(controller_t * controller, int axis)
     memset(controller, 0, sizeof(controller_t));
     if(axis == 0)
     {
-        controller->pid.P = 3;
+        controller->pid.P = 10;
         controller->pid.I = 0.0;
         controller->pid.D = 0;
 
@@ -165,14 +165,14 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -15;
-        controller->output_max = 15;
+        controller->output_min = -10;
+        controller->output_max = 10;
 
         controller->input_error_range = vel_error_range;
     }
     if(axis == 1)
     {
-        controller->pid.P = -3;
+        controller->pid.P = -10;
         controller->pid.I = 0.0;
         controller->pid.D = 0;
 
@@ -183,15 +183,15 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -15;
-        controller->output_max = 15;
+        controller->output_min = -10;
+        controller->output_max = 10;
 
         controller->input_error_range = vel_error_range;
 
     }
     if(axis == 2)
     {
-        controller->pid.P = 0.15;
+        controller->pid.P = 0.3;
         controller->pid.I = 0;
         controller->pid.D = 0;
 
@@ -202,8 +202,8 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -0.25;
-        controller->output_max = 0.20;
+        controller->output_min = -0.35;
+        controller->output_max = 0.35;
 
         controller->input_error_range = vel_error_range;
 
@@ -312,7 +312,7 @@ void Update_Lowpass_Filter(timeUs_t currentTimeUs)
     attitude_controller.r_y_lowpassfilter_last = attitude_controller.r_y_lowpassfilter;
     attitude_controller.r_z_lowpassfilter_last = attitude_controller.r_z_lowpassfilter;
 
-    Lowpass_Filter(&attitude_controller, 0.2, 0.2, 0);//lowpass_filter
+    Lowpass_Filter(&attitude_controller, 0.4, 0.4, 0);//lowpass_filter
 
     attitude_controller.Error_x_filter = (attitude_controller.r_x_lowpassfilter - attitude_controller.r_x_lowpassfilter_last)/dt;
     attitude_controller.Error_y_filter = (attitude_controller.r_y_lowpassfilter - attitude_controller.r_y_lowpassfilter_last)/dt;
