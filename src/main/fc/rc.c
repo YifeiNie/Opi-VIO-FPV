@@ -681,7 +681,17 @@ FAST_CODE void processRcCommand(void)
 #endif
 
 #ifdef USE_DATA_CTRL
-    if(FLIGHT_MODE(DATA_CTRL_MODE))
+    // if(FLIGHT_MODE(DATA_CTRL_MODE))
+    // {
+    //     Timestamp = true;
+    // }else
+    // {
+    //     Timestamp = false;
+    // }
+#endif
+
+#ifdef USE_ALT_HOLD
+    if(FLIGHT_MODE(ALT_HOLD_MODE))
     {
         Timestamp = true;
     }else

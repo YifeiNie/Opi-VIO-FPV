@@ -492,9 +492,7 @@ void mavlinkSendAttitude(void) //ID 30
         // attitude_controller.r_x,  //roll
         // attitude_controller.r_y,  //pitch
         // attitude_controller.r_z, //yaw
-        // // attitude_controller.r_Roll,
-        // attitude_controller.r_Roll,  //rollspeed
-        // // attitude_controller.r_Yaw 
+        // // attitude_contrmavlinkSendAttitudeoller.r_Yaw 
         // attitude_controller.r_Pitch,  //pitchspeed
         // attitude_controller.r_Yaw //yawspeed
         );

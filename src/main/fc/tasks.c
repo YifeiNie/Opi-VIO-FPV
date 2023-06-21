@@ -623,9 +623,9 @@ void tasksInit(void)
 #endif
 
 #ifdef USE_ALT_HOLD
-    setTaskEnabled(TASK_KALMAN_FILTER, true);
+    // setTaskEnabled(TASK_KALMAN_FILTER, true);
     setTaskEnabled(TASK_ALT_CTRL, true);
-    setTaskEnabled(TASK_ANGLE_CTRL, true);
+    // setTaskEnabled(TASK_ANGLE_CTRL, true);
 #endif
 
 #ifdef USE_POSITION_HOLD
