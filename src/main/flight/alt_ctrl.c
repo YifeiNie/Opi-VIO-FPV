@@ -31,8 +31,8 @@ controller_t height_controller;
 state_check_t state_check;
 
 static float throttle_init = 0.40;
-float height_error_range = 0.02;
-float vel_error_range = 0.01;
+float height_error_range = 0.002;
+float vel_error_range = 0.001;
 
 void state_check_init(state_check_t * state)
 {
@@ -124,7 +124,7 @@ void position_controller_init(controller_t * controller, int axis)
         controller->pid.Error2 = 0.0;
         controller->pid.iError = 0.0;
 
-        controller->setpoint = 0;
+        controller->setpoint = 0.0;
         controller->output_min = -9999;
         controller->output_max = 9999;
 
@@ -154,8 +154,8 @@ void vel_controller_init(controller_t * controller, int axis)
     memset(controller, 0, sizeof(controller_t));
     if(axis == 0)
     {
-        controller->pid.P = 10;
-        controller->pid.I = 0.0;
+        controller->pid.P = 8;
+        controller->pid.I = 0.1;
         controller->pid.D = 0;
 
         controller->pid.Error1 = 0.0;
@@ -165,15 +165,15 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -10;
-        controller->output_max = 10;
+        controller->output_min = -50;
+        controller->output_max = 50;
 
         controller->input_error_range = vel_error_range;
     }
     if(axis == 1)
     {
-        controller->pid.P = -10;
-        controller->pid.I = 0.0;
+        controller->pid.P = -8;
+        controller->pid.I = 0.1;
         controller->pid.D = 0;
 
         controller->pid.Error1 = 0.0;
@@ -183,8 +183,8 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -10;
-        controller->output_max = 10;
+        controller->output_min = -50;
+        controller->output_max = 50;
 
         controller->input_error_range = vel_error_range;
 
@@ -201,7 +201,7 @@ void vel_controller_init(controller_t * controller, int axis)
 
         controller->setpoint = 0;
         controller->throttle = 0;
-
+20
         controller->output_min = -0.35;
         controller->output_max = 0.35;
 
@@ -326,9 +326,9 @@ void Update_Lowpass_Filter(timeUs_t currentTimeUs)
 void adjust_position(kalman_filter_t *filter)
 {
     UNUSED(filter);
-    float outputx = pid_controller(attitude_controller.r_x_lowpassfilter, &attitude_x_controller, 0.5);
-    float outputy = pid_controller(attitude_controller.r_y_lowpassfilter, &attitude_y_controller, 0.5);
-    float outputz = pid_controller(attitude_controller.r_z_lowpassfilter, &attitude_z_controller, 0.5);
+    float outputx = pid_controller(attitude_controller.r_x_lowpassfilter, &attitude_x_controller, 10);
+    float outputy = pid_controller(attitude_controller.r_y_lowpassfilter, &attitude_y_controller, 10);
+    float outputz = pid_controller(attitude_controller.r_z_lowpassfilter, &attitude_z_controller, 10);
     //float outputz = pid_controller(filter->X_Hat_current->element[0], &attitude_z_controller, 0.5);
 
     // vel_x_controller.setpoint = outputx;
@@ -343,9 +343,9 @@ void adjust_position(kalman_filter_t *filter)
 void adjust_velocity(kalman_filter_t *filter)
 {
     UNUSED(filter);
-    float voutputx = pid_controller(attitude_controller.Error_x_filter, &vel_x_controller, 0.5);
-    float voutputy = pid_controller(attitude_controller.Error_y_filter, &vel_y_controller, 0.5);
-    float voutputz = pid_controller(attitude_controller.Error_z_filter, &vel_z_controller, 0.5);
+    float voutputx = pid_controller(attitude_controller.Error_x_filter, &vel_x_controller, 10);
+    float voutputy = pid_controller(attitude_controller.Error_y_filter, &vel_y_controller, 10);
+    float voutputz = pid_controller(attitude_controller.Error_z_filter, &vel_z_controller, 10);
 
     //float voutputz = pid_controller(filter->X_Hat_current->element[1], &vel_z_controller, 0.1);
     
