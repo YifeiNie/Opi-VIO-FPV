@@ -118,9 +118,9 @@ void position_controller_init(controller_t * controller, int axis)
     }
     if(axis == 1)
     {
-        controller->pid.P = 3;
+        controller->pid.P = 2;
         controller->pid.I = 0.01;
-        controller->pid.D = 0.05;
+        controller->pid.D = 0.5;
 
         controller->pid.Error1 = 0.0;
         controller->pid.Error2 = 0.0;
