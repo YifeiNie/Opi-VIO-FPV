@@ -206,6 +206,7 @@ static void mavlinkReceive(uint16_t c, void* data) {
                 {
                     attitude_controller.sum = 0;
                 }
+                attitude_controller.mavlink_state = true;
                 break;
             }
             // case 102:{
@@ -446,8 +447,8 @@ void mavlinkSendHeartbeat(void)  //ID 0
 void mavlinkSendImuRaw(void)
 {
     uint16_t msgLength;
-    float r_x = attitude_controller.r_x * 1000.0f;
-    float r_y = attitude_controller.r_y * 1000.0f;
+    // float r_x = attitude_controller.r_x * 1000.0f;
+    // float r_y = attitude_controller.r_y * 1000.0f;
     mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
         // time_boot_ms Timestamp (milliseconds since system boot)
             millis(),
@@ -458,8 +459,8 @@ void mavlinkSendImuRaw(void)
             (int16_t)gyro.gyroADCf[FD_PITCH],
             (int16_t)gyro.gyroADCf[FD_YAW],
             scale1,
-            (int16_t)r_x,
-            (int16_t)r_y,
+            0,
+            0,
             18,
             0
         );
@@ -480,23 +481,17 @@ void mavlinkSendAttitude(void) //ID 30
         DECIDEGREES_TO_RADIANS(-attitude.values.pitch),
         // yaw Yaw angle (rad)
         DECIDEGREES_TO_RADIANS(attitude.values.yaw),
-        // rollspeed Roll angular speed (rad/s)
-        // DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL]),
-        // // pitchspeed Pitch angular speed (rad/s)
-        // DEGREES_TO_RADIANS(gyro.gyroADCf[FD_PITCH]),
-        // // yawspeed Yaw angular speed (rad/s)
-        // DEGREES_TO_RADIANS(gyro.gyroADCf[FD_YAW])
-        DECIDEGREES_TO_RADIANS(attitude.values.roll),
-        // pitch Pitch angle (rad)
-        DECIDEGREES_TO_RADIANS(-attitude.values.pitch),
-        // yaw Yaw angle (rad)
-        DECIDEGREES_TO_RADIANS(attitude.values.yaw)
-        // attitude_controller.r_x,  //roll
-        // attitude_controller.r_y,  //pitch
-        // attitude_controller.r_z, //yaw
-        // // attitude_contrmavlinkSendAttitudeoller.r_Yaw 
-        // attitude_controller.r_Pitch,  //pitchspeed
-        // attitude_controller.r_Yaw //yawspeed
+        //rollspeed Roll angular speed (rad/s)
+        DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL]),
+        // pitchspeed Pitch angular speed (rad/s)
+        DEGREES_TO_RADIANS(gyro.gyroADCf[FD_PITCH]),
+        // yawspeed Yaw angular speed (rad/s)
+        DEGREES_TO_RADIANS(gyro.gyroADCf[FD_YAW])
+        // DECIDEGREES_TO_RADIANS(attitude.values.roll),
+        // // pitch Pitch angle (rad)
+        // DECIDEGREES_TO_RADIANS(-attitude.values.pitch),
+        // // yaw Yaw angle (rad)
+        // DECIDEGREES_TO_RADIANS(attitude.values.yaw)
         );
         
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
@@ -509,7 +504,6 @@ void mavlinksendAltitude(void) //ID 141
 
     mavlink_msg_altitude_pack(0, 200, &mavMsg,
     millis(),
-
     -Get_Height_PID_Output(0),  //altitude_monotonic
     Get_Height_PID_Output(1),  //altitude_amsl
     Get_Height_PID_Output(2),  //altitude_local
@@ -528,24 +522,14 @@ void mavlinkSendHUD(void) //ID 74
     //airspeed groundspeed heading throttle alt climb
     mavlink_msg_vfr_hud_pack(0, 200, &mavMsg,
         Get_Velocity_throttle(1),
-        // pitch Pitch angle (rad)
-        // yaw Yaw angle (rad)
         Get_Velocity_throttle(0),
         // heading Current heading in degrees, in compass units (0..360, 0=north)
-        // attitude_controller.sum,
         headingOrScaledMilliAmpereHoursDrawn(),
-        // rc_offboard_mode,
         // throttle Current throttle setting in integer percent, 0 to 100
         scaleRange(constrain(rcData[THROTTLE], PWM_RANGE_MIN, PWM_RANGE_MAX), PWM_RANGE_MIN, PWM_RANGE_MAX, 0, 100),
         // alt Current altitude (MSL), in meters, if we have sonar or baro use them, otherwise use GPS (less accurate)
-        //attitude_controller.r_Yaw,
         attitude_controller.sum,
-        //Get_Velocity_LpFiter(2), //yaw
-        // attitude_controller.Error_y
-        //Get_Velocity_throttle(2)
         Timestamp
-        //attitude_controller.sum1,
-        //attitude_controller.sum
         );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);

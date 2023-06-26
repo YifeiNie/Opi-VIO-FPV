@@ -405,7 +405,7 @@ STATIC_UNIT_TESTED FAST_CODE_NOINLINE float pidLevel(int axis, const pidProfile_
     }
 #endif
 #ifdef USE_ALT_HOLD
-    if(FLIGHT_MODE(ALT_HOLD_MODE))
+    if(FLIGHT_MODE(ALT_HOLD_MODE) && attitude_controller.mavlink_state == true) 
     {
         angle = Get_Velocity_throttle(axis);
     }
@@ -425,15 +425,6 @@ STATIC_UNIT_TESTED FAST_CODE_NOINLINE float pidLevel(int axis, const pidProfile_
         const float setpointCorrection = errorAngle * pidRuntime.horizonGain * horizonLevelStrength;
         currentPidSetpoint += pt3FilterApply(&pidRuntime.attitudeFilter[axis], setpointCorrection);
     }
-
-    // if (FLIGHT_MODE(POSITION_HOLD_MODE))
-    // {
-    //     setpointCorrection = errorAngle * pidRuntime.levelGain;
-    //     currentPidSetpoint = pt3FilterApply(&pidRuntime.attitudeFilter[axis], setpointCorrection);
-
-    // }
-    // }
-
     return currentPidSetpoint;
 }
 
@@ -1023,13 +1014,13 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
         {
             currentPidSetpoint = getSetpointRate(axis);
 
-            if(axis == FD_ROLL)
-            {
-                attitude_controller.test_anglerate_setpoint[0] = currentPidSetpoint;
-            }else if(axis == FD_PITCH)
-            {
-                attitude_controller.test_anglerate_setpoint[1] = currentPidSetpoint;
-            }
+            // if(axis == FD_ROLL)
+            // {
+            //     attitude_controller.test_anglerate_setpoint[0] = currentPidSetpoint;
+            // }else if(axis == FD_PITCH)
+            // {
+            //     attitude_controller.test_anglerate_setpoint[1] = currentPidSetpoint;
+            // }
             // {
             //     attitude_controller.test_anglerate_setpoint[2] = currentPidSetpoint;
             // }
@@ -1095,7 +1086,7 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
 #endif
 
 #ifdef USE_ALT_HOLD
-    if(FLIGHT_MODE(ALT_HOLD_MODE) && axis == FD_YAW)
+    if(FLIGHT_MODE(ALT_HOLD_MODE) && axis == FD_YAW && attitude_controller.mavlink_state == true)
     {
         currentPidSetpoint = -1.0 * (attitude_controller.r_Yaw_OptiTrack - 0);
     }
@@ -1159,6 +1150,8 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
         }
         const float iTermChange = (Ki + pidRuntime.itermAccelerator) * dynCi * pidRuntime.dT * itermErrorRate;
         pidData[axis].I = constrainf(previousIterm + iTermChange, -pidRuntime.itermLimit, pidRuntime.itermLimit);
+        // //6.26-将积分效果设置为0，测试效果
+        // pidData[axis].I = 0; 
 
         // -----calculate pidSetpointDelta
         float pidSetpointDelta = 0;

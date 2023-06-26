@@ -691,7 +691,7 @@ FAST_CODE void processRcCommand(void)
 #endif
 
 #ifdef USE_ALT_HOLD
-    if(FLIGHT_MODE(ALT_HOLD_MODE))
+    if(FLIGHT_MODE(ALT_HOLD_MODE) && attitude_controller.mavlink_state == true)
     {
         Timestamp = true;
     }else

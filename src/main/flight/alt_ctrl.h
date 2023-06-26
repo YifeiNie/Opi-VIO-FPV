@@ -92,6 +92,8 @@ typedef struct attitude_ctrl
     float pidupdate_dt;
     float filter_dt;
     int16_t flight_mode;
+
+    bool mavlink_state;
 }attitude_ctrl_t;
 
 typedef struct attitude_send

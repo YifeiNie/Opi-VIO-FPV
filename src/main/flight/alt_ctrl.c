@@ -93,14 +93,16 @@ void attitude_controller_init(attitude_ctrl_t * ctrl)
     ctrl->test_anglerate_setpoint[1] = 0;
     ctrl->test_anglerate_setpoint[2] = 0; 
     ctrl->flight_mode = 0;
+
+    ctrl->mavlink_state = false;
 }
 void position_controller_init(controller_t * controller, int axis)
 {
     memset(controller, 0, sizeof(controller_t));
     if(axis == 0)
     {
-        controller->pid.P = 2;
-        controller->pid.I = 0.0;
+        controller->pid.P = 1.5;
+        controller->pid.I = 0.01;
         controller->pid.D = 0;
 
         controller->pid.Error1 = 0.0;
@@ -116,9 +118,9 @@ void position_controller_init(controller_t * controller, int axis)
     }
     if(axis == 1)
     {
-        controller->pid.P = 2;
-        controller->pid.I = 0.0;
-        controller->pid.D = 0;
+        controller->pid.P = 3;
+        controller->pid.I = 0.01;
+        controller->pid.D = 0.05;
 
         controller->pid.Error1 = 0.0;
         controller->pid.Error2 = 0.0;
@@ -132,7 +134,7 @@ void position_controller_init(controller_t * controller, int axis)
     }
     if(axis == 2)
     {
-        controller->pid.P = 3;
+        controller->pid.P = 1.2;
         controller->pid.I = 0;
         controller->pid.D = 0;
 
@@ -140,7 +142,7 @@ void position_controller_init(controller_t * controller, int axis)
         controller->pid.Error2 = 0.0;
         controller->pid.iError = 0.0;
 
-        controller->setpoint = 0.5;
+        controller->setpoint = 0.7;
         controller->output_min = -9999;
         controller->output_max = 9999;
 
@@ -154,44 +156,7 @@ void vel_controller_init(controller_t * controller, int axis)
     memset(controller, 0, sizeof(controller_t));
     if(axis == 0)
     {
-        controller->pid.P = 8;
-        controller->pid.I = 0.1;
-        controller->pid.D = 0;
-
-        controller->pid.Error1 = 0.0;
-        controller->pid.Error2 = 0.0;
-        controller->pid.iError = 0.0;
-
-        controller->setpoint = 0;
-        controller->throttle = 0;
-
-        controller->output_min = -50;
-        controller->output_max = 50;
-
-        controller->input_error_range = vel_error_range;
-    }
-    if(axis == 1)
-    {
-        controller->pid.P = -8;
-        controller->pid.I = 0.1;
-        controller->pid.D = 0;
-
-        controller->pid.Error1 = 0.0;
-        controller->pid.Error2 = 0.0;
-        controller->pid.iError = 0.0;
-
-        controller->setpoint = 0;
-        controller->throttle = 0;
-
-        controller->output_min = -50;
-        controller->output_max = 50;
-
-        controller->input_error_range = vel_error_range;
-
-    }
-    if(axis == 2)
-    {
-        controller->pid.P = 0.3;
+        controller->pid.P = 6;
         controller->pid.I = 0;
         controller->pid.D = 0;
 
@@ -201,7 +166,43 @@ void vel_controller_init(controller_t * controller, int axis)
 
         controller->setpoint = 0;
         controller->throttle = 0;
-20
+
+        controller->output_min = -20;
+        controller->output_max = 20;
+
+        controller->input_error_range = vel_error_range;
+    }
+    if(axis == 1)
+    {
+        controller->pid.P = -7;
+        controller->pid.I = 0;
+        controller->pid.D = 0;
+
+        controller->pid.Error1 = 0.0;
+        controller->pid.Error2 = 0.0;
+        controller->pid.iError = 0.0;
+
+        controller->setpoint = 0;
+        controller->throttle = 0;
+
+        controller->output_min = -20;
+        controller->output_max = 20;
+
+        controller->input_error_range = vel_error_range;
+
+    }
+    if(axis == 2)
+    {
+        controller->pid.P = 0.2;
+        controller->pid.I = 0;
+        controller->pid.D = 0;
+
+        controller->pid.Error1 = 0.0;
+        controller->pid.Error2 = 0.0;
+        controller->pid.iError = 0.0;
+
+        controller->setpoint = 0;
+        controller->throttle = 0;
         controller->output_min = -0.35;
         controller->output_max = 0.35;
 
@@ -312,7 +313,7 @@ void Update_Lowpass_Filter(timeUs_t currentTimeUs)
     attitude_controller.r_y_lowpassfilter_last = attitude_controller.r_y_lowpassfilter;
     attitude_controller.r_z_lowpassfilter_last = attitude_controller.r_z_lowpassfilter;
 
-    Lowpass_Filter(&attitude_controller, 0.4, 0.4, 0);//lowpass_filter
+    Lowpass_Filter(&attitude_controller, 0.6, 0.6, 0);//lowpass_filter
 
     attitude_controller.Error_x_filter = (attitude_controller.r_x_lowpassfilter - attitude_controller.r_x_lowpassfilter_last)/dt;
     attitude_controller.Error_y_filter = (attitude_controller.r_y_lowpassfilter - attitude_controller.r_y_lowpassfilter_last)/dt;
@@ -391,20 +392,6 @@ void Updata_Angle_or_Anglerate(timeUs_t currentTimeUs) //200Hz
 
 void EulerAngles(attitude_ctrl_t * ctrl, get_offboard_t * offboard)
 {
-    // ctrl->r_Pitch = -5;
-    // float sinr_cosp = 2 * (offboard->q[0] * offboard->q[1] + offboard->q[2] * offboard->q[3]);
-    // float cosr_cosp = 1 - 2 * (offboard->q[1] * offboard->q[1] + offboard->q[2] * offboard->q[2]);
-    // ctrl->r_Roll = atan2f(sinr_cosp, cosr_cosp) * 180 / M_PI;
-
-    // pitch (y-axis rotation)
-    // float sinp = sqrtf(1 + 2 * (offboard->q[0] * offboard->q[2] - offboard->q[1] * offboard->q[3]));
-    // float cosp = sqrtf(1 - 2 * (offboard->q[0] * offboard->q[2] - offboard->q[1] * offboard->q[3]));
-    // ctrl->r_Pitch = (2 * atan2f(sinp, cosp) - M_PI / 2) * 180 / M_PI;
-
-    // yaw (z-axis rotation)
-    // float siny_cosp = 2 * (offboard->q[0] * offboard->q[3] + offboard->q[1] * offboard->q[2]);
-    // float cosy_cosp = 1 - 2 * (offboard->q[2] * offboard->q[2] + offboard->q[3] * offboard->q[3]);
-    // ctrl->r_Yaw = atan2f(siny_cosp, cosy_cosp) * 180 / M_PI;
     ctrl->r_Roll = atan2f(2 * (offboard->q[0] * offboard->q[1] + offboard->q[2] * offboard->q[3]), \
                          1 - 2 * (offboard->q[1] * offboard->q[1] + offboard->q[2] * offboard->q[2]));
     ctrl->r_Pitch = asinf(2 * (offboard->q[0] * offboard->q[2] - offboard->q[1] * offboard->q[3]));
@@ -465,7 +452,6 @@ float Get_Position_LpFiter(int n) //x,y,z_true
     case 1:
         return attitude_controller.r_y_lowpassfilter;
     case 2:
-        // return kalman_filter1.X_Hat_current->element[0];
         return attitude_controller.r_z_lowpassfilter;
     default:
         return 0;
@@ -480,7 +466,6 @@ float Get_Velocity_LpFiter(int n) //Vx,Vy,Vz_true
     case 1:
         return attitude_controller.Error_y_filter;
     case 2:
-        // return kalman_filter1.X_Hat_current->element[1];
         return attitude_controller.Error_z_filter;
     default:
         return 0;
