@@ -101,8 +101,8 @@ void position_controller_init(controller_t * controller, int axis)
     memset(controller, 0, sizeof(controller_t));
     if(axis == 0)
     {
-        controller->pid.P = 1.5;
-        controller->pid.I = 0;
+        controller->pid.P = 1.6;
+        controller->pid.I = 0.005;
         controller->pid.D = 0;
 
         controller->pid.Error1 = 0.0;
@@ -118,9 +118,9 @@ void position_controller_init(controller_t * controller, int axis)
     }
     if(axis == 1)
     {
-        controller->pid.P = 2;
-        controller->pid.I = 0;
-        controller->pid.D = 0.1;
+        controller->pid.P = 1.7;
+        controller->pid.I = 0.008;
+        controller->pid.D = 0;
 
         controller->pid.Error1 = 0.0;
         controller->pid.Error2 = 0.0;
@@ -135,7 +135,7 @@ void position_controller_init(controller_t * controller, int axis)
     if(axis == 2)
     {
         controller->pid.P = 1.5;
-        controller->pid.I = 0.01;
+        controller->pid.I = 0.002;
         controller->pid.D = 0;
 
         controller->pid.Error1 = 0.0;
@@ -156,7 +156,7 @@ void vel_controller_init(controller_t * controller, int axis)
     memset(controller, 0, sizeof(controller_t));
     if(axis == 0)
     {
-        controller->pid.P = 8;
+        controller->pid.P = 7;
         controller->pid.I = 0;
         controller->pid.D = 0;
 
@@ -167,14 +167,14 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -25;
-        controller->output_max = 25;
+        controller->output_min = -12;
+        controller->output_max = 12;
 
         controller->input_error_range = vel_error_range;
     }
     if(axis == 1)
     {
-        controller->pid.P = -6;
+        controller->pid.P = -7;
         controller->pid.I = 0;
         controller->pid.D = 0;
 
@@ -185,15 +185,15 @@ void vel_controller_init(controller_t * controller, int axis)
         controller->setpoint = 0;
         controller->throttle = 0;
 
-        controller->output_min = -25;
-        controller->output_max = 25;
+        controller->output_min = -12;
+        controller->output_max = 12;
 
         controller->input_error_range = vel_error_range;
 
     }
     if(axis == 2)
     {
-        controller->pid.P = 0.15;
+        controller->pid.P = 0.12;
         controller->pid.I = 0;
         controller->pid.D = 0;
 
@@ -203,8 +203,8 @@ void vel_controller_init(controller_t * controller, int axis)
 
         controller->setpoint = 0;
         controller->throttle = 0;
-        controller->output_min = -0.35;
-        controller->output_max = 0.35;
+        controller->output_min = -0.25;
+        controller->output_max = 0.20;
 
         controller->input_error_range = vel_error_range;
 
@@ -313,7 +313,7 @@ void Update_Lowpass_Filter(timeUs_t currentTimeUs)
     attitude_controller.r_y_lowpassfilter_last = attitude_controller.r_y_lowpassfilter;
     attitude_controller.r_z_lowpassfilter_last = attitude_controller.r_z_lowpassfilter;
 
-    Lowpass_Filter(&attitude_controller, 0.6, 0.6, 0);//lowpass_filter
+    Lowpass_Filter(&attitude_controller, 0.4, 0.4, 0);//lowpass_filter
 
     attitude_controller.Error_x_filter = (attitude_controller.r_x_lowpassfilter - attitude_controller.r_x_lowpassfilter_last)/dt;
     attitude_controller.Error_y_filter = (attitude_controller.r_y_lowpassfilter - attitude_controller.r_y_lowpassfilter_last)/dt;
