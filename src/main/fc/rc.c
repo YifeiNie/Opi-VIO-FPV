@@ -74,7 +74,7 @@ float rcCommandDelta[XYZ_AXIS_COUNT];
 #endif
 static float rawSetpoint[XYZ_AXIS_COUNT];
 static float setpointRate[3], rcDeflection[3], rcDeflectionAbs[3];
-#ifdef USE_POSITION_HOLD
+#ifdef USE_ANGLE_RATE_HOLD
 static float OuterSetpointAngle[3], OuterSetpointAngleAbs[3];
 static float OuterSetpointRate[3];
 #endif
@@ -151,7 +151,7 @@ float getRcDeflectionAbs(int axis)
     return rcDeflectionAbs[axis];
 }
 
-#ifdef USE_POSITION_HOLD
+#ifdef USE_ANGLE_RATE_HOLD
 float getOuterSetpointAngle(int axis)
 {
     return OuterSetpointAngle[axis];
@@ -625,8 +625,8 @@ FAST_CODE void processRcCommand(void)
         }
     }
     
-#ifdef USE_POSITION_HOLD
-        if(FLIGHT_MODE(POSITION_HOLD_MODE))
+#ifdef USE_ANGLE_RATE_HOLD
+        if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE))
         {
             for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
                 switch(get_offboard.type_mask)
@@ -690,8 +690,8 @@ FAST_CODE void processRcCommand(void)
     // }
 #endif
 
-#ifdef USE_ALT_HOLD
-    if(FLIGHT_MODE(ALT_HOLD_MODE) && attitude_controller.mavlink_state == true)
+#ifdef USE_POSITION_YAW_HOLD
+    if(FLIGHT_MODE(POSITION_YAW_HOLD_MODE) && attitude_controller.mavlink_state == true)
     {
         Timestamp = true;
     }else

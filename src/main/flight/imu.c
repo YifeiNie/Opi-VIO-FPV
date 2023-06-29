@@ -92,16 +92,6 @@ static bool imuUpdated = false;
 
 bool canUseGPSHeading = true;
 
-#ifdef USE_ALT_HOLD
-float accSum[XYZ_AXIS_COUNT];
-
-uint32_t accTimeSum = 0;        // keep track for integration of acc
-int accSumCount = 0;
-float accVelScale;
-
-static float fc_acc;
-#endif
-
 static float throttleAngleScale;
 static int throttleAngleValue;
 static float smallAngleCosZ = 0;
@@ -131,7 +121,6 @@ PG_RESET_TEMPLATE(imuConfig_t, imuConfig,
     .dcm_ki = 0,                   // 0.003 * 10000
     .small_angle = 25,
     .acc_unarmedcal = 1,
-    .accDeadband = {.xy = 40, .z=40},
     .imu_process_denom = 2
 );
 
@@ -148,43 +137,6 @@ static void imuQuaternionComputeProducts(quaternion *quat, quaternionProducts *q
     quatProd->yz = quat->y * quat->z;
     quatProd->zz = quat->z * quat->z;
 }
-
-#ifdef USE_ALT_HOLD // USE_ALT_HOLD
-/*
-* Calculate RC time constant used in the accZ lpf.
-*/
-static float calculateAccZLowPassFilterRCTimeConstant(float accz_lpf_cutoff)
-{
-    return 0.5f / (M_PIf * accz_lpf_cutoff);
-}
-void imuResetAccelerationSum(void)
-{
-    accSum[0] = 0;
-    accSum[1] = 0;
-    accSum[2] = 0;
-    accSumCount = 0;
-    accTimeSum = 0;
-}
-
-// static void imuTransformVectorBodyToEarth(t_fp_vector * v)
-// {
-//     // From body frame to earth frame
-//     const float x = rMat[0][0] * v->V.X + rMat[0][1] * v->V.Y + rMat[0][2] * v->V.Z;
-//     const float y = rMat[1][0] * v->V.X + rMat[1][1] * v->V.Y + rMat[1][2] * v->V.Z;
-//     const float z = rMat[2][0] * v->V.X + rMat[2][1] * v->V.Y + rMat[2][2] * v->V.Z;
-
-//     v->V.X = x;
-//     v->V.Y = -y;
-//     v->V.Z = z;
-// }
-
-// rotate acc into Earth frame and calculate acceleration in it
-// static void imuCalculateAcceleration(timeDelta_t deltaT)
-// {
-//     UNUSED(deltaT);
-// }
-
-#endif // USE_ALT_HOLD
 
 STATIC_UNIT_TESTED void imuComputeRotationMatrix(void)
 {
@@ -219,7 +171,7 @@ void imuConfigure(uint16_t throttle_correction_angle, uint8_t throttle_correctio
     imuRuntimeConfig.dcm_ki = imuConfig()->dcm_ki / 10000.0f;
     imuRuntimeConfig.acc_unarmedcal = imuConfig()->acc_unarmedcal;
 
-    fc_acc = calculateAccZLowPassFilterRCTimeConstant(5.0f); // Set to fix value
+    // fc_acc = calculateAccZLowPassFilterRCTimeConstant(5.0f); // Set to fix value
 
     smallAngleCosZ = cos_approx(degreesToRadians(imuConfig()->small_angle));
 
@@ -234,9 +186,6 @@ void imuInit(void)
     canUseGPSHeading = true;
 #else
     canUseGPSHeading = false;
-#endif
-#ifdef USE_ALT_HOLD
-    accVelScale = 9.80665f / acc.dev.acc_1G;
 #endif
     q.w = 1.0;
     q.x = 0.0;
@@ -599,9 +548,6 @@ static void imuCalculateEstimatedAttitude(timeUs_t currentTimeUs)
 
     imuUpdateEulerAngles();
 #endif
-// #if defined(USE_ALT_HOLD)
-//     imuCalculateAcceleration(deltaT); // rotate acc vector into earth frame
-// #endif
 }
 
 static int calculateThrottleAngleCorrection(void)

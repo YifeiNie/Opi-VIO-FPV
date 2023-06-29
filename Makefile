@@ -16,6 +16,7 @@
 #
 
 # The target to build, see VALID_TARGETS below
+FIRSTNAME ?= Mjh_Ldd
 TARGET    ?= STM32H743
 BOARD     ?= 
 
@@ -293,7 +294,7 @@ CPPCHECK        = cppcheck $(CSOURCES) --enable=all --platform=unix64 \
                   $(addprefix -I,$(INCLUDE_DIRS)) \
                   -I/usr/include -I/usr/include/linux
 
-TARGET_BASENAME = $(BIN_DIR)/$(FORKNAME)_$(FC_VER)_$(TARGET)
+TARGET_BASENAME = $(BIN_DIR)/$(FORKNAME)_$(FC_VER)_$(TARGET)_$(FIRSTNAME)
 
 #
 # Things we will build

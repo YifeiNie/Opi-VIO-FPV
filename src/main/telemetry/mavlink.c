@@ -165,34 +165,34 @@ static void mavlinkReceive(uint16_t c, void* data) {
             //     attitude_controller.pitch = -command.pitch;
             //     attitude_controller.yaw = command.yaw;
 
-            // case 82:{
-            //     mavlink_set_attitude_target_t command;
-            //     mavlink_msg_set_attitude_target_decode(&msg,&command);
-            //     // get_offboard.q[0] = command.q[0];  //w
-            //     // get_offboard.q[1] = command.q[1];  //x
-            //     // get_offboard.q[2] = command.q[2];  //y
-            //     // get_offboard.q[3] = command.q[3];  //z
-            //     if(command.type_mask == 7) //attitude
-            //     {
-            //         get_offboard.roll_angle = command.body_roll_rate;
-            //         get_offboard.pitch_angle =  -command.body_pitch_rate;
-            //         get_offboard.yaw_angle = -command.body_yaw_rate;
-            //     }else
-            //     {
-            //         get_offboard.roll_rate = command.body_roll_rate;
-            //         get_offboard.pitch_rate = -command.body_pitch_rate;
-            //         get_offboard.yaw_rate = -command.body_yaw_rate;
-            //     }
+            case 82:{
+                mavlink_set_attitude_target_t command;
+                mavlink_msg_set_attitude_target_decode(&msg,&command);
+                // get_offboard.q[0] = command.q[0];  //w
+                // get_offboard.q[1] = command.q[1];  //x
+                // get_offboard.q[2] = command.q[2];  //y
+                // get_offboard.q[3] = command.q[3];  //z
+                if(command.type_mask == 7) //attitude
+                {
+                    get_offboard.roll_angle = command.body_roll_rate;
+                    get_offboard.pitch_angle =  -command.body_pitch_rate;
+                    get_offboard.yaw_angle = -command.body_yaw_rate;
+                }else
+                {
+                    get_offboard.roll_rate = command.body_roll_rate;
+                    get_offboard.pitch_rate = -command.body_pitch_rate;
+                    get_offboard.yaw_rate = -command.body_yaw_rate;
+                }
 
-            //     if(get_offboard.thrust != command.thrust)
-            //     {
-            //         attitude_controller.sum++;
-            //     }
-            //     get_offboard.thrust = command.thrust;
-            //     get_offboard.type_mask = command.type_mask;
-            //     // cm4_receive = 1;
-            //     break;
-            // }
+                if(get_offboard.thrust != command.thrust)
+                {
+                    attitude_controller.sum++;
+                }
+                get_offboard.thrust = command.thrust;
+                get_offboard.type_mask = command.type_mask;
+                // cm4_receive = 1;
+                break;
+            }
 
             case 84: {
                 mavlink_set_position_target_local_ned_t command;

@@ -50,7 +50,7 @@ void updateRcRefreshRate(timeUs_t currentTimeUs);
 uint16_t getCurrentRxRefreshRate(void);
 bool getRxRateValid(void);
 
-#ifdef USE_POSITION_HOLD
+#ifdef USE_ANGLE_RATE_HOLD
 float getOuterSetpointAngle(int axis);
 float getOuterSetpointAngleAbs(int axis);
 float getOuterSetpointRate(int axis);

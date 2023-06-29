@@ -999,7 +999,7 @@ void init(void)
     motorEnable();
 #endif
 
-#ifdef USE_ALT_HOLD
+#if (defined USE_POSITION_YAW_HOLD) || (defined USE_ANGLE_RATE_HOLD)
     Controller_Init();
 #endif
 

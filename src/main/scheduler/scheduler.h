@@ -178,13 +178,13 @@ typedef enum {
     TASK_SPEED_NEGOTIATION,
 #endif
 
-#ifdef USE_ALT_HOLD
+#ifdef USE_POSITION_YAW_HOLD
     // TASK_KALMAN_FILTER,
     TASK_ALT_CTRL,
     // TASK_ANGLE_CTRL,
 #endif
 
-#ifdef USE_POSITION_HOLD
+#ifdef USE_ANGLE_RATE_HOLD
     TASK_POSITION_CTRL,
 #endif
 

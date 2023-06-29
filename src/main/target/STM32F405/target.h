@@ -170,8 +170,8 @@
 #define USE_TELEMETRY_MAVLINK
 
 // *************** RANGEFINDER *****************************
-#define USE_ALT_HOLD
-#define USE_POSITION_HOLD
+#define USE_POSITION_YAW_HOLD
+#define USE_ANGLE_RATE_HOLD
 //TFMINI rangefinder
 #define USE_RANGEFINDER
 #define USE_RANGEFINDER_TF

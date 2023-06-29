@@ -1092,14 +1092,6 @@ void processRxModes(timeUs_t currentTimeUs)
         beeper(BEEPER_RC_SMOOTHING_INIT_FAIL);
     }
 #endif
-#ifdef USE_ALT_HOLD
-    if(!IS_RC_MODE_ACTIVE(BOXRANGEFINDER))
-    {
-        DISABLE_FLIGHT_MODE(RANGEFINDER_MODE);     
-    }else{
-        ENABLE_FLIGHT_MODE(RANGEFINDER_MODE);
-    }
-#endif
 
 #ifdef USE_IMU_INIT
     if(!IS_RC_MODE_ACTIVE(BOXUSER1))
@@ -1119,21 +1111,21 @@ void processRxModes(timeUs_t currentTimeUs)
     }
 #endif
 
-#ifdef USE_ALT_HOLD
+#ifdef USE_POSITION_YAW_HOLD
     if(!IS_RC_MODE_ACTIVE(BOXUSER3))
     {
-        DISABLE_FLIGHT_MODE(ALT_HOLD_MODE);     
+        DISABLE_FLIGHT_MODE(POSITION_YAW_HOLD_MODE);     
     }else{
-        ENABLE_FLIGHT_MODE(ALT_HOLD_MODE); 
+        ENABLE_FLIGHT_MODE(POSITION_YAW_HOLD_MODE); 
     }
 #endif
 
-#ifdef USE_POSITION_HOLD
-    if(!IS_RC_MODE_ACTIVE(BOXPOSEHOLD))
+#ifdef USE_ANGLE_RATE_HOLD
+    if(!IS_RC_MODE_ACTIVE(BOXANGLERATEHOLD))
     {
-        DISABLE_FLIGHT_MODE(POSITION_HOLD_MODE);     
+        DISABLE_FLIGHT_MODE(ANGLE_RATE_HOLD_MODE);     
     }else{
-        ENABLE_FLIGHT_MODE(POSITION_HOLD_MODE); 
+        ENABLE_FLIGHT_MODE(ANGLE_RATE_HOLD_MODE); 
     }
 #endif
 

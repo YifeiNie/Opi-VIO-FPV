@@ -368,7 +368,7 @@ void Update_PID_Position(timeUs_t currentTimeUs) //200Hz
     float dTime = (currentTimeUs - lastTimeUs)*1e-6f;
     attitude_controller.pidupdate_dt = dTime;
 
-    // if(FLIGHT_MODE(POSITION_HOLD_MODE))
+    // if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE)
     // {
     //     attitude_x_controller.setpoint = attitude_x_controller.setpoint_input;
     //     attitude_y_controller.setpoint = attitude_y_controller.setpoint_input;

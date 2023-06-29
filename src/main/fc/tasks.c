@@ -448,14 +448,12 @@ task_attribute_t task_attributes[TASK_COUNT] = {
     [TASK_SPEED_NEGOTIATION] = DEFINE_TASK("SPEED_NEGOTIATION", NULL, NULL, speedNegotiationProcess, TASK_PERIOD_HZ(100), TASK_PRIORITY_LOW),
 #endif
 
-#ifdef USE_ALT_HOLD
+#ifdef USE_POSITION_YAW_HOLD
   //  [TASK_KALMAN_FILTER] = DEFINE_TASK("TASK_KALMAN_FILTER", NULL, NULL, Update_Kalman_filter, TASK_PERIOD_HZ(400), TASK_PRIORITY_LOW),
     [TASK_ALT_CTRL] = DEFINE_TASK("TASK_ALT_CTRL", NULL, NULL, Update_PID_Position, TASK_PERIOD_HZ(100), TASK_PRIORITY_LOW),
-    //[TASK_ANGLE_CTRL] = DEFINE_TASK("TASK_ANGLE_CTRL", NULL, NULL, Updata_Angle_or_Anglerate, TASK_PERIOD_HZ(200), TASK_PRIORITY_LOW),
-    //[TASK_POSITION_CTRL] = DEFINE_TASK("TASK_POSITION_CTRL", NULL, NULL, Update_Lowpass_Filter, TASK_PERIOD_HZ(40), TASK_PRIORITY_LOW),
 #endif
 
-#ifdef USE_POSITION_HOLD
+#ifdef USE_ANGLE_RATE_HOLD
     //[TASK_POSITION_CTRL] = DEFINE_TASK("TASK_POSITION_CTRL", NULL, NULL, Update_Lowpass_Fiter, TASK_PERIOD_HZ(200), TASK_PRIORITY_LOW),
 #endif
 };
@@ -622,13 +620,13 @@ void tasksInit(void)
     setTaskEnabled(TASK_SPEED_NEGOTIATION, useCRSF);
 #endif
 
-#ifdef USE_ALT_HOLD
+#ifdef USE_POSITION_YAW_HOLD
     // setTaskEnabled(TASK_KALMAN_FILTER, true);
     setTaskEnabled(TASK_ALT_CTRL, true);
     // setTaskEnabled(TASK_ANGLE_CTRL, true);
 #endif
 
-#ifdef USE_POSITION_HOLD
+#ifdef USE_ANGLE_RATE_HOLD
     setTaskEnabled(TASK_POSITION_CTRL, true);
 #endif
 
