@@ -493,7 +493,7 @@ static FAST_CODE void processRcSmoothingFilter(void)
                         sampleState = 1;
                     }
 
-                    // if the guard time has expired then process the rx frame time
+                    // if the gTimestampuard time has expired then process the rx frame time
                     if (currentTimeMs > validRxFrameTimeMs) {
                         sampleState = 2;
                         bool accumulateSample = true;
@@ -608,7 +608,6 @@ FAST_CODE void processRcCommand(void)
                 } else {
                     rcCommandf = rcCommand[axis] / rcCommandDivider;
                 }
-
                 rcDeflection[axis] = rcCommandf;
                 const float rcCommandfAbs = fabsf(rcCommandf);
                 rcDeflectionAbs[axis] = rcCommandfAbs;
@@ -626,8 +625,9 @@ FAST_CODE void processRcCommand(void)
     }
     
 #ifdef USE_ANGLE_RATE_HOLD
-        if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE))
+        if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE) && get_offboard.mavros_state == true)
         {
+            Timestamp = true;
             for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
                 switch(get_offboard.type_mask)
                 {
@@ -661,6 +661,9 @@ FAST_CODE void processRcCommand(void)
                     break;
                 }
             }
+        }else
+        {
+            Timestamp = false;
         }
 #endif
 

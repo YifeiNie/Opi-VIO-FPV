@@ -622,7 +622,7 @@ FAST_CODE_NOINLINE void mixTable(timeUs_t currentTimeUs)
 #endif
 
 #if (defined USE_POSITION_YAW_HOLD) || (defined USE_ANGLE_RATE_HOLD)
-    if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE))
+    if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE) && get_offboard.mavros_state == true)
     {
         throttle = Get_offboard_thrust();
     }else if(FLIGHT_MODE(POSITION_YAW_HOLD_MODE) && attitude_controller.mavlink_state == true)

@@ -126,6 +126,7 @@ typedef struct get_offboard
     float yaw_rate;
     float thrust;
     uint8_t type_mask; //mode
+    bool mavros_state;
 }get_offboard_t;
 
 typedef struct state_check

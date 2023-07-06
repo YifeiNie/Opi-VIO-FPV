@@ -183,13 +183,19 @@ static void mavlinkReceive(uint16_t c, void* data) {
                     get_offboard.pitch_rate = -command.body_pitch_rate;
                     get_offboard.yaw_rate = -command.body_yaw_rate;
                 }
-
-                if(get_offboard.thrust != command.thrust)
-                {
-                    attitude_controller.sum++;
-                }
+                
+                attitude_controller.sum++;
+                // if(attitude_controller.sum == 180)
+                // {
+                //     attitude_controller.sum = 0;
+                // }
+                // if(get_offboard.thrust != command.thrust)
+                // {
+                //     attitude_controller.sum++;
+                // }
                 get_offboard.thrust = command.thrust;
                 get_offboard.type_mask = command.type_mask;
+                get_offboard.mavros_state = true;
                 // cm4_receive = 1;
                 break;
             }
@@ -202,10 +208,10 @@ static void mavlinkReceive(uint16_t c, void* data) {
                 attitude_controller.r_z = -command.z;
                 attitude_controller.r_Yaw_OptiTrack = -command.yaw_rate * RAD_TO_DEGREES;
                 attitude_controller.sum++;
-                if(attitude_controller.sum == 180)
-                {
-                    attitude_controller.sum = 0;
-                }
+                // if(attitude_controller.sum == 180)
+                // {
+                //     attitude_controller.sum = 0;
+                // }
                 attitude_controller.mavlink_state = true;
                 break;
             }

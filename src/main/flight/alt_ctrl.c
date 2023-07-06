@@ -234,6 +234,7 @@ void get_offboard_init(get_offboard_t * get_offboard)
     get_offboard->thrust = 0;
 
     get_offboard->type_mask = 0;
+    get_offboard->mavros_state = false;
 }
 
 void Controller_Init(void)
@@ -377,8 +378,11 @@ void Update_PID_Position(timeUs_t currentTimeUs) //200Hz
     //     attitude_x_controller.setpoint = 0;
     //     attitude_y_controller.setpoint = 0;
     // }
-    Update_Lowpass_Filter(currentTimeUs);
-    adjust_position(&kalman_filter1);
+    if(FLIGHT_MODE(POSITION_YAW_HOLD_MODE))
+    {
+        Update_Lowpass_Filter(currentTimeUs);
+        adjust_position(&kalman_filter1);
+    }
 
     lastTimeUs = currentTimeUs;
 
