@@ -570,14 +570,15 @@ void processMAVLinkTelemetry(void)
         {
             attitude_controller.sum = 0;
         }
+        if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE))
+        {
+            rc_offboard_mode = 1;
+        }else
+        {
+            rc_offboard_mode = 0;
+        }
     }
-    if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE))
-    {
-        rc_offboard_mode = 1;
-    }else
-    {
-        rc_offboard_mode = 0;
-    }
+
 
     mavlinkSendAttitude();
     mavlinkSendImuRaw();
