@@ -573,10 +573,10 @@ void processMAVLinkTelemetry(void)
     }
     if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE))
     {
-        mavlinkstate_position = 1;
+        rc_offboard_mode = 1;
     }else
     {
-        mavlinkstate_position = 0;
+        rc_offboard_mode = 0;
     }
 
     mavlinkSendAttitude();

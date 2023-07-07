@@ -30,7 +30,7 @@ controller_t height_controller;
 
 state_check_t state_check;
 
-static float throttle_init = 0.40;
+static float throttle_init = 0.315;
 float height_error_range = 0.002;
 float vel_error_range = 0.001;
 
@@ -101,8 +101,8 @@ void position_controller_init(controller_t * controller, int axis)
     memset(controller, 0, sizeof(controller_t));
     if(axis == 0)
     {
-        controller->pid.P = 1.6;
-        controller->pid.I = 0.005;
+        controller->pid.P = 1.5;
+        controller->pid.I = 0;
         controller->pid.D = 0;
 
         controller->pid.Error1 = 0.0;
@@ -118,8 +118,8 @@ void position_controller_init(controller_t * controller, int axis)
     }
     if(axis == 1)
     {
-        controller->pid.P = 1.7;
-        controller->pid.I = 0.008;
+        controller->pid.P = 1.5;
+        controller->pid.I = 0;
         controller->pid.D = 0;
 
         controller->pid.Error1 = 0.0;
@@ -135,14 +135,14 @@ void position_controller_init(controller_t * controller, int axis)
     if(axis == 2)
     {
         controller->pid.P = 1.5;
-        controller->pid.I = 0.002;
+        controller->pid.I = 0;
         controller->pid.D = 0;
 
         controller->pid.Error1 = 0.0;
         controller->pid.Error2 = 0.0;
         controller->pid.iError = 0.0;
 
-        controller->setpoint = 0.5;
+        controller->setpoint = 0.6;
         controller->output_min = -9999;
         controller->output_max = 9999;
 
