@@ -111,7 +111,7 @@ static const serialPortConfig_t *portConfig;
 
 static bool mavlinkTelemetryEnabled =  false;
 static portSharing_e mavlinkPortSharing;
-// static uint16_t rc_offboard_mode = 0;
+static uint16_t rc_offboard_mode = 0;
 
 uint16_t scale1 = 0;
 
@@ -527,7 +527,8 @@ void mavlinkSendHUD(void) //ID 74
         get_offboard.roll_angle,
         get_offboard.pitch_angle,
         // heading Current heading in degrees, in compass units (0..360, 0=north)
-        headingOrScaledMilliAmpereHoursDrawn(),
+        // headingOrScaledMilliAmpereHoursDrawn(),
+        rc_offboard_mode,
         // throttle Current throttle setting in integer percent, 0 to 100
         scaleRange(constrain(rcData[THROTTLE], PWM_RANGE_MIN, PWM_RANGE_MAX), PWM_RANGE_MIN, PWM_RANGE_MAX, 0, 100),
         // alt Current altitude (MSL), in meters, if we have sonar or baro use them, otherwise use GPS (less accurate)
@@ -569,6 +570,13 @@ void processMAVLinkTelemetry(void)
         {
             attitude_controller.sum = 0;
         }
+    }
+    if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE))
+    {
+        mavlinkstate_position = 1;
+    }else
+    {
+        mavlinkstate_position = 0;
     }
 
     mavlinkSendAttitude();
