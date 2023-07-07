@@ -1120,21 +1120,21 @@ void processRxModes(timeUs_t currentTimeUs)
     }
 #endif
 
+// #ifdef USE_ANGLE_RATE_HOLD
+//     if(!IS_RC_MODE_ACTIVE(BOXANGLERATEHOLD))
+//     {
+//         DISABLE_FLIGHT_MODE(ANGLE_RATE_HOLD_MODE);     
+//     }else{
+//         ENABLE_FLIGHT_MODE(ANGLE_RATE_HOLD_MODE); 
+//     }
+// #endif
+
 #ifdef USE_ANGLE_RATE_HOLD
-    if(!IS_RC_MODE_ACTIVE(BOXANGLERATEHOLD))
+    if(!IS_RC_MODE_ACTIVE(BOXUSER4))
     {
         DISABLE_FLIGHT_MODE(ANGLE_RATE_HOLD_MODE);     
     }else{
         ENABLE_FLIGHT_MODE(ANGLE_RATE_HOLD_MODE); 
-    }
-#endif
-
-#ifdef USE_DATA_CTRL
-    if(!IS_RC_MODE_ACTIVE(BOXUSER4))
-    {
-        DISABLE_FLIGHT_MODE(DATA_CTRL_MODE);     
-    }else{
-        ENABLE_FLIGHT_MODE(DATA_CTRL_MODE); 
     }
 #endif
 

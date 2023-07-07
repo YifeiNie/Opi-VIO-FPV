@@ -90,7 +90,7 @@ static const box_t boxes[CHECKBOX_ITEM_COUNT] = {
     { .boxId = BOXUSER1, .boxName = "IMU_INIT_MODE", .permanentId = 40 },
     { .boxId = BOXUSER2, .boxName = "BOOTLOADER_MODE", .permanentId = 41 },
     { .boxId = BOXUSER3, .boxName = "POSITION_YAW_HOLD_MODE", .permanentId = 42 },
-    { .boxId = BOXUSER4, .boxName = "DATA_CTRL_MODE", .permanentId = 43 },
+    { .boxId = BOXUSER4, .boxName = "ANGLE_RATE_HOLD_1", .permanentId = 43 },
     { .boxId = BOXPIDAUDIO, .boxName = "PID AUDIO", .permanentId = 44 },
     { .boxId = BOXPARALYZE, .boxName = "PARALYZE", .permanentId = 45 },
     { .boxId = BOXGPSRESCUE, .boxName = "GPS RESCUE", .permanentId = 46 },
@@ -101,7 +101,7 @@ static const box_t boxes[CHECKBOX_ITEM_COUNT] = {
     { .boxId = BOXSTICKCOMMANDDISABLE, .boxName = "STICK COMMANDS DISABLE", .permanentId = 51},
     { .boxId = BOXBEEPERMUTE, .boxName = "BEEPER MUTE", .permanentId = 52},
     { .boxId = BOXREADY, .boxName = "READY", .permanentId = 53},
-    { .boxId = BOXANGLERATEHOLD, .boxName = "ANGLE_RATE_HOLD", .permanentId = 54 }
+    { .boxId = BOXANGLERATEHOLD, .boxName = "ANGLE_RATE_HOLD_2", .permanentId = 54 }
 };
 
 // mask of enabled IDs, calculated on startup based on enabled features. boxId_e is used as bit index
@@ -246,10 +246,6 @@ void initActiveBoxIds(void)
 #endif
 
 #ifdef USE_ANGLE_RATE_HOLD
-    BME(BOXANGLERATEHOLD);
-#endif
-
-#ifdef USE_DATA_CTRL
     BME(BOXUSER4);
 #endif
 
@@ -364,6 +360,10 @@ void initActiveBoxIds(void)
 
     BME(BOXSTICKCOMMANDDISABLE);
     BME(BOXREADY);
+
+// #ifdef USE_ANGLE_RATE_HOLD
+//     BME(BOXANGLERATEHOLD);
+// #endif
 
 #undef BME
     // check that all enabled IDs are in boxes array (check may be skipped when using findBoxById() functions)

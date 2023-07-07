@@ -431,24 +431,21 @@ void mavlinkSendHeartbeat(void)  //ID 0
 
 
 
-/*
-
- x = (acc.accADC[X]/ scale) * 0.001953125f;  //1/512u
- y = (acc.accADC[Y]/ scale) * 0.001953125f;
- z = (acc.accADC[Z]/ scale) * 0.001953125f;
- uint64_t time_usec; /*< [us] Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.*/
- int16_t xacc; /*<  X acceleration (raw)*/
- int16_t yacc; /*<  Y acceleration (raw)*/
- int16_t zacc; /*<  Z acceleration (raw)*/
- int16_t xgyro; /*<  Angular speed around X axis (raw)*/
- int16_t ygyro; /*<  Angular speed around Y axis (raw)*/
- int16_t zgyro; /*<  Angular speed around Z axis (raw)*/
- int16_t xmag; /*<  X Magnetic field (raw)*/
- int16_t ymag; /*<  Y Magnetic field (raw)*/
- int16_t zmag; /*<  Z Magnetic field (raw)*/
- uint8_t id; /*<  Id. Ids are numbered from 0 and map to IMUs numbered from 1 (e.g. IMU1 will have a message with id=0)*/
- int16_t temperature; /*< [cdegC] Temperature, 0: IMU does not provide temper
- */
+//  x = (acc.accADC[X]/ scale) * 0.001953125f;  //1/512u
+//  y = (acc.accADC[Y]/ scale) * 0.001953125f;
+//  z = (acc.accADC[Z]/ scale) * 0.001953125f;
+//  uint64_t time_usec; /*< [us] Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.*/
+//  int16_t xacc; /*<  X acceleration (raw)*/
+//  int16_t yacc; /*<  Y acceleration (raw)*/
+//  int16_t zacc; /*<  Z acceleration (raw)*/
+//  int16_t xgyro; /*<  Angular speed around X axis (raw)*/
+//  int16_t ygyro; /*<  Angular speed around Y axis (raw)*/
+//  int16_t zgyro; /*<  Angular speed around Z axis (raw)*/
+//  int16_t xmag; /*<  X Magnetic field (raw)*/
+//  int16_t ymag; /*<  Y Magnetic field (raw)*/
+//  int16_t zmag; /*<  Z Magnetic field (raw)*/
+//  uint8_t id; /*<  Id. Ids are numbered from 0 and map to IMUs numbered from 1 (e.g. IMU1 will have a message with id=0)*/
+//  int16_t temperature; /*< [cdegC] Temperature, 0: IMU does not provide temper
 
 void mavlinkSendImuRaw(void)
 {
@@ -527,15 +524,15 @@ void mavlinkSendHUD(void) //ID 74
 
     //airspeed groundspeed heading throttle alt climb
     mavlink_msg_vfr_hud_pack(0, 200, &mavMsg,
-        Get_Velocity_throttle(1),
-        Get_Velocity_throttle(0),
+        get_offboard.roll_angle,
+        get_offboard.pitch_angle,
         // heading Current heading in degrees, in compass units (0..360, 0=north)
         headingOrScaledMilliAmpereHoursDrawn(),
         // throttle Current throttle setting in integer percent, 0 to 100
         scaleRange(constrain(rcData[THROTTLE], PWM_RANGE_MIN, PWM_RANGE_MAX), PWM_RANGE_MIN, PWM_RANGE_MAX, 0, 100),
         // alt Current altitude (MSL), in meters, if we have sonar or baro use them, otherwise use GPS (less accurate)
         attitude_controller.sum,
-        Timestamp
+        Timestamp_out
         );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);

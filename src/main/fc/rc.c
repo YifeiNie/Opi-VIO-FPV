@@ -89,6 +89,7 @@ static float rcCommandYawDivider = 500.0f;
 static FAST_DATA_ZERO_INIT bool newRxDataForFF;
 
 bool Timestamp;
+bool Timestamp_out;
 
 enum {
     ROLL_FLAG = 1 << ROLL,
@@ -625,46 +626,46 @@ FAST_CODE void processRcCommand(void)
     }
     
 #ifdef USE_ANGLE_RATE_HOLD
-        if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE) && get_offboard.mavros_state == true)
-        {
-            Timestamp = true;
-            for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
-                switch(get_offboard.type_mask)
-                {
-                    case 7:{
-                        for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
-                        {
-                            OuterSetpointAngle[0] = get_offboard.roll_angle * 180 / M_PI;
-                            OuterSetpointAngle[1] = get_offboard.pitch_angle * 180 / M_PI;
-                            OuterSetpointAngle[2] = get_offboard.yaw_angle * 180 / M_PI;
+    if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE) && (get_offboard.mavros_state == true))
+    {
+        Timestamp_out = true;
+        for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
+            switch(get_offboard.type_mask)
+            {
+                case 7:{
+                    for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
+                    {
+                        OuterSetpointAngle[0] = get_offboard.roll_angle * 180 / M_PI;
+                        OuterSetpointAngle[1] = get_offboard.pitch_angle * 180 / M_PI;
+                        OuterSetpointAngle[2] = get_offboard.yaw_angle * 180 / M_PI;
 
-                        }
-                        mode_seclct.angle_mode = 1;
-                        mode_seclct.angularrate_mode = 0;
-                        break;
                     }
-
-                    case 128:{
-                        for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
-                        {
-                            OuterSetpointRate[0] = get_offboard.roll_rate * 180 / M_PI;
-                            OuterSetpointRate[1] = get_offboard.pitch_rate * 180 / M_PI;
-                            OuterSetpointRate[2] = get_offboard.yaw_rate * 180 / M_PI;
-                        }
-                        mode_seclct.angle_mode = 0;
-                        mode_seclct.angularrate_mode = 1;
-                        break;
-                    }
-                default:
-                        // mode_seclct.angle_mode = 0;
-                        // mode_seclct.angularrate_mode = 0;
+                    mode_seclct.angle_mode = 1;
+                    mode_seclct.angularrate_mode = 0;
                     break;
                 }
+
+                case 128:{
+                    for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
+                    {
+                        OuterSetpointRate[0] = get_offboard.roll_rate * 180 / M_PI;
+                        OuterSetpointRate[1] = get_offboard.pitch_rate * 180 / M_PI;
+                        OuterSetpointRate[2] = get_offboard.yaw_rate * 180 / M_PI;
+                    }
+                    mode_seclct.angle_mode = 0;
+                    mode_seclct.angularrate_mode = 1;
+                    break;
+                }
+            default:
+                    // mode_seclct.angle_mode = 0;
+                    // mode_seclct.angularrate_mode = 0;
+                break;
             }
-        }else
-        {
-            Timestamp = false;
         }
+    }else
+    {
+        Timestamp_out = false;
+    }
 #endif
 
 #ifdef USE_IMU_INIT
@@ -683,18 +684,18 @@ FAST_CODE void processRcCommand(void)
     }
 #endif
 
-#ifdef USE_DATA_CTRL
-    // if(FLIGHT_MODE(DATA_CTRL_MODE))
-    // {
-    //     Timestamp = true;
-    // }else
-    // {
-    //     Timestamp = false;
-    // }
-#endif
+// #ifdef USE_DATA_CTRL
+//     // if(FLIGHT_MODE(DATA_CTRL_MODE))
+//     // {
+//     //     Timestamp = true;
+//     // }else
+//     // {
+//     //     Timestamp = false;
+//     // }
+// #endif
 
 #ifdef USE_POSITION_YAW_HOLD
-    if(FLIGHT_MODE(POSITION_YAW_HOLD_MODE) && attitude_controller.mavlink_state == true)
+    if(FLIGHT_MODE(POSITION_YAW_HOLD_MODE) && (attitude_controller.mavlink_state == true))
     {
         Timestamp = true;
     }else

@@ -30,6 +30,7 @@
 #endif
 
 extern bool Timestamp;
+extern bool Timestamp_out;
 
 void processRcCommand(void);
 float getSetpointRate(int axis);
