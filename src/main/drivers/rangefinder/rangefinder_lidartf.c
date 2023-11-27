@@ -33,6 +33,7 @@
 #include "drivers/time.h"
 #include "drivers/rangefinder/rangefinder.h"
 #include "drivers/rangefinder/rangefinder_lidartf.h"
+#include "drivers/rangefinder/flow_decode.h"
 
 #define TF_DEVTYPE_NONE 0
 #define TF_DEVTYPE_MINI 1
@@ -142,93 +143,131 @@ void lidarTFUpdate(rangefinderDev_t *dev)
     static timeMs_t lastFrameReceivedMs = 0;
     const timeMs_t timeNowMs = millis();
 
-    if (tfSerialPort == NULL) {
+    if (tfSerialPort == NULL)
+    {
         return;
     }
 
-    while (serialRxBytesWaiting(tfSerialPort)) {
+    while (serialRxBytesWaiting(tfSerialPort))
+    {
         uint8_t c = serialRead(tfSerialPort);
-        switch (tfFrameState) {
-        case TF_FRAME_STATE_WAIT_START1:
-            if (c == TF_FRAME_SYNC_BYTE) {
-                tfFrameState = TF_FRAME_STATE_WAIT_START2;
+        int16_t ret = up_parse_char(ch);
+        if(!ret){
+            static int16_t flow_x_integral = 0;
+            static int16_t flow_y_integral = 0;
+            static uint16_t ground_distance = 0;
+            static uint8_t valid = 0;
+            static uint8_t tof_confidence = 0;
+            flow_x_integral = up_data.flow_x_integral;  //X像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
+            flow_y_integral = up_data.flow_y_integral;  //y像素点累计时间内的累加位移
+            ground_distance = up_data.ground_distance;
+            valid = up_data.valid;
+            tof_confidence = up_data.tof_confidence;
+
+            if(ground_distance < 0.001 || ground_distance > 10){
+                lidarTFValue = -1;   
             }
-            break;
-
-        case TF_FRAME_STATE_WAIT_START2:
-            if (c == TF_FRAME_SYNC_BYTE) {
-                tfFrameState = TF_FRAME_STATE_READING_PAYLOAD;
-            } else {
-                tfFrameState = TF_FRAME_STATE_WAIT_START1;
+            else{
+                lidarTFValue = ground_distance;
             }
-            break;
-
-        case TF_FRAME_STATE_READING_PAYLOAD:
-            tfFrame[tfReceivePosition++] = c;
-            if (tfReceivePosition == TF_FRAME_LENGTH) {
-                tfFrameState = TF_FRAME_STATE_WAIT_CKSUM;
-            }
-            break;
-
-        case TF_FRAME_STATE_WAIT_CKSUM:
-            {
-                uint8_t cksum = TF_FRAME_SYNC_BYTE + TF_FRAME_SYNC_BYTE;
-                for (int i = 0 ; i < TF_FRAME_LENGTH ; i++) {
-                    cksum += tfFrame[i];
-                }
-
-                if (c == cksum) {
-
-                    uint16_t distance = tfFrame[0] | (tfFrame[1] << 8);
-                    uint16_t strength = tfFrame[2] | (tfFrame[3] << 8);
-
-                    DEBUG_SET(DEBUG_LIDAR_TF, 0, distance);
-                    DEBUG_SET(DEBUG_LIDAR_TF, 1, strength);
-                    DEBUG_SET(DEBUG_LIDAR_TF, 2, tfFrame[4]);
-                    DEBUG_SET(DEBUG_LIDAR_TF, 3, tfFrame[5]);
-
-                    switch (tfDevtype) {
-                    case TF_DEVTYPE_MINI:
-                        if (distance >= TF_MINI_RANGE_MIN && distance < TF_MINI_RANGE_MAX) {
-                            lidarTFValue = distance;
-                            if (tfFrame[TF_MINI_FRAME_INTEGRAL_TIME] == 7) {
-                                // When integral time is long (7), measured distance tends to be longer by 12~13.
-                                lidarTFValue -= 13;
-                            }
-                        } else {
-                            lidarTFValue = -1;
-                        }
-                        break;
-
-                    case TF_DEVTYPE_02:
-                        if (distance >= TF_02_RANGE_MIN && distance < TF_02_RANGE_MAX && tfFrame[TF_02_FRAME_SIG] >= 7) {
-                            lidarTFValue = distance;
-                        } else {
-                            lidarTFValue = -1;
-                        }
-                        break;
-                    }
-                    lastFrameReceivedMs = timeNowMs;
-                } else {
-                    // Checksum error. Simply discard the current frame.
-                    ++lidarTFerrors;
-                    //DEBUG_SET(DEBUG_LIDAR_TF, 3, lidarTFerrors);
-                }
-            }
-
-            tfFrameState = TF_FRAME_STATE_WAIT_START1;
-            tfReceivePosition = 0;
-
-            break;
+            //printf("flow_x_integral=%d,flow_y_integral=%d,ground_distance=%d,valid=%d,tof_confidence=%d\n",flow_x_integral,flow_y_integral,ground_distance,valid,tof_confidence);
         }
     }
-
-    // If valid frame hasn't been received for more than a timet, resend command.
-
-    if (timeNowMs - lastFrameReceivedMs > TF_TIMEOUT_MS) {
-        lidarTFSendCommand();
-    }
+    
 }
+// void lidarTFUpdate(rangefinderDev_t *dev)
+// {
+//     UNUSED(dev);
+//     static timeMs_t lastFrameReceivedMs = 0;
+//     const timeMs_t timeNowMs = millis();
+
+//     if (tfSerialPort == NULL) {
+//         return;
+//     }
+
+//     while (serialRxBytesWaiting(tfSerialPort)) {
+//         uint8_t c = serialRead(tfSerialPort);
+//         switch (tfFrameState) {
+//         case TF_FRAME_STATE_WAIT_START1:
+//             if (c == TF_FRAME_SYNC_BYTE) {
+//                 tfFrameState = TF_FRAME_STATE_WAIT_START2;
+//             }
+//             break;
+
+//         case TF_FRAME_STATE_WAIT_START2:
+//             if (c == TF_FRAME_SYNC_BYTE) {
+//                 tfFrameState = TF_FRAME_STATE_READING_PAYLOAD;
+//             } else {
+//                 tfFrameState = TF_FRAME_STATE_WAIT_START1;
+//             }
+//             break;
+
+//         case TF_FRAME_STATE_READING_PAYLOAD:
+//             tfFrame[tfReceivePosition++] = c;
+//             if (tfReceivePosition == TF_FRAME_LENGTH) {
+//                 tfFrameState = TF_FRAME_STATE_WAIT_CKSUM;
+//             }
+//             break;
+
+//         case TF_FRAME_STATE_WAIT_CKSUM:
+//             {
+//                 uint8_t cksum = TF_FRAME_SYNC_BYTE + TF_FRAME_SYNC_BYTE;
+//                 for (int i = 0 ; i < TF_FRAME_LENGTH ; i++) {
+//                     cksum += tfFrame[i];
+//                 }
+
+//                 if (c == cksum) {
+
+//                     uint16_t distance = tfFrame[0] | (tfFrame[1] << 8);
+//                     uint16_t strength = tfFrame[2] | (tfFrame[3] << 8);
+
+//                     DEBUG_SET(DEBUG_LIDAR_TF, 0, distance);
+//                     DEBUG_SET(DEBUG_LIDAR_TF, 1, strength);
+//                     DEBUG_SET(DEBUG_LIDAR_TF, 2, tfFrame[4]);
+//                     DEBUG_SET(DEBUG_LIDAR_TF, 3, tfFrame[5]);
+
+//                     switch (tfDevtype) {
+//                     case TF_DEVTYPE_MINI:
+//                         if (distance >= TF_MINI_RANGE_MIN && distance < TF_MINI_RANGE_MAX) {
+//                             lidarTFValue = distance;
+//                             if (tfFrame[TF_MINI_FRAME_INTEGRAL_TIME] == 7) {
+//                                 // When integral time is long (7), measured distance tends to be longer by 12~13.
+//                                 lidarTFValue -= 13;
+//                             }
+//                         } else {
+//                             lidarTFValue = -1;
+//                         }
+//                         break;
+
+//                     case TF_DEVTYPE_02:
+//                         if (distance >= TF_02_RANGE_MIN && distance < TF_02_RANGE_MAX && tfFrame[TF_02_FRAME_SIG] >= 7) {
+//                             lidarTFValue = distance;
+//                         } else {
+//                             lidarTFValue = -1;
+//                         }
+//                         break;
+//                     }
+//                     lastFrameReceivedMs = timeNowMs;
+//                 } else {
+//                     // Checksum error. Simply discard the current frame.
+//                     ++lidarTFerrors;
+//                     //DEBUG_SET(DEBUG_LIDAR_TF, 3, lidarTFerrors);
+//                 }
+//             }
+
+//             tfFrameState = TF_FRAME_STATE_WAIT_START1;
+//             tfReceivePosition = 0;
+
+//             break;
+//         }
+//     }
+
+//     // If valid frame hasn't been received for more than a timet, resend command.
+
+//     if (timeNowMs - lastFrameReceivedMs > TF_TIMEOUT_MS) {
+//         lidarTFSendCommand();
+//     }
+// }
 
 // Return most recent device output in cm
 

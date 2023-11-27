@@ -161,6 +161,8 @@ COMMON_SRC = \
             cms/cms_menu_persistent_stats.c \
             drivers/display_ug2864hsweg01.c \
             drivers/light_ws2811strip.c \
+            drivers/rangefinder/flow_check.c \
+            drivers/rangefinder/flow_decode.c \
             drivers/rangefinder/rangefinder_hcsr04.c \
             drivers/rangefinder/rangefinder_lidartf.c \
             drivers/serial_escserial.c \
