@@ -51,6 +51,12 @@ typedef struct rangefinderDev_s {
     rangefinderOpReadFuncPtr read;
 } rangefinderDev_t;
 
+int16_t FlowGetX(rangefinderDev_t *dev);
+int16_t FlowGetY(rangefinderDev_t *dev);
+uint8_t FlowGetValid(rangefinderDev_t *dev);
+uint8_t GetTofConfidence(rangefinderDev_t *dev);
+int16_t FlowGetIntegrationTimespan(rangefinderDev_t *dev);
+
 extern int16_t rangefinderMaxRangeCm;
 extern int16_t rangefinderMaxAltWithTiltCm;
 extern int16_t rangefinderCfAltCm;

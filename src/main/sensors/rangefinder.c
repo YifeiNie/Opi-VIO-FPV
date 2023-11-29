@@ -325,9 +325,16 @@ bool rangefinderProcess(float cosTiltAngle)
         //kalman_filter1.Z_current->element[0] = rangefinder.calculatedAltitude/100.0f;
     } else {
         rangefinder.calculatedAltitude = rangefinder.rawAltitude * cosTiltAngle;
+        rangefinder.flow_x_integral = FlowGetX(&rangefinder.dev);
+        rangefinder.flow_y_integral = FlowGetY(&rangefinder.dev);
+        rangefinder.flow_valid = FlowGetValid(&rangefinder.dev);
+        rangefinder.tof_confidence = GetTofConfidence(&rangefinder.dev);
+        rangefinder.integration_timespan = FlowGetIntegrationTimespan(&rangefinder.dev);
         //kalman_filter1.Z_current->element[0] = rangefinder.calculatedAltitude/100.0f;
     }
-    kalman_filter1.alt_update = 1;
+
+
+    // kalman_filter1.alt_update = 1;
 
  //   DEBUG_SET(DEBUG_RANGEFINDER, 1, rangefinder.rawAltitude);
  //   DEBUG_SET(DEBUG_RANGEFINDER, 2, rangefinder.calculatedAltitude);
@@ -341,7 +348,24 @@ bool rangefinderProcess(float cosTiltAngle)
  */
 float rangefinderGetLatestAltitude(void)
 {
-    return rangefinder.calculatedAltitude/100.0f;
+    return rangefinder.calculatedAltitude;
+}
+float FlowGetLatestOptiX(void)
+{
+    //X像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
+    float flow_x = (float)rangefinder.flow_x_integral/10000.0*(float)rangefinder.calculatedAltitude;
+    return flow_x;
+}
+float FlowGetLatestOptiY(void)
+{
+    //Y像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
+    float flow_y = (float)rangefinder.flow_y_integral/10000.0*(float)rangefinder.calculatedAltitude;
+    return flow_y;
+}
+
+int16_t FlowGetTime(void)
+{
+    return rangefinder.integration_timespan;
 }
 
 int32_t rangefinderGetLatestRawAltitude(void)

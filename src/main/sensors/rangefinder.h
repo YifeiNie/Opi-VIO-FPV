@@ -50,6 +50,13 @@ typedef struct rangefinder_s {
     bool snrThresholdReached;
     int32_t dynamicDistanceThreshold;
     int16_t snr;
+
+    int16_t flow_x_integral;
+    int16_t flow_y_integral;
+    int16_t integration_timespan;
+    uint8_t flow_valid;
+    uint8_t tof_confidence;
+
 } rangefinder_t;
 
 void rangefinderResetDynamicThreshold(void);
@@ -61,3 +68,7 @@ int32_t rangefinderGetLatestRawAltitude(void);
 void rangefinderUpdate(void);
 bool rangefinderProcess(float cosTiltAngle);
 bool rangefinderIsHealthy(void);
+
+float FlowGetLatestOptiX(void);
+float FlowGetLatestOptiY(void);
+int16_t FlowGetTime(void);

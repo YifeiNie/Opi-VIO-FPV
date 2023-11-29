@@ -524,16 +524,18 @@ void mavlinkSendHUD(void) //ID 74
 
     //airspeed groundspeed heading throttle alt climb
     mavlink_msg_vfr_hud_pack(0, 200, &mavMsg,
-        get_offboard.roll_angle,
-        get_offboard.pitch_angle,
+        FlowGetLatestOptiX(),
+        FlowGetLatestOptiY(),
         // heading Current heading in degrees, in compass units (0..360, 0=north)
         // headingOrScaledMilliAmpereHoursDrawn(),
         rc_offboard_mode,
         // throttle Current throttle setting in integer percent, 0 to 100
         scaleRange(constrain(rcData[THROTTLE], PWM_RANGE_MIN, PWM_RANGE_MAX), PWM_RANGE_MIN, PWM_RANGE_MAX, 0, 100),
         // alt Current altitude (MSL), in meters, if we have sonar or baro use them, otherwise use GPS (less accurate)
-        attitude_controller.sum,
-        Timestamp_out
+        // attitude_controller.sum,
+        //Timestamp_out
+        (float)(FlowGetTime()),
+        rangefinderGetLatestAltitude()
         );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);

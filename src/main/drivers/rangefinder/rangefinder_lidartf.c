@@ -116,6 +116,13 @@ static uint8_t tfCmdTF02[] = { 0x42, 0x57, 0x02, 0x00, 0x00, 0x00, 0x01, 0x06 };
 
 static int32_t lidarTFValue;
 static uint16_t lidarTFerrors = 0;
+//光流+激光二合一模块的输出值
+static int16_t flow_x_integral = 0;
+static int16_t flow_y_integral = 0;
+static uint16_t ground_distance = 0;
+static uint8_t valid = 0;
+static uint8_t tof_confidence = 0;
+static int16_t integration_timespan = 0;
 
 static void lidarTFSendCommand(void)
 {
@@ -153,22 +160,19 @@ void lidarTFUpdate(rangefinderDev_t *dev)
         uint8_t c = serialRead(tfSerialPort);
         int16_t ret = up_parse_char(ch);
         if(!ret){
-            static int16_t flow_x_integral = 0;
-            static int16_t flow_y_integral = 0;
-            static uint16_t ground_distance = 0;
-            static uint8_t valid = 0;
-            static uint8_t tof_confidence = 0;
+
             flow_x_integral = up_data.flow_x_integral;  //X像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
             flow_y_integral = up_data.flow_y_integral;  //y像素点累计时间内的累加位移
+            integration_timespan = up_data.integration_timespan;
             ground_distance = up_data.ground_distance;
-            valid = up_data.valid;
-            tof_confidence = up_data.tof_confidence;
+            valid = up_data.valid;  //光流数据是否可用 0x00为不可用，0xF5(245)为光流数据可用
+            tof_confidence = up_data.tof_confidence; //测距置信度 0x64表示100%
 
             if(ground_distance < 0.001 || ground_distance > 10){
                 lidarTFValue = -1;   
             }
             else{
-                lidarTFValue = ground_distance;
+                lidarTFValue = (int32_t)ground_distance;
             }
             //printf("flow_x_integral=%d,flow_y_integral=%d,ground_distance=%d,valid=%d,tof_confidence=%d\n",flow_x_integral,flow_y_integral,ground_distance,valid,tof_confidence);
         }
@@ -277,6 +281,48 @@ int32_t lidarTFGetDistance(rangefinderDev_t *dev)
 
     return lidarTFValue;
 }
+
+int16_t FlowGetX(rangefinderDev_t *dev)
+{
+    UNUSED(dev);
+    if(valid == 0xF5){
+        return flow_x_integral;
+    }
+    else{
+        return -1;
+    }
+
+}
+
+int16_t FlowGetY(rangefinderDev_t *dev)
+{
+    UNUSED(dev);
+    if(valid == 0xF5){
+        return flow_y_integral;
+    }
+    else{
+        return -1;
+    }
+}
+
+int16_t FlowGetIntegrationTimespan(rangefinderDev_t *dev)
+{
+    UNUSED(dev);
+    return integration_timespan;
+}
+
+uint8_t FlowGetValid(rangefinderDev_t *dev)
+{
+    UNUSED(dev);
+    return valid;
+}
+
+uint8_t GetTofConfidence(rangefinderDev_t *dev)
+{
+    UNUSED(dev);
+    return tof_confidence;
+}
+
 
 static bool lidarTFDetect(rangefinderDev_t *dev, uint8_t devtype)
 {
