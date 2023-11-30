@@ -525,8 +525,8 @@ void mavlinkSendHUD(void) //ID 74
 
     //airspeed groundspeed heading throttle alt climb
     mavlink_msg_vfr_hud_pack(0, 200, &mavMsg,
-        FlowGetLatestOptiX(),
-        FlowGetLatestOptiY(),
+        (float)FlowGetLatestOptiX(),
+        (float)FlowGetLatestOptiY(),
         // heading Current heading in degrees, in compass units (0..360, 0=north)
         // headingOrScaledMilliAmpereHoursDrawn(),
         test_flow_state,
@@ -536,12 +536,12 @@ void mavlinkSendHUD(void) //ID 74
         // attitude_controller.sum,
         //Timestamp_out
         (float)(FlowGetTime()),
-        rangefinderGetLatestAltitude()
+        (float)rangefinderGetLatestAltitude()
         );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);
     //光流状态测试，用完记得删除
-    test_flow_state = 0;
+    // test_flow_state = 0;
 }
 
 

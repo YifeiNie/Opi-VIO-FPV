@@ -113,6 +113,7 @@ static bool rangefinderDetect(rangefinderDev_t * dev, uint8_t rangefinderHardwar
         case RANGEFINDER_TFMINI:
 #if defined(USE_RANGEFINDER_TF)
             if (lidarTFminiDetect(dev)) {
+                test_flow_state = 8;
                 rangefinderHardware = RANGEFINDER_TFMINI;
                 rescheduleTask(TASK_RANGEFINDER, TASK_PERIOD_MS(RANGEFINDER_TF_TASK_PERIOD_MS));
             }
@@ -152,6 +153,7 @@ void rangefinderResetDynamicThreshold(void)
 bool rangefinderInit(void)
 {
     if (!rangefinderDetect(&rangefinder.dev, rangefinderConfig()->rangefinder_hardware)) {
+        test_flow_state = -1;
         return false;
     }
 
@@ -170,6 +172,7 @@ bool rangefinderInit(void)
     rangefinderMaxAltWithTiltCm = rangefinderMaxRangeCm * rangefinder.maxTiltCos;
     rangefinderCfAltCm = rangefinder.dev.maxRangeCm / 2 ; // Complimentary Filter altitude
 
+    // test_flow_state = 7;
     return true;
 }
 
@@ -228,6 +231,7 @@ static int16_t computePseudoSnr(int32_t newReading)
 void rangefinderUpdate(void)
 {
     if (rangefinder.dev.update) {
+        test_flow_state = 6;
         rangefinder.dev.update(&rangefinder.dev);
     }
 }
@@ -266,73 +270,83 @@ bool isSurfaceAltitudeValid(void)
  */
 bool rangefinderProcess(float cosTiltAngle)
 {
+    // if (rangefinder.dev.read) {
+    //     const int32_t distance = rangefinder.dev.read(&rangefinder.dev);
+
+    //     // If driver reported no new measurement - don't do anything
+    //     if (distance == RANGEFINDER_NO_NEW_DATA) {
+    //         return false;
+    //     }
+
+    //     if (distance >= 0) {
+    //         rangefinder.lastValidResponseTimeMs = millis();
+    //         rangefinder.rawAltitude = applyMedianFilter(distance);
+    //     } else if (distance == RANGEFINDER_OUT_OF_RANGE) {
+    //         rangefinder.lastValidResponseTimeMs = millis();
+    //         rangefinder.rawAltitude = RANGEFINDER_OUT_OF_RANGE;
+    //     }
+    //     else {
+    //         // Invalid response / hardware failure
+    //         rangefinder.rawAltitude = RANGEFINDER_HARDWARE_FAILURE;
+    //     }
+
+    //     rangefinder.snr = computePseudoSnr(distance);
+
+    //     if (rangefinder.snrThresholdReached == false && rangefinder.rawAltitude > 0) {
+
+    //         if (rangefinder.snr < RANGEFINDER_DYNAMIC_THRESHOLD && rangefinder.dynamicDistanceThreshold < rangefinder.rawAltitude) {
+    //             rangefinder.dynamicDistanceThreshold = rangefinder.rawAltitude * RANGEFINDER_DYNAMIC_FACTOR / 100;
+    //         }
+
+    //         if (rangefinder.snr >= RANGEFINDER_DYNAMIC_THRESHOLD) {
+    //             rangefinder.snrThresholdReached = true;
+    //         }
+
+    //     }
+
+    //     DEBUG_SET(DEBUG_RANGEFINDER, 3, rangefinder.snr);
+
+    //     DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 0, rangefinder.rawAltitude);
+    //     DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 1, rangefinder.snrThresholdReached);
+    //     DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 2, rangefinder.dynamicDistanceThreshold);
+    //     DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 3, isSurfaceAltitudeValid());
+
+    // }
+    // else {
+    //     // Bad configuration
+    //     rangefinder.rawAltitude = RANGEFINDER_OUT_OF_RANGE;
+    // }
+
+    // /**
+    // * Apply tilt correction to the given raw sonar reading in order to compensate for the tilt of the craft when estimating
+    // * the altitude. Returns the computed altitude in centimeters.
+    // *
+    // * When the ground is too far away or the tilt is too large, RANGEFINDER_OUT_OF_RANGE is returned.
+    // */
+    // if (cosTiltAngle < rangefinder.maxTiltCos || rangefinder.rawAltitude < 0) {
+    //     rangefinder.calculatedAltitude = RANGEFINDER_OUT_OF_RANGE;
+    //     rangefinder.calculatedAltitude = 0.0f;
+    //     //kalman_filter1.Z_current->element[0] = rangefinder.calculatedAltitude/100.0f;
+    // } else {
+    //     rangefinder.calculatedAltitude = rangefinder.rawAltitude * cosTiltAngle;
+    //     rangefinder.flow_x_integral = FlowGetX(&rangefinder.dev);
+    //     rangefinder.flow_y_integral = FlowGetY(&rangefinder.dev);
+    //     rangefinder.flow_valid = FlowGetValid(&rangefinder.dev);
+    //     rangefinder.tof_confidence = GetTofConfidence(&rangefinder.dev);
+    //     rangefinder.integration_timespan = FlowGetIntegrationTimespan(&rangefinder.dev);
+    //     //kalman_filter1.Z_current->element[0] = rangefinder.calculatedAltitude/100.0f;
+    // }
+
     if (rangefinder.dev.read) {
         const int32_t distance = rangefinder.dev.read(&rangefinder.dev);
-
-        // If driver reported no new measurement - don't do anything
-        if (distance == RANGEFINDER_NO_NEW_DATA) {
-            return false;
-        }
-
-        if (distance >= 0) {
-            rangefinder.lastValidResponseTimeMs = millis();
-            rangefinder.rawAltitude = applyMedianFilter(distance);
-        } else if (distance == RANGEFINDER_OUT_OF_RANGE) {
-            rangefinder.lastValidResponseTimeMs = millis();
-            rangefinder.rawAltitude = RANGEFINDER_OUT_OF_RANGE;
-        }
-        else {
-            // Invalid response / hardware failure
-            rangefinder.rawAltitude = RANGEFINDER_HARDWARE_FAILURE;
-        }
-
-        rangefinder.snr = computePseudoSnr(distance);
-
-        if (rangefinder.snrThresholdReached == false && rangefinder.rawAltitude > 0) {
-
-            if (rangefinder.snr < RANGEFINDER_DYNAMIC_THRESHOLD && rangefinder.dynamicDistanceThreshold < rangefinder.rawAltitude) {
-                rangefinder.dynamicDistanceThreshold = rangefinder.rawAltitude * RANGEFINDER_DYNAMIC_FACTOR / 100;
-            }
-
-            if (rangefinder.snr >= RANGEFINDER_DYNAMIC_THRESHOLD) {
-                rangefinder.snrThresholdReached = true;
-            }
-
-        }
-
-        DEBUG_SET(DEBUG_RANGEFINDER, 3, rangefinder.snr);
-
-        DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 0, rangefinder.rawAltitude);
-        DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 1, rangefinder.snrThresholdReached);
-        DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 2, rangefinder.dynamicDistanceThreshold);
-        DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 3, isSurfaceAltitudeValid());
-
-    }
-    else {
-        // Bad configuration
-        rangefinder.rawAltitude = RANGEFINDER_OUT_OF_RANGE;
-    }
-
-    /**
-    * Apply tilt correction to the given raw sonar reading in order to compensate for the tilt of the craft when estimating
-    * the altitude. Returns the computed altitude in centimeters.
-    *
-    * When the ground is too far away or the tilt is too large, RANGEFINDER_OUT_OF_RANGE is returned.
-    */
-    if (cosTiltAngle < rangefinder.maxTiltCos || rangefinder.rawAltitude < 0) {
-        rangefinder.calculatedAltitude = RANGEFINDER_OUT_OF_RANGE;
-        rangefinder.calculatedAltitude = 0.0f;
-        //kalman_filter1.Z_current->element[0] = rangefinder.calculatedAltitude/100.0f;
-    } else {
+        rangefinder.rawAltitude = applyMedianFilter(distance);
         rangefinder.calculatedAltitude = rangefinder.rawAltitude * cosTiltAngle;
         rangefinder.flow_x_integral = FlowGetX(&rangefinder.dev);
         rangefinder.flow_y_integral = FlowGetY(&rangefinder.dev);
         rangefinder.flow_valid = FlowGetValid(&rangefinder.dev);
         rangefinder.tof_confidence = GetTofConfidence(&rangefinder.dev);
         rangefinder.integration_timespan = FlowGetIntegrationTimespan(&rangefinder.dev);
-        //kalman_filter1.Z_current->element[0] = rangefinder.calculatedAltitude/100.0f;
     }
-
 
     // kalman_filter1.alt_update = 1;
 

@@ -154,15 +154,18 @@ void lidarTFUpdate(rangefinderDev_t *dev)
 
     if (tfSerialPort == NULL)
     {
+        test_flow_state = 7;
         return;
     }
     
+    test_flow_state = 1;
+
     while (serialRxBytesWaiting(tfSerialPort))
     {
+        test_flow_state = 3;
         uint8_t ch = serialRead(tfSerialPort);
         int16_t ret = up_parse_char(ch);
         if(!ret){
-            
             flow_x_integral = up_data.flow_x_integral;  //X像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
             flow_y_integral = up_data.flow_y_integral;  //y像素点累计时间内的累加位移
             integration_timespan = up_data.integration_timespan;
@@ -170,13 +173,13 @@ void lidarTFUpdate(rangefinderDev_t *dev)
             valid = up_data.valid;  //光流数据是否可用 0x00为不可用，0xF5(245)为光流数据可用
             tof_confidence = up_data.tof_confidence; //测距置信度 0x64表示100%
 
-            if(ground_distance < 0.001 || ground_distance > 10){
-                lidarTFValue = -1;   
-            }
-            else{
-                lidarTFValue = (int32_t)ground_distance;
-            }
-            test_flow_state = 1;
+            // if(ground_distance < 0.001 || ground_distance > 1000){
+            //     lidarTFValue = -1;   
+            // }
+            // else{
+            lidarTFValue = (int32_t)ground_distance;
+            // }
+            test_flow_state = 4;
             break;
             //printf("flow_x_integral=%d,flow_y_integral=%d,ground_distance=%d,valid=%d,tof_confidence=%d\n",flow_x_integral,flow_y_integral,ground_distance,valid,tof_confidence);
         }
@@ -290,24 +293,24 @@ int32_t lidarTFGetDistance(rangefinderDev_t *dev)
 int16_t FlowGetX(rangefinderDev_t *dev)
 {
     UNUSED(dev);
-    if(valid == 0xF5){
+    // if(valid == 0xF5){
         return flow_x_integral;
-    }
-    else{
-        return -1;
-    }
+    // }
+    // else{
+    //     return -1;
+    // }
 
 }
 
 int16_t FlowGetY(rangefinderDev_t *dev)
 {
     UNUSED(dev);
-    if(valid == 0xF5){
+    // if(valid == 0xF5){
         return flow_y_integral;
-    }
-    else{
-        return -1;
-    }
+    // }
+    // else{
+    //     return -1;
+    // }
 }
 
 int16_t FlowGetIntegrationTimespan(rangefinderDev_t *dev)
@@ -337,7 +340,7 @@ static bool lidarTFDetect(rangefinderDev_t *dev, uint8_t devtype)
         return false;
     }
 
-    tfSerialPort = openSerialPort(portConfig->identifier, FUNCTION_LIDAR_TF, NULL, NULL, 115200, MODE_RX, 0);
+    tfSerialPort = openSerialPort(portConfig->identifier, FUNCTION_LIDAR_TF, NULL, NULL, 115200, MODE_RXTX, 0);
 
     if (tfSerialPort == NULL) {
         return false;
@@ -353,6 +356,7 @@ static bool lidarTFDetect(rangefinderDev_t *dev, uint8_t devtype)
     dev->init = &lidarTFInit;
     dev->update = &lidarTFUpdate;
     dev->read = &lidarTFGetDistance;
+    test_flow_state = 2;
 
     return true;
 }

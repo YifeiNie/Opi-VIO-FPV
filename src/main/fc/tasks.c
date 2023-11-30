@@ -45,6 +45,7 @@
 #include "drivers/transponder_ir.h"
 #include "drivers/usb_io.h"
 #include "drivers/vtx_common.h"
+#include "drivers/rangefinder/rangefinder.h"
 
 #include "config/config.h"
 #include "fc/core.h"
@@ -288,12 +289,16 @@ void taskUpdateRangefinder(timeUs_t currentTimeUs)
     UNUSED(currentTimeUs);
 
     if (!sensors(SENSOR_RANGEFINDER)) {
+        test_flow_state = 5;
         return;
     }
-
+    test_flow_state = 9;
+    
     rangefinderUpdate();
 
     rangefinderProcess(getCosTiltAngle());
+
+    
 
     // Update_Kalman();
 }
