@@ -48,6 +48,7 @@
 #include "drivers/sensor.h"
 #include "drivers/time.h"
 #include "drivers/light_led.h"
+#include "drivers/rangefinder/rangefinder.h"
 
 #include "config/config.h"
 #include "fc/rc_controls.h"
@@ -528,7 +529,7 @@ void mavlinkSendHUD(void) //ID 74
         FlowGetLatestOptiY(),
         // heading Current heading in degrees, in compass units (0..360, 0=north)
         // headingOrScaledMilliAmpereHoursDrawn(),
-        rc_offboard_mode,
+        test_flow_state,
         // throttle Current throttle setting in integer percent, 0 to 100
         scaleRange(constrain(rcData[THROTTLE], PWM_RANGE_MIN, PWM_RANGE_MAX), PWM_RANGE_MIN, PWM_RANGE_MAX, 0, 100),
         // alt Current altitude (MSL), in meters, if we have sonar or baro use them, otherwise use GPS (less accurate)
@@ -539,6 +540,8 @@ void mavlinkSendHUD(void) //ID 74
         );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);
+    //光流状态测试，用完记得删除
+    test_flow_state = 0;
 }
 
 
