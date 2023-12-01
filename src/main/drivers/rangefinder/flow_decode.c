@@ -15,7 +15,7 @@ MSPOpticalFlow msp_flow_data;
 //319和306GS使用的UPIXELS协议
 int16_t up_parse_char(uint8_t ch)
 {
-	int16_t ret = -1;
+	int16_t ret = 0;
     static int s  = 0, p = 0;
     static char Xor_r = 0x00, Xor_c = 0x00;
 
@@ -48,7 +48,7 @@ int16_t up_parse_char(uint8_t ch)
         case 4:
             if(ch == 0x55) {
                 if(Xor_r == Xor_c)
-                    ret = 0;
+                    ret = 1;
             }
             s = 0;
         break;

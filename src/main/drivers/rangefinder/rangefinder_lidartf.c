@@ -125,6 +125,7 @@ static uint8_t tof_confidence = 0;
 static int16_t integration_timespan = 0;
 //测试光流是否正常工作，该标志位用完记得删除
 uint8_t test_flow_state = 0;
+static int16_t optiflow_state = 0;
 
 static void lidarTFSendCommand(void)
 {
@@ -154,35 +155,20 @@ void lidarTFUpdate(rangefinderDev_t *dev)
 
     if (tfSerialPort == NULL)
     {
-        test_flow_state = 7;
         return;
     }
     
-    test_flow_state = 1;
+    if(optiflow_state){
+        flow_x_integral = up_data.flow_x_integral;  //X像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
+        flow_y_integral = up_data.flow_y_integral;  //y像素点累计时间内的累加位移
+        integration_timespan = up_data.integration_timespan;
+        ground_distance = up_data.ground_distance;
+        valid = up_data.valid;  //光流数据是否可用 0x00为不可用，0xF5(245)为光流数据可用
+        tof_confidence = up_data.tof_confidence; //测距置信度 0x64表示100%
 
-    while (serialRxBytesWaiting(tfSerialPort))
-    {
-        test_flow_state = 3;
-        uint8_t ch = serialRead(tfSerialPort);
-        int16_t ret = up_parse_char(ch);
-        if(!ret){
-            flow_x_integral = up_data.flow_x_integral;  //X像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
-            flow_y_integral = up_data.flow_y_integral;  //y像素点累计时间内的累加位移
-            integration_timespan = up_data.integration_timespan;
-            ground_distance = up_data.ground_distance;
-            valid = up_data.valid;  //光流数据是否可用 0x00为不可用，0xF5(245)为光流数据可用
-            tof_confidence = up_data.tof_confidence; //测距置信度 0x64表示100%
-
-            // if(ground_distance < 0.001 || ground_distance > 1000){
-            //     lidarTFValue = -1;   
-            // }
-            // else{
-            lidarTFValue = (int32_t)ground_distance;
-            // }
-            test_flow_state = 4;
-            break;
-            //printf("flow_x_integral=%d,flow_y_integral=%d,ground_distance=%d,valid=%d,tof_confidence=%d\n",flow_x_integral,flow_y_integral,ground_distance,valid,tof_confidence);
-        }
+        lidarTFValue = (int32_t)ground_distance;
+        optiflow_state = 0;
+        break;
     }
     
 }
@@ -281,6 +267,56 @@ void lidarTFUpdate(rangefinderDev_t *dev)
 //     }
 // }
 
+
+//串口接收触发函数
+static void OptiFlowReceive(uint16_t c, void* data){
+    UNUSED(data);
+    if(up_parse_char((uint8_t)c))
+    {
+        test_flow_state = 1;
+        optiflow_state = 1;
+    }
+
+}
+
+static bool lidarTFDetect(rangefinderDev_t *dev, uint8_t devtype)
+{
+    const serialPortConfig_t *portConfig = findSerialPortConfig(FUNCTION_LIDAR_TF);
+
+    if (!portConfig) {
+        return false;
+    }
+
+    tfSerialPort = openSerialPort(portConfig->identifier, FUNCTION_LIDAR_TF, OptiFlowReceive, NULL, 115200, MODE_RXTX, SERIAL_STOPBITS_1);
+
+    if (tfSerialPort == NULL) {
+        return false;
+    }
+
+    tfDevtype = devtype;
+
+    dev->delayMs = 10;
+    dev->maxRangeCm = (devtype == TF_DEVTYPE_MINI) ? TF_MINI_RANGE_MAX : TF_02_RANGE_MAX;
+    dev->detectionConeDeciDegrees = TF_DETECTION_CONE_DECIDEGREES;
+    dev->detectionConeExtendedDeciDegrees = TF_DETECTION_CONE_DECIDEGREES;
+
+    dev->init = &lidarTFInit;
+    dev->update = &lidarTFUpdate;
+    dev->read = &lidarTFGetDistance;
+
+    return true;
+}
+
+bool lidarTFminiDetect(rangefinderDev_t *dev)
+{
+    return lidarTFDetect(dev, TF_DEVTYPE_MINI);
+}
+
+bool lidarTF02Detect(rangefinderDev_t *dev)
+{
+    return lidarTFDetect(dev, TF_DEVTYPE_02);
+}
+
 // Return most recent device output in cm
 
 int32_t lidarTFGetDistance(rangefinderDev_t *dev)
@@ -331,43 +367,4 @@ uint8_t GetTofConfidence(rangefinderDev_t *dev)
     return tof_confidence;
 }
 
-
-static bool lidarTFDetect(rangefinderDev_t *dev, uint8_t devtype)
-{
-    const serialPortConfig_t *portConfig = findSerialPortConfig(FUNCTION_LIDAR_TF);
-
-    if (!portConfig) {
-        return false;
-    }
-
-    tfSerialPort = openSerialPort(portConfig->identifier, FUNCTION_LIDAR_TF, NULL, NULL, 115200, MODE_RXTX, 0);
-
-    if (tfSerialPort == NULL) {
-        return false;
-    }
-
-    tfDevtype = devtype;
-
-    dev->delayMs = 10;
-    dev->maxRangeCm = (devtype == TF_DEVTYPE_MINI) ? TF_MINI_RANGE_MAX : TF_02_RANGE_MAX;
-    dev->detectionConeDeciDegrees = TF_DETECTION_CONE_DECIDEGREES;
-    dev->detectionConeExtendedDeciDegrees = TF_DETECTION_CONE_DECIDEGREES;
-
-    dev->init = &lidarTFInit;
-    dev->update = &lidarTFUpdate;
-    dev->read = &lidarTFGetDistance;
-    test_flow_state = 2;
-
-    return true;
-}
-
-bool lidarTFminiDetect(rangefinderDev_t *dev)
-{
-    return lidarTFDetect(dev, TF_DEVTYPE_MINI);
-}
-
-bool lidarTF02Detect(rangefinderDev_t *dev)
-{
-    return lidarTFDetect(dev, TF_DEVTYPE_02);
-}
 #endif

@@ -289,16 +289,12 @@ void taskUpdateRangefinder(timeUs_t currentTimeUs)
     UNUSED(currentTimeUs);
 
     if (!sensors(SENSOR_RANGEFINDER)) {
-        test_flow_state = 5;
         return;
     }
-    test_flow_state = 9;
     
     rangefinderUpdate();
 
-    rangefinderProcess(getCosTiltAngle());
-
-    
+    rangefinderProcess(getCosTiltAngle());   
 
     // Update_Kalman();
 }
@@ -522,11 +518,6 @@ void tasksInit(void)
     }
 #endif
 
-#ifdef USE_RANGEFINDER
-    if (sensors(SENSOR_RANGEFINDER)) {
-        setTaskEnabled(TASK_RANGEFINDER, featureIsEnabled(FEATURE_RANGEFINDER));
-    }
-#endif
 
     setTaskEnabled(TASK_RX, true);
 
@@ -554,6 +545,13 @@ void tasksInit(void)
 
 #ifdef USE_DASHBOARD
     setTaskEnabled(TASK_DASHBOARD, featureIsEnabled(FEATURE_DASHBOARD));
+#endif
+
+#ifdef USE_RANGEFINDER
+    if (sensors(SENSOR_RANGEFINDER)) {
+        test_flow_state = 2;
+        setTaskEnabled(TASK_RANGEFINDER, featureIsEnabled(FEATURE_RANGEFINDER));
+    }l
 #endif
 
 #ifdef USE_TELEMETRY

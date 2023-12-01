@@ -113,7 +113,6 @@ static bool rangefinderDetect(rangefinderDev_t * dev, uint8_t rangefinderHardwar
         case RANGEFINDER_TFMINI:
 #if defined(USE_RANGEFINDER_TF)
             if (lidarTFminiDetect(dev)) {
-                test_flow_state = 8;
                 rangefinderHardware = RANGEFINDER_TFMINI;
                 rescheduleTask(TASK_RANGEFINDER, TASK_PERIOD_MS(RANGEFINDER_TF_TASK_PERIOD_MS));
             }
@@ -153,7 +152,6 @@ void rangefinderResetDynamicThreshold(void)
 bool rangefinderInit(void)
 {
     if (!rangefinderDetect(&rangefinder.dev, rangefinderConfig()->rangefinder_hardware)) {
-        test_flow_state = -1;
         return false;
     }
 
@@ -172,7 +170,6 @@ bool rangefinderInit(void)
     rangefinderMaxAltWithTiltCm = rangefinderMaxRangeCm * rangefinder.maxTiltCos;
     rangefinderCfAltCm = rangefinder.dev.maxRangeCm / 2 ; // Complimentary Filter altitude
 
-    // test_flow_state = 7;
     return true;
 }
 
@@ -231,7 +228,6 @@ static int16_t computePseudoSnr(int32_t newReading)
 void rangefinderUpdate(void)
 {
     if (rangefinder.dev.update) {
-        test_flow_state = 6;
         rangefinder.dev.update(&rangefinder.dev);
     }
 }
@@ -346,6 +342,9 @@ bool rangefinderProcess(float cosTiltAngle)
         rangefinder.flow_valid = FlowGetValid(&rangefinder.dev);
         rangefinder.tof_confidence = GetTofConfidence(&rangefinder.dev);
         rangefinder.integration_timespan = FlowGetIntegrationTimespan(&rangefinder.dev);
+    }else
+    {
+        return false;
     }
 
     // kalman_filter1.alt_update = 1;

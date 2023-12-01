@@ -89,7 +89,7 @@
 #pragma GCC diagnostic pop
 
 #define TELEMETRY_MAVLINK_INITIAL_PORT_MODE MODE_RXTX
-#define TELEMETRY_MAVLINK_MAXRATE 150
+#define TELEMETRY_MAVLINK_MAXRATE 200
 #define TELEMETRY_MAVLINK_DELAY ((1000 * 1000) / TELEMETRY_MAVLINK_MAXRATE) //1000*1000/200us=5ms
 
 #define WIFI_AT         "AT\r\n"
@@ -540,8 +540,6 @@ void mavlinkSendHUD(void) //ID 74
         );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);
-    //光流状态测试，用完记得删除
-    // test_flow_state = 0;
 }
 
 
