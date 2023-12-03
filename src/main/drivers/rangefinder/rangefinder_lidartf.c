@@ -150,27 +150,6 @@ void lidarTFInit(rangefinderDev_t *dev)
 void lidarTFUpdate(rangefinderDev_t *dev)
 {
     UNUSED(dev);
-    static timeMs_t lastFrameReceivedMs = 0;
-    const timeMs_t timeNowMs = millis();
-
-    if (tfSerialPort == NULL)
-    {
-        return;
-    }
-    
-    if(optiflow_state){
-        flow_x_integral = up_data.flow_x_integral;  //X像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
-        flow_y_integral = up_data.flow_y_integral;  //y像素点累计时间内的累加位移
-        integration_timespan = up_data.integration_timespan;
-        ground_distance = up_data.ground_distance;
-        valid = up_data.valid;  //光流数据是否可用 0x00为不可用，0xF5(245)为光流数据可用
-        tof_confidence = up_data.tof_confidence; //测距置信度 0x64表示100%
-
-        lidarTFValue = (int32_t)ground_distance;
-        optiflow_state = 0;
-        break;
-    }
-    
 }
 
 // void lidarTFUpdate(rangefinderDev_t *dev)
@@ -267,14 +246,72 @@ void lidarTFUpdate(rangefinderDev_t *dev)
 //     }
 // }
 
+// Return most recent device output in cm
+
+int32_t lidarTFGetDistance(rangefinderDev_t *dev)
+{
+    UNUSED(dev);
+
+    return lidarTFValue;
+}
+
+int16_t FlowGetX(rangefinderDev_t *dev)
+{
+    UNUSED(dev);
+    if(valid == 0xF5){
+        return flow_x_integral;
+    }
+    else{
+        return -1;
+    }
+
+}
+
+int16_t FlowGetY(rangefinderDev_t *dev)
+{
+    UNUSED(dev);
+    if(valid == 0xF5){
+        return flow_y_integral;
+    }
+    else{
+        return -1;
+    }
+}
+
+int16_t FlowGetIntegrationTimespan(rangefinderDev_t *dev)
+{
+    UNUSED(dev);
+    return integration_timespan;
+}
+
+uint8_t FlowGetValid(rangefinderDev_t *dev)
+{
+    UNUSED(dev);
+    return valid;
+}
+
+uint8_t GetTofConfidence(rangefinderDev_t *dev)
+{
+    UNUSED(dev);
+    return tof_confidence;
+}
+
 
 //串口接收触发函数
 static void OptiFlowReceive(uint16_t c, void* data){
     UNUSED(data);
     if(up_parse_char((uint8_t)c))
     {
-        test_flow_state = 1;
+        flow_x_integral = up_data.flow_x_integral;  //X像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
+        flow_y_integral = up_data.flow_y_integral;  //y像素点累计时间内的累加位移
+        integration_timespan = up_data.integration_timespan;
+        ground_distance = up_data.ground_distance;
+        valid = up_data.valid;  //光流数据是否可用 0x00为不可用，0xF5(245)为光流数据可用
+        tof_confidence = up_data.tof_confidence; //测距置信度 0x64表示100%
+
+        lidarTFValue = (int32_t)ground_distance;
         optiflow_state = 1;
+        return;
     }
 
 }
@@ -315,56 +352,6 @@ bool lidarTFminiDetect(rangefinderDev_t *dev)
 bool lidarTF02Detect(rangefinderDev_t *dev)
 {
     return lidarTFDetect(dev, TF_DEVTYPE_02);
-}
-
-// Return most recent device output in cm
-
-int32_t lidarTFGetDistance(rangefinderDev_t *dev)
-{
-    UNUSED(dev);
-
-    return lidarTFValue;
-}
-
-int16_t FlowGetX(rangefinderDev_t *dev)
-{
-    UNUSED(dev);
-    // if(valid == 0xF5){
-        return flow_x_integral;
-    // }
-    // else{
-    //     return -1;
-    // }
-
-}
-
-int16_t FlowGetY(rangefinderDev_t *dev)
-{
-    UNUSED(dev);
-    // if(valid == 0xF5){
-        return flow_y_integral;
-    // }
-    // else{
-    //     return -1;
-    // }
-}
-
-int16_t FlowGetIntegrationTimespan(rangefinderDev_t *dev)
-{
-    UNUSED(dev);
-    return integration_timespan;
-}
-
-uint8_t FlowGetValid(rangefinderDev_t *dev)
-{
-    UNUSED(dev);
-    return valid;
-}
-
-uint8_t GetTofConfidence(rangefinderDev_t *dev)
-{
-    UNUSED(dev);
-    return tof_confidence;
 }
 
 #endif

@@ -529,7 +529,7 @@ void mavlinkSendHUD(void) //ID 74
         (float)FlowGetLatestOptiY(),
         // heading Current heading in degrees, in compass units (0..360, 0=north)
         // headingOrScaledMilliAmpereHoursDrawn(),
-        test_flow_state,
+        attitude_controller.sum,
         // throttle Current throttle setting in integer percent, 0 to 100
         scaleRange(constrain(rcData[THROTTLE], PWM_RANGE_MIN, PWM_RANGE_MAX), PWM_RANGE_MIN, PWM_RANGE_MAX, 0, 100),
         // alt Current altitude (MSL), in meters, if we have sonar or baro use them, otherwise use GPS (less accurate)
