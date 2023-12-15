@@ -120,7 +120,7 @@ uint16_t scale1 = 0;
 static const uint8_t mavRates[] = {
     [MAV_DATA_STREAM_EXTENDED_STATUS] = 2, //2Hz
     [MAV_DATA_STREAM_RC_CHANNELS] = 40, //5Hz
-    [MAV_DATA_STREAM_POSITION] = 20, //100Hz
+    [MAV_DATA_STREAM_POSITION] = 30, //100Hz
     [MAV_DATA_STREAM_EXTRA1] = 40, //10Hz
     [MAV_DATA_STREAM_EXTRA2] = 100, //100Hz
     [MAV_DATA_STREAM_EXTRA3] = 5
@@ -313,7 +313,7 @@ void configureMAVLinkTelemetryPort(void)
     mavlinkTelemetryEnabled = true;
     if(mavlinkstate_position < 1)
     {
-        // WifiInitHardware_Esp8266();
+        //WifiInitHardware_Esp8266();
     if (acc.dev.acc_1G > 512 * 4) {
         scale1 = 8;
     } else if (acc.dev.acc_1G > 512 * 2) {
@@ -581,7 +581,6 @@ void processMAVLinkTelemetry(void)
             rc_offboard_mode = 0;
         }
     }
-
 
     mavlinkSendAttitude();
     mavlinkSendImuRaw();

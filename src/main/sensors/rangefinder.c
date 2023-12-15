@@ -376,6 +376,11 @@ float FlowGetLatestOptiY(void)
     return flow_y;
 }
 
+// int32_t FlowGetLatestOptiZ(void)
+// {
+//     return rangefinder.rawAltitude;
+// }
+
 int16_t FlowGetTime(void)
 {
     return rangefinder.integration_timespan;
