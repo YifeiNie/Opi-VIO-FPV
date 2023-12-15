@@ -313,7 +313,7 @@ void configureMAVLinkTelemetryPort(void)
     mavlinkTelemetryEnabled = true;
     if(mavlinkstate_position < 1)
     {
-        WifiInitHardware_Esp8266();
+        //WifiInitHardware_Esp8266();
     if (acc.dev.acc_1G > 512 * 4) {
         scale1 = 8;
     } else if (acc.dev.acc_1G > 512 * 2) {
