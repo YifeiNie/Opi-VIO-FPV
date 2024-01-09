@@ -114,7 +114,7 @@ static bool mavlinkTelemetryEnabled =  false;
 static portSharing_e mavlinkPortSharing;
 static uint16_t rc_offboard_mode = 0;
 
-uint16_t scale1 = 0;
+uint16_t scale1;
 
 /* MAVLink datastream rates in Hz */
 static const uint8_t mavRates[] = {

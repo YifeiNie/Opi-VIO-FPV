@@ -166,17 +166,6 @@ void imuResetAccelerationSum(void)
     accTimeSum = 0;
 }
 
-// static void imuTransformVectorBodyToEarth(t_fp_vector * v)
-// {
-//     // From body frame to earth frame
-//     const float x = rMat[0][0] * v->V.X + rMat[0][1] * v->V.Y + rMat[0][2] * v->V.Z;
-//     const float y = rMat[1][0] * v->V.X + rMat[1][1] * v->V.Y + rMat[1][2] * v->V.Z;
-//     const float z = rMat[2][0] * v->V.X + rMat[2][1] * v->V.Y + rMat[2][2] * v->V.Z;
-
-//     v->V.X = x;
-//     v->V.Y = -y;
-//     v->V.Z = z;
-// }
 
 // rotate acc into Earth frame and calculate acceleration in it
 // static void imuCalculateAcceleration(timeDelta_t deltaT)
@@ -185,6 +174,18 @@ void imuResetAccelerationSum(void)
 // }
 
 #endif // USE_ALT_HOLD
+
+static void imuTransformVectorBodyToEarth(t_fp_vector * v)
+{
+    // From body frame to earth frame
+    const float x = rMat[0][0] * v->V.X + rMat[0][1] * v->V.Y + rMat[0][2] * v->V.Z;
+    const float y = rMat[1][0] * v->V.X + rMat[1][1] * v->V.Y + rMat[1][2] * v->V.Z;
+    const float z = rMat[2][0] * v->V.X + rMat[2][1] * v->V.Y + rMat[2][2] * v->V.Z;
+
+    v->V.X = x;
+    v->V.Y = y;
+    v->V.Z = z;
+}
 
 STATIC_UNIT_TESTED void imuComputeRotationMatrix(void)
 {
