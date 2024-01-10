@@ -324,7 +324,7 @@ static bool lidarTFDetect(rangefinderDev_t *dev, uint8_t devtype)
         return false;
     }
 
-    tfSerialPort = openSerialPort(portConfig->identifier, FUNCTION_LIDAR_TF, OptiFlowReceive, NULL, 115200, MODE_RXTX, SERIAL_STOPBITS_1);
+    tfSerialPort = openSerialPort(portConfig->identifier, FUNCTION_LIDAR_TF, OptiFlowReceive, NULL, 115200, MODE_RX, SERIAL_STOPBITS_1);
 
     if (tfSerialPort == NULL) {
         return false;

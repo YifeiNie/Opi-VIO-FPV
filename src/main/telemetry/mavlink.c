@@ -91,6 +91,7 @@
 #define TELEMETRY_MAVLINK_INITIAL_PORT_MODE MODE_RXTX
 #define TELEMETRY_MAVLINK_MAXRATE 200
 #define TELEMETRY_MAVLINK_DELAY ((1000 * 1000) / TELEMETRY_MAVLINK_MAXRATE) //1000*1000/200us=5ms
+#define GRAVITY_EARTH  (9.80665f)
 
 #define WIFI_AT         "AT\r\n"
 #define WIFI_CWMODE     "AT+CWMODE=1\r\n"
@@ -456,13 +457,13 @@ void mavlinkSendImuRaw(void)
     mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
         // time_boot_ms Timestamp (milliseconds since system boot)
             millis(),
-            (int16_t)acc.accADC[X],
-            (int16_t)acc.accADC[Y],
-            (int16_t)acc.accADC[Z],
+            (int16_t)(acc.accADC[X]/scale1*1.953125*GRAVITY_EARTH*1000.0f),
+            (int16_t)(acc.accADC[Y]/scale1*1.953125*GRAVITY_EARTH*1000.0f),
+            (int16_t)(acc.accADC[Z]/scale1*1.953125*GRAVITY_EARTH*1000.0f),
             (int16_t)gyro.gyroADCf[FD_ROLL],
             (int16_t)gyro.gyroADCf[FD_PITCH],
             (int16_t)gyro.gyroADCf[FD_YAW],
-            scale1,
+            0,
             0,
             0,
             18,

@@ -175,7 +175,7 @@ void imuResetAccelerationSum(void)
 
 #endif // USE_ALT_HOLD
 
-static void imuTransformVectorBodyToEarth(t_fp_vector * v)
+void imuTransformVectorBodyToEarth(t_fp_vector * v)
 {
     // From body frame to earth frame
     const float x = rMat[0][0] * v->V.X + rMat[0][1] * v->V.Y + rMat[0][2] * v->V.Z;

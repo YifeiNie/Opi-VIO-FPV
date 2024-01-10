@@ -75,7 +75,7 @@ void getQuaternion(quaternion * q);
 void imuUpdateAttitude(timeUs_t currentTimeUs);
 
 void imuResetAccelerationSum(void);
-static void imuTransformVectorBodyToEarth(t_fp_vector * v)
+void imuTransformVectorBodyToEarth(t_fp_vector *v);
 void imuInit(void);
 
 #ifdef SIMULATOR_BUILD
