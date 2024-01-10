@@ -1,14 +1,13 @@
 #include "common/maths.h"
 #include "sensors/gyro.h"
 #include "sensors/acceleration.h"
-#include "rangefinder/rangefinder.h"
+#include "drivers/rangefinder/rangefinder.h"
 #include "telemetry/mavlink.h"
 #include "flight/imu.h"
-#include "math.h"
+#include <math.h>
 
 #define GRAVITY_EARTH  (9.80665f)
 #define LIMIT( x,min,max ) ( ((x) < (min)) ? (min) : ( ((x) > (max))? (max) : (x) ) )
-#define LPF_1_(a,nowData,oldData) (a * nowData + (1.0f - a) * oldData)	//一阶低通滤波,a为滤波系数（0-1）
 #define safe_div(numerator,denominator,safe_value) ( (denominator == 0)? (safe_value) : ((numerator)/(denominator)) )
 
 static t_fp_vector opti_flow_buff;
@@ -23,13 +22,17 @@ float out_fz = 0;
 
 float mavlink_vx,mavlink_vy,mavlink_vz;
 
+float LPF_1_(float a,float nowData,float oldData) 
+{
+    return ((a) * (nowData)) + ((1.0 - (a)) * (oldData));
+}	//一阶低通滤波,a为滤波系数（0-1）
 float my_pow(double x)
 {
     return powf(x,2);
 }
 float filter_1(float k,float in,float out)   //动态调整滤波截止频率的一阶滤波
 {
-    static float a,b; //误差滤波的平方
+    static float a = 0,b = 0; //误差滤波的平方
     float e_nr; //误差的系数
 
 	LPF_1_(k,(in - out),a); //低通后的变化量
@@ -42,7 +45,7 @@ float filter_1(float k,float in,float out)   //动态调整滤波截止频率的
 void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间差，光流x原始值，光流y原始值，光流高度（单位m）
 {
     float nowData_fx = fx; //输入的光流值，未经过任何处理的光流值
-    float nowData_fy = fx;
+    float nowData_fy = fy;
     float nowData_height = flow_height;
 
     nowData_fx = LPF_1_(0.5, nowData_fx, oldData_fx);
@@ -62,9 +65,9 @@ void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间
     UPflow_speed_x = nowData_height * (UPflow_speed_x - 1.105 * LIMIT(((gyro.gyroADCf[FD_PITCH])/57.295779f),-flow_x,flow_x)); //旋转补偿
     UPflow_speed_y = nowData_height * (UPflow_speed_y + 1.101 * LIMIT(((gyro.gyroADCf[FD_ROLL])/57.295779f),-flow_y,flow_y));
     
-    imu_raw_acc[0] = acc.accADC[X]/scale1*1.953125*GRAVITY_EARTH;  //将加速度的结果转换成m/s^2
-    imu_raw_acc[1] = acc.accADC[Y]/scale1*1.953125*GRAVITY_EARTH;
-    imu_raw_acc[2] = acc.accADC[Z]/scale1*1.953125*GRAVITY_EARTH;
+    imu_raw_acc[0] = acc.accADC[X]/scale1/1000.0f*1.953125*GRAVITY_EARTH;  //将加速度的结果转换成m/s^2
+    imu_raw_acc[1] = acc.accADC[Y]/scale1/1000.0f*1.953125*GRAVITY_EARTH;
+    imu_raw_acc[2] = acc.accADC[Z]/scale1/1000.0f*1.953125*GRAVITY_EARTH;
     
     opti_flow_buff.V.X = imu_raw_acc[0];
     opti_flow_buff.V.Y = imu_raw_acc[1];

@@ -20,7 +20,7 @@
 
 #pragma once
 
-extern uint16_t scale1;
+extern float scale1;
 
 void initMAVLinkTelemetry(void);
 void handleMAVLinkTelemetry(void);

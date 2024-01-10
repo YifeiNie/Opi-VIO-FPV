@@ -163,6 +163,7 @@ COMMON_SRC = \
             drivers/light_ws2811strip.c \
             drivers/rangefinder/flow_check.c \
             drivers/rangefinder/flow_decode.c \
+            drivers/rangefinder/flow_fusion.c \
             drivers/rangefinder/rangefinder_hcsr04.c \
             drivers/rangefinder/rangefinder_lidartf.c \
             drivers/serial_escserial.c \

@@ -286,13 +286,13 @@ static void taskUpdateMag(timeUs_t currentTimeUs)
 #if defined(USE_RANGEFINDER)
 void taskUpdateRangefinder(timeUs_t currentTimeUs)
 {
-    UNUSED(currentTimeUs);
+    // UNUSED(currentTimeUs);
 
     if (!sensors(SENSOR_RANGEFINDER)) {
         return;
     }
     
-    rangefinderUpdate();
+    rangefinderUpdate(currentTimeUs);
 
     //rangefinderProcess(getCosTiltAngle());   
 

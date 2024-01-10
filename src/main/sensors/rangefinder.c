@@ -225,10 +225,10 @@ static int16_t computePseudoSnr(int32_t newReading)
 /*
  * This is called periodically by the scheduler
  */
-void rangefinderUpdate(void)
+void rangefinderUpdate(timeUs_t currentTimeUs)
 {
     if (rangefinder.dev.update) {
-        rangefinder.dev.update(&rangefinder.dev);
+        rangefinder.dev.update(&rangefinder.dev, currentTimeUs);
     }
 }
 

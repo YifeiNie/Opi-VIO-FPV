@@ -49,6 +49,7 @@
 #include "drivers/time.h"
 #include "drivers/light_led.h"
 #include "drivers/rangefinder/rangefinder.h"
+#include "drivers/rangefinder/flow_fusion.h"
 
 #include "config/config.h"
 #include "fc/rc_controls.h"
@@ -115,7 +116,7 @@ static bool mavlinkTelemetryEnabled =  false;
 static portSharing_e mavlinkPortSharing;
 static uint16_t rc_offboard_mode = 0;
 
-uint16_t scale1;
+float scale1;
 
 /* MAVLink datastream rates in Hz */
 static const uint8_t mavRates[] = {
@@ -316,13 +317,13 @@ void configureMAVLinkTelemetryPort(void)
     {
         //WifiInitHardware_Esp8266();
     if (acc.dev.acc_1G > 512 * 4) {
-        scale1 = 8;
+        scale1 = 8.0;
     } else if (acc.dev.acc_1G > 512 * 2) {
-        scale1 = 4;
+        scale1 = 4.0;
     } else if (acc.dev.acc_1G >= 512) {
-        scale1 = 2;
+        scale1 = 2.0;
     } else {
-        scale1 = 1;
+        scale1 = 1.0;
     }
         mavlinkstate_position++;
     }
@@ -457,12 +458,12 @@ void mavlinkSendImuRaw(void)
     mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
         // time_boot_ms Timestamp (milliseconds since system boot)
             millis(),
-            (int16_t)(acc.accADC[X]/scale1*1.953125*GRAVITY_EARTH*1000.0f),
-            (int16_t)(acc.accADC[Y]/scale1*1.953125*GRAVITY_EARTH*1000.0f),
-            (int16_t)(acc.accADC[Z]/scale1*1.953125*GRAVITY_EARTH*1000.0f),
-            (int16_t)gyro.gyroADCf[FD_ROLL],
-            (int16_t)gyro.gyroADCf[FD_PITCH],
-            (int16_t)gyro.gyroADCf[FD_YAW],
+            (int16_t)((float)(acc.accADC[X])/scale1*1.953125*GRAVITY_EARTH),
+            (int16_t)((float)(acc.accADC[Y])/scale1*1.953125*GRAVITY_EARTH),
+            (int16_t)((float)(acc.accADC[Z])/scale1*1.953125*GRAVITY_EARTH),
+            (int16_t)(gyro.gyroADCf[FD_ROLL] * 17.4532925 * 1000.0f),
+            (int16_t)(gyro.gyroADCf[FD_PITCH] * 17.4532925 * 1000.0f),
+            (int16_t)(gyro.gyroADCf[FD_YAW] * 17.4532925 * 1000.0f),
             0,
             0,
             0,
@@ -509,9 +510,9 @@ void mavlinksendAltitude(void) //ID 141
 
     mavlink_msg_altitude_pack(0, 200, &mavMsg,
     millis(),
-    -Get_Height_PID_Output(0),  //altitude_monotonic
-    Get_Height_PID_Output(1),  //altitude_amsl
-    Get_Height_PID_Output(2),  //altitude_local
+    Get_Opti_Vec_X(),  //altitude_monotonic
+    Get_Opti_Vec_Y(),  //altitude_amsl
+    Get_Opti_Vec_Z(),  //altitude_local
     Get_Velocity_PID_Output(0)*180.0/3.1415926f, //altitude_relative
     Get_Velocity_PID_Output(1)*180.0/3.1415926f,  //altitude_terrain
     Get_Velocity_PID_Output(2)  //bottom_clearance
