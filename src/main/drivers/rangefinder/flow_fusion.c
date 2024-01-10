@@ -4,6 +4,7 @@
 #include "rangefinder/rangefinder.h"
 #include "telemetry/mavlink.h"
 #include "flight/imu.h"
+#include "math.h"
 
 #define GRAVITY_EARTH  (9.80665f)
 #define LIMIT( x,min,max ) ( ((x) < (min)) ? (min) : ( ((x) > (max))? (max) : (x) ) )
@@ -22,12 +23,16 @@ float out_fz = 0;
 
 float mavlink_vx,mavlink_vy,mavlink_vz;
 
+float my_pow(double x)
+{
+    return powf(x,2);
+}
 float filter_1(float k,float in,float out)   //动态调整滤波截止频率的一阶滤波
 {
-    float a,b; //误差滤波的平方
+    static float a,b; //误差滤波的平方
     float e_nr; //误差的系数
 
-	LPF_1_(k,(in-out),a); //低通后的变化量
+	LPF_1_(k,(in - out),a); //低通后的变化量
 	b = my_pow(in - out);  //求一个数平方函数
 	e_nr = LIMIT(safe_div(my_pow(a),((b) + my_pow(a)),0),0,1); //变化量的有效率，LIMIT 将该数限制在0-1之间，safe_div为安全除法
     out += e_nr * (in - out);
