@@ -90,7 +90,7 @@
 #pragma GCC diagnostic pop
 
 #define TELEMETRY_MAVLINK_INITIAL_PORT_MODE MODE_RXTX
-#define TELEMETRY_MAVLINK_MAXRATE 200
+#define TELEMETRY_MAVLINK_MAXRATE 150
 #define TELEMETRY_MAVLINK_DELAY ((1000 * 1000) / TELEMETRY_MAVLINK_MAXRATE) //1000*1000/200us=5ms
 #define GRAVITY_EARTH  (9.80665f)
 
@@ -513,9 +513,9 @@ void mavlinksendAltitude(void) //ID 141
     Get_Opti_Vec_X(),  //altitude_monotonic
     Get_Opti_Vec_Y(),  //altitude_amsl
     Get_Opti_Vec_Z(),  //altitude_local
-    Get_Velocity_PID_Output(0)*180.0/3.1415926f, //altitude_relative
-    Get_Velocity_PID_Output(1)*180.0/3.1415926f,  //altitude_terrain
-    Get_Velocity_PID_Output(2)  //bottom_clearance
+    gyro.gyroADCf[FD_ROLL], //altitude_relative
+    gyro.gyroADCf[FD_PITCH],  //altitude_terrain
+    get_offboard.thrust  //bottom_clearance
     );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);
@@ -531,14 +531,14 @@ void mavlinkSendHUD(void) //ID 74
         (float)FlowGetLatestOptiY(),
         // heading Current heading in degrees, in compass units (0..360, 0=north)
         // headingOrScaledMilliAmpereHoursDrawn(),
-        attitude_controller.sum,
+        rc_offboard_mode,
         // throttle Current throttle setting in integer percent, 0 to 100
         scaleRange(constrain(rcData[THROTTLE], PWM_RANGE_MIN, PWM_RANGE_MAX), PWM_RANGE_MIN, PWM_RANGE_MAX, 0, 100),
         // alt Current altitude (MSL), in meters, if we have sonar or baro use them, otherwise use GPS (less accurate)
         // attitude_controller.sum,
         //Timestamp_out
-        (float)(FlowGetTime()),
-        (float)rangefinderGetLatestAltitude()
+        (float)rangefinderGetLatestAltitude(),
+        attitude_controller.sum
         );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);
@@ -571,6 +571,7 @@ void processMAVLinkTelemetry(void)
 
     if(mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
         mavlinkSendHUD();
+        mavlinksendAltitude();
         if(attitude_controller.sum >= 180)
         {
             attitude_controller.sum = 0;

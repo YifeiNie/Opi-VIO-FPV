@@ -44,30 +44,38 @@ float filter_1(float k,float in,float out)   //动态调整滤波截止频率的
 
 void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间差，光流x原始值，光流y原始值，光流高度（单位m）
 {
-    float nowData_fx = fx; //输入的光流值，未经过任何处理的光流值
-    float nowData_fy = fy;
-    float nowData_height = flow_height;
+    float nowData_fx = fx / 10000.0; //输入的光流值，未经过任何处理的光流值
+    float nowData_fy = fy / 10000.0;
+    float nowData_height = flow_height / 1000.0;
 
-    nowData_fx = LPF_1_(0.5, nowData_fx, oldData_fx);
-    nowData_fy = LPF_1_(0.5, nowData_fy, oldData_fy);
+    nowData_fx = LPF_1_(0.9, nowData_fx, oldData_fx);
+    nowData_fy = LPF_1_(0.9, nowData_fy, oldData_fy);
     nowData_height = LPF_1_(0.9, nowData_height, oldData_height);
 
     float UPflow_speed_x = nowData_fx / dT;  //转换成rad/s
     float UPflow_speed_y = nowData_fy / dT;
-    float UPflow_speed_z = (nowData_height - oldData_height) / dT;
+    float UPflow_speed_z = 0;
+    if(nowData_height - oldData_height > 0.25)
+    {
+        UPflow_speed_z = (nowData_height - oldData_height) / dT;
+    }
+    else
+    {
+        UPflow_speed_z = (nowData_height - oldData_height) / dT / 2.0;
+    }
 
     oldData_fx = nowData_fx;
     oldData_fy = nowData_fy;
     oldData_height = nowData_height;
     /* --------------------利用陀螺仪对光流进行补偿，保证在原地旋转时，光流输出几乎为 0 -----------------*/
     /* 1.105和1.101系数需要自己一个一个试，用来抵消低通滤波带来的幅值减小 */
-    float flow_x = 1.0,flow_y = 1.0; //限幅设置 
+    float flow_x = 0.8,flow_y = 0.4; //限幅设置 
     UPflow_speed_x = nowData_height * (UPflow_speed_x - 1.105 * LIMIT(((gyro.gyroADCf[FD_PITCH])/57.295779f),-flow_x,flow_x)); //旋转补偿
-    UPflow_speed_y = nowData_height * (UPflow_speed_y + 1.101 * LIMIT(((gyro.gyroADCf[FD_ROLL])/57.295779f),-flow_y,flow_y));
+    UPflow_speed_y = nowData_height * (UPflow_speed_y - 1.101 * LIMIT(((gyro.gyroADCf[FD_ROLL])/57.295779f),-flow_y,flow_y));
     
-    imu_raw_acc[0] = acc.accADC[X]/scale1/1000.0f*1.953125*GRAVITY_EARTH;  //将加速度的结果转换成m/s^2
-    imu_raw_acc[1] = acc.accADC[Y]/scale1/1000.0f*1.953125*GRAVITY_EARTH;
-    imu_raw_acc[2] = acc.accADC[Z]/scale1/1000.0f*1.953125*GRAVITY_EARTH;
+    imu_raw_acc[0] = (acc.accADC[X]/scale1/1000.0f)*1.953125*GRAVITY_EARTH;  //将加速度的结果转换成m/s^2
+    imu_raw_acc[1] = (acc.accADC[Y]/scale1/1000.0f)*1.953125*GRAVITY_EARTH;
+    imu_raw_acc[2] = (acc.accADC[Z]/scale1/1000.0f)*1.953125*GRAVITY_EARTH;
     
     opti_flow_buff.V.X = imu_raw_acc[0];
     opti_flow_buff.V.Y = imu_raw_acc[1];
@@ -75,17 +83,22 @@ void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间
     
     imuTransformVectorBodyToEarth(&opti_flow_buff); //机体系转向世界坐标系
     
+    // opti_flow_buff.V.Z = opti_flow_buff.V.Z - GRAVITY_EARTH;
     out_fx = out_fx + opti_flow_buff.V.X*dT; //计算加速度计的积分得到世界坐标系的速度
     out_fy = out_fy + opti_flow_buff.V.Y*dT;
-    out_fz = out_fz + opti_flow_buff.V.Z*dT;
+    // out_fz = out_fz + opti_flow_buff.V.Z*dT;
     
-    out_fx = filter_1(0.5,UPflow_speed_x,out_fx);  //动态设置滤波系数,将光流值和加速度计得到的速度值进行融合
-    out_fy = filter_1(0.5,UPflow_speed_y,out_fy);  //参数 滤波系数，光流值，加速度计得到的速度值
-    out_fz = filter_1(0.5,UPflow_speed_z,out_fz); 
+    out_fx = filter_1(0.6,UPflow_speed_y,out_fx);  //动态设置滤波系数,将光流值和加速度计得到的速度值进行融合
+    out_fy = filter_1(0.6,UPflow_speed_x,out_fy);  //参数 滤波系数，光流值，加速度计得到的速度值
+    //out_fz = filter_1(0.7,UPflow_speed_z,out_fz); 
 
-    mavlink_vx = out_fx;
-    mavlink_vy = out_fy;
-    mavlink_vz = out_fz;
+    // mavlink_vx = out_fx;
+    // mavlink_vy = out_fy;
+    // mavlink_vz = out_fz;
+
+    mavlink_vx = UPflow_speed_x;
+    mavlink_vy = UPflow_speed_y;
+    mavlink_vz = dT;
 }
 
 float Get_Opti_Vec_X(void)

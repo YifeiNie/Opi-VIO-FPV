@@ -181,6 +181,12 @@ void imuTransformVectorBodyToEarth(t_fp_vector * v)
     const float x = rMat[0][0] * v->V.X + rMat[0][1] * v->V.Y + rMat[0][2] * v->V.Z;
     const float y = rMat[1][0] * v->V.X + rMat[1][1] * v->V.Y + rMat[1][2] * v->V.Z;
     const float z = rMat[2][0] * v->V.X + rMat[2][1] * v->V.Y + rMat[2][2] * v->V.Z;
+    // float ax = (v->V.X * rMat[2][2] - v->V.Z * rMat[2][1]);
+    // float ay = (v->V.Z * rMat[2][0] - v->V.X * rMat[2][2]);
+    // float az = (v->V.X * rMat[2][1] - v->V.Y * rMat[2][0]);
+    // const float x = rMat[0][0] * v->V.X + rMat[1][0] * v->V.Y + rMat[2][0] * v->V.Z;
+    // const float y = rMat[0][1] * v->V.X + rMat[1][1] * v->V.Y + rMat[2][1] * v->V.Z;
+    // const float z = rMat[0][2] * v->V.X + rMat[1][2] * v->V.Y + rMat[2][2] * v->V.Z;
 
     v->V.X = x;
     v->V.Y = y;

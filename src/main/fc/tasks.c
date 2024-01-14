@@ -294,7 +294,7 @@ void taskUpdateRangefinder(timeUs_t currentTimeUs)
     
     rangefinderUpdate(currentTimeUs);
 
-    //rangefinderProcess(getCosTiltAngle());   
+    rangefinderProcess(getCosTiltAngle());   
 
     // Update_Kalman();
 }
@@ -442,7 +442,7 @@ task_attribute_t task_attributes[TASK_COUNT] = {
 #endif
 
 #ifdef USE_RANGEFINDER
-    [TASK_RANGEFINDER] = DEFINE_TASK("RANGEFINDER", NULL, NULL, taskUpdateRangefinder, TASK_PERIOD_HZ(1), TASK_PRIORITY_LOW),
+    [TASK_RANGEFINDER] = DEFINE_TASK("RANGEFINDER", NULL, NULL, taskUpdateRangefinder, TASK_PERIOD_HZ(50), TASK_PRIORITY_LOW),
 #endif
 
 #ifdef USE_CRSF_V3

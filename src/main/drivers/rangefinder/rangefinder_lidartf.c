@@ -150,11 +150,11 @@ void lidarTFInit(rangefinderDev_t *dev)
 
 void lidarTFUpdate(rangefinderDev_t *dev, timeUs_t currentTimeUs)
 {
-    // UNUSED(dev);
+    UNUSED(dev);
     static timeUs_t lastTimeUs = 0;
     float dTime = (currentTimeUs - lastTimeUs)*1e-6f;
-    float fx = FlowGetX(dev) / 1000.0;
-    float fy = FlowGetY(dev) / 1000.0;
+    float fx = FlowGetX(dev);
+    float fy = FlowGetY(dev);
     flow_fusion(dTime, fx, fy, ground_distance);
     lastTimeUs = currentTimeUs;
 }
