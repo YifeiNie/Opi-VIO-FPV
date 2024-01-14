@@ -189,7 +189,7 @@ void imuTransformVectorBodyToEarth(t_fp_vector * v)
     // const float z = rMat[0][2] * v->V.X + rMat[1][2] * v->V.Y + rMat[2][2] * v->V.Z;
 
     v->V.X = x;
-    v->V.Y = y;
+    v->V.Y = -y;
     v->V.Z = z;
 }
 

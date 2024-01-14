@@ -90,7 +90,7 @@
 #pragma GCC diagnostic pop
 
 #define TELEMETRY_MAVLINK_INITIAL_PORT_MODE MODE_RXTX
-#define TELEMETRY_MAVLINK_MAXRATE 150
+#define TELEMETRY_MAVLINK_MAXRATE 180
 #define TELEMETRY_MAVLINK_DELAY ((1000 * 1000) / TELEMETRY_MAVLINK_MAXRATE) //1000*1000/200us=5ms
 #define GRAVITY_EARTH  (9.80665f)
 
@@ -122,7 +122,7 @@ float scale1;
 static const uint8_t mavRates[] = {
     [MAV_DATA_STREAM_EXTENDED_STATUS] = 2, //2Hz
     [MAV_DATA_STREAM_RC_CHANNELS] = 40, //5Hz
-    [MAV_DATA_STREAM_POSITION] = 30, //100Hz
+    [MAV_DATA_STREAM_POSITION] = 60, //100Hz
     [MAV_DATA_STREAM_EXTRA1] = 40, //10Hz
     [MAV_DATA_STREAM_EXTRA2] = 100, //100Hz
     [MAV_DATA_STREAM_EXTRA3] = 5
@@ -513,8 +513,8 @@ void mavlinksendAltitude(void) //ID 141
     Get_Opti_Vec_X(),  //altitude_monotonic
     Get_Opti_Vec_Y(),  //altitude_amsl
     Get_Opti_Vec_Z(),  //altitude_local
-    gyro.gyroADCf[FD_ROLL], //altitude_relative
-    gyro.gyroADCf[FD_PITCH],  //altitude_terrain
+    0, //altitude_relative
+    0,  //altitude_terrain
     get_offboard.thrust  //bottom_clearance
     );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);

@@ -30,11 +30,12 @@
 
 #include "io/serial.h"
 
-#include "drivers/time.h"
 #include "drivers/rangefinder/rangefinder.h"
 #include "drivers/rangefinder/rangefinder_lidartf.h"
 #include "drivers/rangefinder/flow_decode.h"
 #include "drivers/rangefinder/flow_fusion.h"
+
+#include "flight/imu.h"
 
 #define TF_DEVTYPE_NONE 0
 #define TF_DEVTYPE_MINI 1
@@ -128,6 +129,8 @@ static int16_t integration_timespan = 0;
 uint8_t test_flow_state = 0;
 static int16_t optiflow_state = 0;
 
+//timeMs_t timeMs_Last = 0;
+
 static void lidarTFSendCommand(void)
 {
     switch (tfDevtype) {
@@ -155,7 +158,7 @@ void lidarTFUpdate(rangefinderDev_t *dev, timeUs_t currentTimeUs)
     float dTime = (currentTimeUs - lastTimeUs)*1e-6f;
     float fx = FlowGetX(dev);
     float fy = FlowGetY(dev);
-    flow_fusion(dTime, fx, fy, ground_distance);
+    flow_fusion(dTime, fx, fy, ground_distance * getCosTiltAngle());
     lastTimeUs = currentTimeUs;
 }
 
@@ -347,6 +350,7 @@ static bool lidarTFDetect(rangefinderDev_t *dev, uint8_t devtype)
     dev->init = &lidarTFInit;
     dev->update = &lidarTFUpdate;
     dev->read = &lidarTFGetDistance;
+
 
     return true;
 }
