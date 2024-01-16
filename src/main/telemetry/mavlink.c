@@ -461,9 +461,9 @@ void mavlinkSendImuRaw(void)
             (int16_t)((float)(acc.accADC[X])/scale1*1.953125*GRAVITY_EARTH),
             (int16_t)((float)(acc.accADC[Y])/scale1*1.953125*GRAVITY_EARTH),
             (int16_t)((float)(acc.accADC[Z])/scale1*1.953125*GRAVITY_EARTH),
-            (int16_t)(gyro.gyroADCf[FD_ROLL] * 17.4532925 * 1000.0f),
-            (int16_t)(gyro.gyroADCf[FD_PITCH] * 17.4532925 * 1000.0f),
-            (int16_t)(gyro.gyroADCf[FD_YAW] * 17.4532925 * 1000.0f),
+            (int16_t)(gyro.gyroADCf[FD_ROLL] * 10.0f),
+            (int16_t)(gyro.gyroADCf[FD_PITCH] * 10.0f),
+            (int16_t)(gyro.gyroADCf[FD_YAW] * 10.0f),
             0,
             0,
             0,
@@ -538,7 +538,7 @@ void mavlinkSendHUD(void) //ID 74
         // attitude_controller.sum,
         //Timestamp_out
         (float)rangefinderGetLatestAltitude(),
-        attitude_controller.sum
+        (float)FlowGetConfidence()
         );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);

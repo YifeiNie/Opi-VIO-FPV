@@ -35,6 +35,8 @@
 #include "drivers/rangefinder/flow_decode.h"
 #include "drivers/rangefinder/flow_fusion.h"
 
+#include "fc/runtime_config.h"
+
 #include "flight/imu.h"
 
 #define TF_DEVTYPE_NONE 0
@@ -158,7 +160,10 @@ void lidarTFUpdate(rangefinderDev_t *dev, timeUs_t currentTimeUs)
     float dTime = (currentTimeUs - lastTimeUs)*1e-6f;
     float fx = FlowGetX(dev);
     float fy = FlowGetY(dev);
-    flow_fusion(dTime, fx, fy, ground_distance * getCosTiltAngle());
+    if(ARMING_FLAG(ARMED))
+    {
+        flow_fusion(dTime, fx, fy, ground_distance * getCosTiltAngle());
+    }
     lastTimeUs = currentTimeUs;
 }
 

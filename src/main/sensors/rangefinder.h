@@ -71,4 +71,5 @@ bool rangefinderIsHealthy(void);
 
 float FlowGetLatestOptiX(void);
 float FlowGetLatestOptiY(void);
+uint8_t FlowGetConfidence(void);
 int16_t FlowGetTime(void);

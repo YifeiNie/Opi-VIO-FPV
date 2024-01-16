@@ -328,9 +328,9 @@ bool rangefinderProcess(float cosTiltAngle)
         rangefinder.calculatedAltitude = distance * cosTiltAngle;
         rangefinder.flow_x_integral = FlowGetX(&rangefinder.dev);
         rangefinder.flow_y_integral = FlowGetY(&rangefinder.dev);
-        // rangefinder.flow_valid = FlowGetValid(&rangefinder.dev);
-        // rangefinder.tof_confidence = GetTofConfidence(&rangefinder.dev);
-        // rangefinder.integration_timespan = FlowGetIntegrationTimespan(&rangefinder.dev);
+        rangefinder.flow_valid = FlowGetValid(&rangefinder.dev);
+        rangefinder.tof_confidence = GetTofConfidence(&rangefinder.dev);
+        rangefinder.integration_timespan = FlowGetIntegrationTimespan(&rangefinder.dev);
         //kalman_filter1.Z_current->element[0] = rangefinder.calculatedAltitude/100.0f;
     }
 
@@ -377,6 +377,10 @@ float FlowGetLatestOptiY(void)
     return flow_y;
 }
 
+uint8_t FlowGetConfidence(void)
+{
+    return rangefinder.tof_confidence;
+}
 // int32_t FlowGetLatestOptiZ(void)
 // {
 //     return rangefinder.rawAltitude;

@@ -57,7 +57,7 @@ void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间
     float UPflow_speed_z = 0;
     if(nowData_height - oldData_height != 0)
     {
-        if(nowData_height - oldData_height > 0.3)
+        if(nowData_height - oldData_height <= 0.3)
         {
             UPflow_speed_z = (nowData_height - oldData_height) / dT;
         }
