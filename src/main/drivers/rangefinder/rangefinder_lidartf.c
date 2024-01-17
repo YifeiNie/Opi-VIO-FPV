@@ -273,24 +273,24 @@ int32_t lidarTFGetDistance(rangefinderDev_t *dev)
 int16_t FlowGetX(rangefinderDev_t *dev)
 {
     UNUSED(dev);
-    if(valid == 0xF5){
-        return flow_x_integral;
-    }
-    else{
-        return -1;
-    }
+    // if(valid == 0xF5){
+    return flow_x_integral;
+    // }
+    // else{
+    //     return -1;
+    // }
 
 }
 
 int16_t FlowGetY(rangefinderDev_t *dev)
 {
     UNUSED(dev);
-    if(valid == 0xF5){
-        return flow_y_integral;
-    }
-    else{
-        return -1;
-    }
+    // if(valid == 0xF5){
+    return flow_y_integral;
+    // }
+    // else{
+    //     return -1;
+    // }
 }
 
 int16_t FlowGetIntegrationTimespan(rangefinderDev_t *dev)
@@ -317,10 +317,16 @@ static void OptiFlowReceive(uint16_t c, void* data){
     UNUSED(data);
     if(up_parse_char((uint8_t)c))
     {
-        flow_x_integral = up_data.flow_x_integral;  //X像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
-        flow_y_integral = up_data.flow_y_integral;  //y像素点累计时间内的累加位移
-        integration_timespan = up_data.integration_timespan;
-        ground_distance = up_data.ground_distance;
+        if(up_data.valid == 0xF5)
+        {
+            flow_x_integral = up_data.flow_x_integral;  //X像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
+            flow_y_integral = up_data.flow_y_integral;  //y像素点累计时间内的累加位移
+        }
+        //integration_timespan = up_data.integration_timespan;
+        if(up_data.tof_confidence >= 0x32)
+        {
+            ground_distance = up_data.ground_distance;
+        }
         valid = up_data.valid;  //光流数据是否可用 0x00为不可用，0xF5(245)为光流数据可用
         tof_confidence = up_data.tof_confidence; //测距置信度 0x64表示100%
 
