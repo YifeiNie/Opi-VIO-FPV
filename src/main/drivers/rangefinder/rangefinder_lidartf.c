@@ -323,10 +323,7 @@ static void OptiFlowReceive(uint16_t c, void* data){
             flow_y_integral = up_data.flow_y_integral;  //y像素点累计时间内的累加位移
         }
         //integration_timespan = up_data.integration_timespan;
-        if(up_data.tof_confidence >= 0x32)
-        {
-            ground_distance = up_data.ground_distance;
-        }
+        ground_distance = up_data.ground_distance;
         valid = up_data.valid;  //光流数据是否可用 0x00为不可用，0xF5(245)为光流数据可用
         tof_confidence = up_data.tof_confidence; //测距置信度 0x64表示100%
 
