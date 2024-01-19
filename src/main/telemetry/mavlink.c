@@ -425,7 +425,6 @@ void mavlinkSendHeartbeat(void)  //ID 0
         mavModes,
         // custom_mode A bitfield for use for autopilot-specific flags.
         mavCustomMode,
-        // (uint8_t)attitude_controller.sum,
         // system_status System status flag, see MAV_STATE ENUM
         mavSystemState);
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
@@ -453,8 +452,6 @@ void mavlinkSendHeartbeat(void)  //ID 0
 void mavlinkSendImuRaw(void)
 {
     uint16_t msgLength;
-    // float r_x = attitude_controller.r_x * 1000.0f;
-    // float r_y = attitude_controller.r_y * 1000.0f;
     mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
         // time_boot_ms Timestamp (milliseconds since system boot)
             millis(),
@@ -493,11 +490,6 @@ void mavlinkSendAttitude(void) //ID 30
         DEGREES_TO_RADIANS(gyro.gyroADCf[FD_PITCH]),
         // yawspeed Yaw angular speed (rad/s)
         DEGREES_TO_RADIANS(gyro.gyroADCf[FD_YAW])
-        // DECIDEGREES_TO_RADIANS(attitude.values.roll),
-        // // pitch Pitch angle (rad)
-        // DECIDEGREES_TO_RADIANS(-attitude.values.pitch),
-        // // yaw Yaw angle (rad)
-        // DECIDEGREES_TO_RADIANS(attitude.values.yaw)
         );
         
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
@@ -637,19 +629,6 @@ void WifiInitHardware_Esp8266(void)
             }  
         };
         c = 0;
-
-//         if(wifi_uart_baud == 0){
-//             serialPrint(mavlinkPort, "AT+UART_DEF=230400,8,1,0,0\r\n");
-//             nowtime = millis();
-//             c = serialRead(mavlinkPort);
-//             while(c != 'O')
-//             { 
-//                 if(millis()-nowtime > 500){
-//                     serialPrint(mavlinkPort, "wait0\r\n");     
-//                     break;               
-//                 }  
-//             };
-//         }
 
         serialPrint(mavlinkPort, WIFI_RST);
         nowtime = millis();

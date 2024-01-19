@@ -127,9 +127,6 @@ static uint16_t ground_distance = 0;
 static uint8_t valid = 0;
 static uint8_t tof_confidence = 0;
 static int16_t integration_timespan = 0;
-//测试光流是否正常工作，该标志位用完记得删除
-uint8_t test_flow_state = 0;
-static int16_t optiflow_state = 0;
 
 //timeMs_t timeMs_Last = 0;
 
@@ -158,11 +155,11 @@ void lidarTFUpdate(rangefinderDev_t *dev, timeUs_t currentTimeUs)
     UNUSED(dev);
     static timeUs_t lastTimeUs = 0;
     float dTime = (currentTimeUs - lastTimeUs)*1e-6f;
-    float fx = FlowGetX(dev);
-    float fy = FlowGetY(dev);
+    // float fx = FlowGetX(dev);
+    // float fy = FlowGetY(dev);
     if(ARMING_FLAG(ARMED))
     {
-        flow_fusion(dTime, fx, fy, ground_distance * getCosTiltAngle());
+        flow_fusion(dTime, flow_x_integral, flow_y_integral, ground_distance * getCosTiltAngle());
     }
     lastTimeUs = currentTimeUs;
 }
@@ -273,24 +270,13 @@ int32_t lidarTFGetDistance(rangefinderDev_t *dev)
 int16_t FlowGetX(rangefinderDev_t *dev)
 {
     UNUSED(dev);
-    // if(valid == 0xF5){
     return flow_x_integral;
-    // }
-    // else{
-    //     return -1;
-    // }
-
 }
 
 int16_t FlowGetY(rangefinderDev_t *dev)
 {
     UNUSED(dev);
-    // if(valid == 0xF5){
     return flow_y_integral;
-    // }
-    // else{
-    //     return -1;
-    // }
 }
 
 int16_t FlowGetIntegrationTimespan(rangefinderDev_t *dev)
@@ -328,7 +314,6 @@ static void OptiFlowReceive(uint16_t c, void* data){
         tof_confidence = up_data.tof_confidence; //测距置信度 0x64表示100%
 
         lidarTFValue = (int32_t)ground_distance;
-        optiflow_state = 1;
         return;
     }
 

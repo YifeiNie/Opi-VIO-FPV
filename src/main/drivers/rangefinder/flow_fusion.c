@@ -58,7 +58,6 @@ float filter_1_test(float hz,float dt,float in, float out)   //动态调整滤�
 void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间差，光流x原始值，光流y原始值，光流高度（单位m）
 {
     static int8_t fun_run_state = 0;
-
     //输入的光流值，未经过任何处理的光流值
     float nowData_fx = fx / 10000.0; 
     float nowData_fy = fy / 10000.0;
@@ -79,16 +78,16 @@ void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间
     float UPflow_speed_y = nowData_height * (UPflow_rad_x - LIMIT(((gyro.gyroADCf[FD_PITCH])/57.295779f),-flow_x,flow_x)); //旋转补偿
     float UPflow_speed_x = nowData_height * (UPflow_rad_y - LIMIT(((gyro.gyroADCf[FD_ROLL])/57.295779f),-flow_y,flow_y));
 
-    // //剔除光流异常值
-    // if(abs(UPflow_speed_x - old_speed_x) > 2)
-    // {
-    //     UPflow_speed_x = old_speed_x;
-    // }
+    //剔除光流异常值
+    if(abs(UPflow_speed_x - last_out_vx) > 0.8)
+    {
+        UPflow_speed_x = last_out_vx;
+    }
 
-    // if(abs(UPflow_speed_y - old_speed_y) > 2)
-    // {
-    //     UPflow_speed_y = old_speed_y;
-    // }
+    if(abs(UPflow_speed_y - last_out_vy) > 0.8)
+    {
+        UPflow_speed_y = last_out_vy;
+    }
 
     imu_raw_acc[0] = (acc.accADC[X]/scale1/1000.0f)*1.953125*GRAVITY_EARTH;  //将加速度的结果转换成m/s^2
     imu_raw_acc[1] = (acc.accADC[Y]/scale1/1000.0f)*1.953125*GRAVITY_EARTH;
@@ -119,19 +118,19 @@ void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间
         out_vy = out_vy + opti_flow_buff.V.Y*dT*0.5;
     }
 
-    out_vx = filter_1(0.7,UPflow_speed_x,out_vx);  //动态设置滤波系数,将光流值和加速度计得到的速度值进行融合
-    out_vy = filter_1(0.7,UPflow_speed_y,out_vy);  //参数 滤波系数，光流值，加速度计得到的速度值
+    out_vx = filter_1(0.9,UPflow_speed_x,out_vx);  //动态设置滤波系数,将光流值和加速度计得到的速度值进行融合
+    out_vy = filter_1(0.9,UPflow_speed_y,out_vy);  //参数 滤波系数，光流值，加速度计得到的速度值
+
+    // UPflow_speed_x_test = filter_1_test(5, dT, UPflow_speed_x, out_vx);
+    // UPflow_speed_y_test = filter_1_test(5, dT, UPflow_speed_y, out_vy);
+    // UPflow_speed_z_test = (nowData_height - oldData_height) / dT;
+
+    out_vx = LPF_1_(0.85, out_vx, last_out_vx);
+    out_vy = LPF_1_(0.85, out_vy, last_out_vy);
     out_vz = LPF_1_(0.9, nowData_height, oldData_height);
-    oldData_height = out_vz;
-
-    UPflow_speed_x_test = filter_1_test(5, dT, UPflow_speed_x, out_vx);
-    UPflow_speed_y_test = filter_1_test(5, dT, UPflow_speed_y, out_vy);
-    UPflow_speed_z_test = (nowData_height - oldData_height) / dT;
-
-    out_vx = LPF_1_(0.6, out_vx, last_out_vx);
-    out_vy = LPF_1_(0.6, out_vy, last_out_vy);
     last_out_vx = out_vx;
     last_out_vy = out_vy;
+    oldData_height = out_vz;
 
     mavlink_vx = out_vx;
     mavlink_vy = out_vy;
