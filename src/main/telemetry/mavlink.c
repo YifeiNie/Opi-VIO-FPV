@@ -505,9 +505,9 @@ void mavlinksendAltitude(void) //ID 141
     Get_Opti_Vec_X(),  //altitude_monotonic
     Get_Opti_Vec_Y(),  //altitude_amsl
     Get_Opti_Vec_Z(),  //altitude_local
-    Get_Flow_Vec_X(), //altitude_relative
-    Get_Flow_Vec_Y(),  //altitude_terrain
-    Get_Flow_Vec_Z()  //bottom_clearance
+    0, //altitude_relative
+    0,  //altitude_terrain
+    0  //bottom_clearance
     );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);

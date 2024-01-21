@@ -79,12 +79,12 @@ void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间
     float UPflow_speed_x = nowData_height * (UPflow_rad_y - LIMIT(((gyro.gyroADCf[FD_ROLL])/57.295779f),-flow_y,flow_y));
 
     //剔除光流异常值
-    if(abs(UPflow_speed_x - last_out_vx) > 0.8)
+    if(fabs(UPflow_speed_x - last_out_vx) > 0.8)
     {
         UPflow_speed_x = last_out_vx;
     }
 
-    if(abs(UPflow_speed_y - last_out_vy) > 0.8)
+    if(fabs(UPflow_speed_y - last_out_vy) > 0.8)
     {
         UPflow_speed_y = last_out_vy;
     }
