@@ -127,6 +127,7 @@ static uint16_t ground_distance = 0;
 static uint8_t valid = 0;
 static uint8_t tof_confidence = 0;
 static int16_t integration_timespan = 0;
+uint8_t opti_flow_rc_state = 0;
 
 //timeMs_t timeMs_Last = 0;
 
@@ -157,7 +158,7 @@ void lidarTFUpdate(rangefinderDev_t *dev, timeUs_t currentTimeUs)
     float dTime = (currentTimeUs - lastTimeUs)*1e-6f;
     // float fx = FlowGetX(dev);
     // float fy = FlowGetY(dev);
-    if(ARMING_FLAG(ARMED))
+    if(opti_flow_rc_state == 1)
     {
         flow_fusion(dTime, flow_x_integral, flow_y_integral, ground_distance * getCosTiltAngle());
     }

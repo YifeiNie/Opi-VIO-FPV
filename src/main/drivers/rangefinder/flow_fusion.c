@@ -79,15 +79,15 @@ void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间
     float UPflow_speed_x = nowData_height * (UPflow_rad_y - LIMIT(((gyro.gyroADCf[FD_ROLL])/57.295779f),-flow_y,flow_y));
 
     //剔除光流异常值
-    if(fabs(UPflow_speed_x - last_out_vx) > 0.8)
-    {
-        UPflow_speed_x = last_out_vx;
-    }
+    // if(fabs(UPflow_speed_x - last_out_vx) > 3.0)
+    // {
+    //     UPflow_speed_x = last_out_vx;
+    // }
 
-    if(fabs(UPflow_speed_y - last_out_vy) > 0.8)
-    {
-        UPflow_speed_y = last_out_vy;
-    }
+    // if(fabs(UPflow_speed_y - last_out_vy) > 3.0)
+    // {
+    //     UPflow_speed_y = last_out_vy;
+    // }
 
     imu_raw_acc[0] = (acc.accADC[X]/scale1/1000.0f)*1.953125*GRAVITY_EARTH;  //将加速度的结果转换成m/s^2
     imu_raw_acc[1] = (acc.accADC[Y]/scale1/1000.0f)*1.953125*GRAVITY_EARTH;

@@ -51,6 +51,7 @@
 #include "drivers/system.h"
 #include "drivers/time.h"
 #include "drivers/transponder_ir.h"
+#include "drivers/rangefinder/rangefinder.h"
 
 #include "fc/controlrate_profile.h"
 #include "fc/rc.h"
@@ -1114,9 +1115,11 @@ void processRxModes(timeUs_t currentTimeUs)
 #ifdef USE_POSITION_YAW_HOLD
     if(!IS_RC_MODE_ACTIVE(BOXUSER3))
     {
-        DISABLE_FLIGHT_MODE(POSITION_YAW_HOLD_MODE);     
+        opti_flow_rc_state = 0;
+        //DISABLE_FLIGHT_MODE(POSITION_YAW_HOLD_MODE);     
     }else{
-        ENABLE_FLIGHT_MODE(POSITION_YAW_HOLD_MODE); 
+        opti_flow_rc_state = 1;
+        //ENABLE_FLIGHT_MODE(POSITION_YAW_HOLD_MODE); 
     }
 #endif
 
@@ -1137,7 +1140,7 @@ void processRxModes(timeUs_t currentTimeUs)
         ENABLE_FLIGHT_MODE(ANGLE_RATE_HOLD_MODE); 
     }
 #endif
-
+    
     pidSetAntiGravityState(IS_RC_MODE_ACTIVE(BOXANTIGRAVITY) || featureIsEnabled(FEATURE_ANTI_GRAVITY));
 }
 

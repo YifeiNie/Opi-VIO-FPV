@@ -89,7 +89,8 @@ static const box_t boxes[CHECKBOX_ITEM_COUNT] = {
     { .boxId = BOXVTXPITMODE, .boxName = "VTX PIT MODE", .permanentId = 39 },
     { .boxId = BOXUSER1, .boxName = "IMU_INIT_MODE", .permanentId = 40 },
     { .boxId = BOXUSER2, .boxName = "BOOTLOADER_MODE", .permanentId = 41 },
-    { .boxId = BOXUSER3, .boxName = "POSITION_YAW_HOLD_MODE", .permanentId = 42 },
+//    { .boxId = BOXUSER3, .boxName = "POSITION_YAW_HOLD_MODE", .permanentId = 42 },
+    { .boxId = BOXUSER3, .boxName = "FLOW_CTRL", .permanentId = 42 },
     { .boxId = BOXUSER4, .boxName = "ANGLE_RATE_HOLD_1", .permanentId = 43 },
     { .boxId = BOXPIDAUDIO, .boxName = "PID AUDIO", .permanentId = 44 },
     { .boxId = BOXPARALYZE, .boxName = "PARALYZE", .permanentId = 45 },
@@ -364,6 +365,7 @@ void initActiveBoxIds(void)
 // #ifdef USE_ANGLE_RATE_HOLD
 //     BME(BOXANGLERATEHOLD);
 // #endif
+    // BME(BOXFLOWCTRL)
 
 #undef BME
     // check that all enabled IDs are in boxes array (check may be skipped when using findBoxById() functions)

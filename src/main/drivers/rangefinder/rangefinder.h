@@ -60,4 +60,4 @@ int16_t FlowGetIntegrationTimespan(rangefinderDev_t *dev);
 extern int16_t rangefinderMaxRangeCm;
 extern int16_t rangefinderMaxAltWithTiltCm;
 extern int16_t rangefinderCfAltCm;
-extern uint8_t test_flow_state;
+extern uint8_t opti_flow_rc_state;
