@@ -502,9 +502,9 @@ void mavlinksendAltitude(void) //ID 141
 
     mavlink_msg_altitude_pack(0, 200, &mavMsg,
     millis(),
-    Get_Opti_Vec_X(),  //altitude_monotonic
-    Get_Opti_Vec_Y(),  //altitude_amsl
-    Get_Opti_Vec_Z(),  //altitude_local
+    Get_Opti_Vec_X(),  //altitude_monotonic(x)
+    Get_Opti_Vec_Y(),  //altitude_amsl(y)
+    Get_Opti_Vec_Z(),  //altitude_local(z)
     0, //altitude_relative
     0,  //altitude_terrain
     0  //bottom_clearance
@@ -519,8 +519,8 @@ void mavlinkSendHUD(void) //ID 74
 
     //airspeed groundspeed heading throttle alt climb
     mavlink_msg_vfr_hud_pack(0, 200, &mavMsg,
-        (float)FlowGetLatestOptiX(),
-        (float)FlowGetLatestOptiY(),
+        0,
+        0,
         // heading Current heading in degrees, in compass units (0..360, 0=north)
         // headingOrScaledMilliAmpereHoursDrawn(),
         rc_offboard_mode,
@@ -529,8 +529,8 @@ void mavlinkSendHUD(void) //ID 74
         // alt Current altitude (MSL), in meters, if we have sonar or baro use them, otherwise use GPS (less accurate)
         // attitude_controller.sum,
         //Timestamp_out
-        (float)rangefinderGetLatestAltitude(),
-        get_offboard.thrust
+        0,
+        attitude_controller.sum
         );
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);

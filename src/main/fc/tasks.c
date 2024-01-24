@@ -294,7 +294,7 @@ void taskUpdateRangefinder(timeUs_t currentTimeUs)
     
     rangefinderUpdate(currentTimeUs);
 
-    rangefinderProcess(getCosTiltAngle());   
+    // rangefinderProcess(getCosTiltAngle());   
 
     // Update_Kalman();
 }

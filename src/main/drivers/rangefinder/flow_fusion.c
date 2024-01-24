@@ -73,7 +73,7 @@ void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间
     float UPflow_rad_x = nowData_fx / 0.02;  //转换成rad/s
     float UPflow_rad_y = nowData_fy / 0.02;
 
-    float flow_x = 0.6,flow_y = 0.6; //限幅设置 
+    float flow_x = 0.2,flow_y = 0.4; //限幅设置 
     //旋转补偿融合，转化为光流实际速度
     float UPflow_speed_y = nowData_height * (UPflow_rad_x - LIMIT(((gyro.gyroADCf[FD_PITCH])/57.295779f),-flow_x,flow_x)); //旋转补偿
     float UPflow_speed_x = nowData_height * (UPflow_rad_y - LIMIT(((gyro.gyroADCf[FD_ROLL])/57.295779f),-flow_y,flow_y));
@@ -125,9 +125,9 @@ void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间
     // UPflow_speed_y_test = filter_1_test(5, dT, UPflow_speed_y, out_vy);
     // UPflow_speed_z_test = (nowData_height - oldData_height) / dT;
 
-    out_vx = LPF_1_(0.85, out_vx, last_out_vx);
-    out_vy = LPF_1_(0.85, out_vy, last_out_vy);
-    out_vz = LPF_1_(0.9, nowData_height, oldData_height);
+    // out_vx = LPF_1_(0.85, out_vx, last_out_vx);
+    // out_vy = LPF_1_(0.85, out_vy, last_out_vy);
+    // out_vz = LPF_1_(0.9, nowData_height, oldData_height);
     last_out_vx = out_vx;
     last_out_vy = out_vy;
     oldData_height = out_vz;
