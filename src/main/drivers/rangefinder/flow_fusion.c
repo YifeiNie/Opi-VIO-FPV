@@ -12,7 +12,7 @@
 #define LIMIT( x,min,max ) ( ((x) < (min)) ? (min) : ( ((x) > (max))? (max) : (x) ) )
 #define safe_div(numerator,denominator,safe_value) ( (denominator == 0)? (safe_value) : ((numerator)/(denominator)) )
 
-static t_fp_vector opti_flow_buff;
+static t_fp_vector acc_buff;
 float imu_raw_acc[3] = {0,0,0}; //x,y,z的机体坐标系加速度 m/s^2
 
 float oldData_fx = 0;
@@ -93,29 +93,29 @@ void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间
     imu_raw_acc[1] = (acc.accADC[Y]/scale1/1000.0f)*1.953125*GRAVITY_EARTH;
     imu_raw_acc[2] = (acc.accADC[Z]/scale1/1000.0f)*1.953125*GRAVITY_EARTH;
 
-    opti_flow_buff.V.X = imu_raw_acc[0];
-    opti_flow_buff.V.Y = imu_raw_acc[1];
-    opti_flow_buff.V.Z = imu_raw_acc[2];
+    acc_buff.V.X = imu_raw_acc[0];
+    acc_buff.V.Y = imu_raw_acc[1];
+    acc_buff.V.Z = imu_raw_acc[2];
     
-    imuTransformVectorBodyToEarth(&opti_flow_buff); //机体系转向世界坐标系
+    imuTransformVectorBodyToEarth(&acc_buff); //机体系转向世界坐标系
     
     
-    if(fabs((double)opti_flow_buff.V.X) <= 10)
+    if(fabs((double)acc_buff.V.X) <= 10)
     {
-        out_vx = out_vx + opti_flow_buff.V.X*dT; //计算加速度计的积分得到世界坐标系的速度
+        out_vx = out_vx + acc_buff.V.X*dT; //计算加速度计的积分得到世界坐标系的速度
     }
     else
     {
-        out_vx = out_vx + opti_flow_buff.V.X*dT*0.5; 
+        out_vx = out_vx + acc_buff.V.X*dT*0.5; 
     }
 
-    if(fabs((double)opti_flow_buff.V.Y) <= 10)
+    if(fabs((double)acc_buff.V.Y) <= 10)
     {
-        out_vy = out_vy + opti_flow_buff.V.Y*dT;
+        out_vy = out_vy + acc_buff.V.Y*dT;
     }
     else
     {
-        out_vy = out_vy + opti_flow_buff.V.Y*dT*0.5;
+        out_vy = out_vy + acc_buff.V.Y*dT*0.5;
     }
 
     out_vx = filter_1(0.9,UPflow_speed_x,out_vx);  //动态设置滤波系数,将光流值和加速度计得到的速度值进行融合
@@ -127,7 +127,7 @@ void flow_fusion(float dT,float fx,float fy,float flow_height) //输入为时间
 
     // out_vx = LPF_1_(0.85, out_vx, last_out_vx);
     // out_vy = LPF_1_(0.85, out_vy, last_out_vy);
-    // out_vz = LPF_1_(0.9, nowData_height, oldData_height);
+    out_vz = LPF_1_(0.9, nowData_height, oldData_height);
     last_out_vx = out_vx;
     last_out_vy = out_vy;
     oldData_height = out_vz;
