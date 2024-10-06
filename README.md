@@ -17,5 +17,13 @@
 - 使用命令`wget http://fishros.com/install -O fishros&& . fishros`安装会方便很多，我安装的是ROS2
 - 先后在两个终端分别使用`ros2 run turtlesim turtlesim_node`和`ros2 run turtlesim turtlesim_node`来测试ROS2的安装，具体为方向键控制一个小乌龟
 - 先后使用`sudo apt-get install ros-jazzy-mavros`和`sudo apt-get install ros-jazzy-mavros-extras`安装MavROS工具，其中jazzy是我安装的ROS2的版本EGO 
-- 
-- 
+### 2024.10.05 by Nyf --瞎折腾
+- 尝试编译Ego-Planner，发现其基于ROS，使用catkin进行构建，而我安装的ROS2（jazzy）使用colcon进行构建，最终尝试失败，放弃，Planner的事情后面再说，先计划嗯看源码
+- 拿到了修改后的BF固件源码，开始尝试参考[这里](https://blog.csdn.net/zhengyangliu123/article/details/54783443)进行编译，失败，明天再说把
+### 2024.10.05 by Nyf
+- 今天的教训是网络上的各类教程都必须先弄清楚版本上的差异，各种依赖的使用和安装在不同版本的Ubuntu下有很大差别，比如
+    - 我使用的Ubuntu24.04已经不支持ROS，只支持ROS2,
+    - ARM工具链gcc-arm-none-eabi在以前需要lsb-core工具才能正常使用，但是在24.04（noble）版本下已经不需要这个工具，直接使用`sudo apt install gcc-arm-none-eabi`即可完成安装，详见[这里](https://askubuntu.com/questions/1519420/lsb-was-removed-on-noble)
+- 在使用apt进行安装时，如果出现报错：没有可用的软件包...，说明该版本Ubuntu不支持这个包了，上网找当前版本下的解决方法
+- git操作时出现permission denied，使用sudo才能解决，是因为初次clone时使用了root，导致权限出现问题，解决方法见[这里](https://stackoverflow.com/questions/73580646/why-cant-i-use-git-without-sudo)
+- 源码编译时记得在Opi-VIO-FPV/make/tools.mk里修改符合你安装工具链版本号
