@@ -25,6 +25,6 @@
     - 我使用的Ubuntu24.04已经不支持ROS，只支持ROS2,
     - ARM工具链gcc-arm-none-eabi在以前需要lsb-core工具才能正常使用，但是在24.04（noble）版本下已经不需要这个工具，直接使用`sudo apt install gcc-arm-none-eabi`即可完成安装，详见[这里](https://askubuntu.com/questions/1519420/lsb-was-removed-on-noble)
 - 在使用apt进行安装时，如果出现报错：没有可用的软件包...，说明该版本Ubuntu不支持这个包了，上网找当前版本下的解决方法
-- git操作时出现permission denied，使用sudo才能解决，是因为初次clone时使用了root，导致权限出现问题，解决方法见[这里](https://stackoverflow.com/questions/73580646/why-cant-i-use-git-without-sudo)
+- git操作时出现permission denied，使用sudo才能解决，是因为初次clone时使用了root，导致权限出现问题，可以使用`sudo chown -R "$USER" -- /path/to/your/local/repo/folder`，详见[这里](https://stackoverflow.com/questions/73580646/why-cant-i-use-git-without-sudo)
 - 源码编译时记得在Opi-VIO-FPV/make/tools.mk里修改符合你安装工具链版本号
 - 发现bf地面站不支持arm64的Ubuntu，所以后面计划在OPi上编程和用烧录，参考[这里](https://www.carliatronics.eu/stm32-development-and-debug-with-vscode-on-ubuntu-2404/)
