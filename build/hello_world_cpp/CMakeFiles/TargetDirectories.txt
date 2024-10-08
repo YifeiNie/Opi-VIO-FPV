@@ -1,0 +1,10 @@
+/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp/CMakeFiles/uninstall.dir
+/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp/CMakeFiles/hello_world_cpp_uninstall.dir
+/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp/CMakeFiles/hello_world.dir
+/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp/CMakeFiles/test.dir
+/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp/CMakeFiles/edit_cache.dir
+/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp/CMakeFiles/rebuild_cache.dir
+/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp/CMakeFiles/list_install_components.dir
+/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp/CMakeFiles/install.dir
+/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp/CMakeFiles/install/local.dir
+/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp/CMakeFiles/install/strip.dir

@@ -1,0 +1,20 @@
+[ 50%] [32mBuilding CXX object CMakeFiles/hello_world.dir/src/hello_world.cpp.o[0m
+[01m[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:[m[K In function ‘[01m[Kint[01;32m[K main[m[K(int, char**)[m[K’:
+[01m[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:6:21:[m[K [01;31m[Kerror: [m[K‘[01m[Krclcpp::NOde[m[K’ has not been declared
+    6 |   auto node=rclcpp::[01;31m[KNOde[m[K::make_shared("helloworld_node_cpp");
+      |                     [01;31m[K^~~~[m[K
+In file included from [01m[K/opt/ros/jazzy/include/rclcpp/rclcpp/copy_all_parameter_values.hpp:27[m[K,
+                 from [01m[K/opt/ros/jazzy/include/rclcpp/rclcpp/rclcpp.hpp:171[m[K,
+                 from [01m[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:1[m[K:
+[01m[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:7:3:[m[K [01;31m[Kerror: [m[Ktemplate argument 1 is invalid
+    7 |   [01;31m[KRCLCPP_INFO[m[K(node->get_logger(),"hello world");
+      |   [01;31m[K^~~~~~~~~~~[m[K
+[01m[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:7:3:[m[K [01;31m[Kerror: [m[Ktemplate argument 1 is invalid
+    7 |   [01;31m[KRCLCPP_INFO[m[K(node->get_logger(),"hello world");
+      |   [01;31m[K^~~~~~~~~~~[m[K
+[01m[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:7:3:[m[K [01;31m[Kerror: [m[Ktemplate argument 1 is invalid
+    7 |   [01;31m[KRCLCPP_INFO[m[K(node->get_logger(),"hello world");
+      |   [01;31m[K^~~~~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/hello_world.dir/build.make:76: CMakeFiles/hello_world.dir/src/hello_world.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/hello_world.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

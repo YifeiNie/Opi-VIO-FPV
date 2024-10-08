@@ -1,0 +1,22 @@
+[0.017s] Invoking command in '/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp -- -j8 -l8
+[0.212s] [ 50%] [32mBuilding CXX object CMakeFiles/hello_world.dir/src/hello_world.cpp.o[0m
+[5.428s] [01m[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:[m[K In function ‘[01m[Kint[01;32m[K main[m[K(int, char**)[m[K’:
+[5.428s] [01m[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:6:21:[m[K [01;31m[Kerror: [m[K‘[01m[Krclcpp::NOde[m[K’ has not been declared
+[5.428s]     6 |   auto node=rclcpp::[01;31m[KNOde[m[K::make_shared("helloworld_node_cpp");
+[5.428s]       |                     [01;31m[K^~~~[m[K
+[5.428s] In file included from [01m[K/opt/ros/jazzy/include/rclcpp/rclcpp/copy_all_parameter_values.hpp:27[m[K,
+[5.429s]                  from [01m[K/opt/ros/jazzy/include/rclcpp/rclcpp/rclcpp.hpp:171[m[K,
+[5.429s]                  from [01m[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:1[m[K:
+[5.429s] [01m[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:7:3:[m[K [01;31m[Kerror: [m[Ktemplate argument 1 is invalid
+[5.429s]     7 |   [01;31m[KRCLCPP_INFO[m[K(node->get_logger(),"hello world");
+[5.429s]       |   [01;31m[K^~~~~~~~~~~[m[K
+[5.429s] [01m[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:7:3:[m[K [01;31m[Kerror: [m[Ktemplate argument 1 is invalid
+[5.429s]     7 |   [01;31m[KRCLCPP_INFO[m[K(node->get_logger(),"hello world");
+[5.429s]       |   [01;31m[K^~~~~~~~~~~[m[K
+[5.429s] [01m[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:7:3:[m[K [01;31m[Kerror: [m[Ktemplate argument 1 is invalid
+[5.429s]     7 |   [01;31m[KRCLCPP_INFO[m[K(node->get_logger(),"hello world");
+[5.430s]       |   [01;31m[K^~~~~~~~~~~[m[K
+[6.683s] gmake[2]: *** [CMakeFiles/hello_world.dir/build.make:76: CMakeFiles/hello_world.dir/src/hello_world.cpp.o] Error 1
+[6.684s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/hello_world.dir/all] Error 2
+[6.684s] gmake: *** [Makefile:146: all] Error 2
+[6.688s] Invoked command in '/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp -- -j8 -l8

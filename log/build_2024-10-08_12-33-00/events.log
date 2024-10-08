@@ -1,0 +1,96 @@
+[0.000000] (-) TimerEvent: {}
+[0.001756] (hello_world_cpp) JobQueued: {'identifier': 'hello_world_cpp', 'dependencies': OrderedDict()}
+[0.003073] (hello_world_cpp) JobStarted: {'identifier': 'hello_world_cpp'}
+[0.015742] (hello_world_cpp) JobProgress: {'identifier': 'hello_world_cpp', 'progress': 'cmake'}
+[0.016818] (hello_world_cpp) JobProgress: {'identifier': 'hello_world_cpp', 'progress': 'build'}
+[0.017708] (hello_world_cpp) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp', '--', '-j8', '-l8'], 'cwd': '/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'HTTPS_PROXY': 'http://127.0.0.1:7890/', 'no_proxy': 'localhost,127.0.0.0/8,::1', 'LANGUAGE': 'zh_CN:en', 'USER': 'nyf', 'LC_TIME': 'C.UTF-8', 'XDG_SESSION_TYPE': 'wayland', 'GIT_ASKPASS': '/usr/share/code/resources/app/extensions/git/dist/askpass.sh', 'SHLVL': '2', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/nyf', 'CHROME_DESKTOP': 'code-url-handler.desktop', 'TERM_PROGRAM_VERSION': '1.93.1', 'DESKTOP_SESSION': 'ubuntu', 'NO_PROXY': 'localhost,127.0.0.0/8,::1', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'VSCODE_GIT_ASKPASS_MAIN': '/usr/share/code/resources/app/extensions/git/dist/askpass-main.js', 'LC_MONETARY': 'C.UTF-8', 'VSCODE_GIT_ASKPASS_NODE': '/usr/share/code/code', 'SYSTEMD_EXEC_PID': '2465', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'GNOME_KEYRING_CONTROL': '/run/user/1000/keyring', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'https_proxy': 'http://127.0.0.1:7890/', 'COLCON_PREFIX_PATH': '/home/nyf/code/ROS2_workspace/hello_world/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'nyf', 'http_proxy': 'http://127.0.0.1:7890/', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.SettingsDaemon.MediaKeys.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'nyf', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/bin:/home/nyf/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/nyf-OPi5:@/tmp/.ICE-unix/2257,unix/nyf-OPi5:/tmp/.ICE-unix/2257', 'PAPERSIZE': 'a4', 'XDG_MENU_PREFIX': 'gnome-', 'LC_ADDRESS': 'C.UTF-8', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/8f8c4e54_0ffb_44c9_8238_4b5839c7749e', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'GDK_BACKEND': 'x11', 'DISPLAY': ':0', 'LANG': 'zh_CN.UTF-8', 'XDG_CURRENT_DESKTOP': 'Unity', 'LC_TELEPHONE': 'C.UTF-8', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.8FVKV2', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-7510ec2c48.sock', 'GNOME_TERMINAL_SERVICE': ':1.114', 'TERM_PROGRAM': 'vscode', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/nyf/code/ROS2_workspace/hello_world/install/hello_world_cpp:/opt/ros/jazzy', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'SHELL': '/bin/bash', 'LC_NAME': 'C.UTF-8', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'LC_MEASUREMENT': 'C.UTF-8', 'LC_IDENTIFICATION': 'C.UTF-8', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/nyf/code/ROS2_workspace/hello_world/build/hello_world_cpp', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/opt/ros/jazzy/lib/python3.12/site-packages', 'HTTP_PROXY': 'http://127.0.0.1:7890/', 'LC_NUMERIC': 'C.UTF-8', 'LC_PAPER': 'C.UTF-8', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'VTE_VERSION': '7600', 'CMAKE_PREFIX_PATH': '/home/nyf/code/ROS2_workspace/hello_world/install/hello_world_cpp:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy'}), 'shell': False}
+[0.099043] (-) TimerEvent: {}
+[0.199448] (-) TimerEvent: {}
+[0.214354] (hello_world_cpp) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/hello_world.dir/src/hello_world.cpp.o\x1b[0m\n'}
+[0.299725] (-) TimerEvent: {}
+[0.400536] (-) TimerEvent: {}
+[0.501466] (-) TimerEvent: {}
+[0.602351] (-) TimerEvent: {}
+[0.705458] (-) TimerEvent: {}
+[0.805928] (-) TimerEvent: {}
+[0.906369] (-) TimerEvent: {}
+[1.006767] (-) TimerEvent: {}
+[1.139102] (-) TimerEvent: {}
+[1.239482] (-) TimerEvent: {}
+[1.339855] (-) TimerEvent: {}
+[1.440237] (-) TimerEvent: {}
+[1.540644] (-) TimerEvent: {}
+[1.641126] (-) TimerEvent: {}
+[1.741531] (-) TimerEvent: {}
+[1.841993] (-) TimerEvent: {}
+[1.942419] (-) TimerEvent: {}
+[2.042898] (-) TimerEvent: {}
+[2.143390] (-) TimerEvent: {}
+[2.243875] (-) TimerEvent: {}
+[2.344351] (-) TimerEvent: {}
+[2.444846] (-) TimerEvent: {}
+[2.545373] (-) TimerEvent: {}
+[2.645875] (-) TimerEvent: {}
+[2.746297] (-) TimerEvent: {}
+[2.846760] (-) TimerEvent: {}
+[2.947221] (-) TimerEvent: {}
+[3.047645] (-) TimerEvent: {}
+[3.148072] (-) TimerEvent: {}
+[3.248530] (-) TimerEvent: {}
+[3.348972] (-) TimerEvent: {}
+[3.449445] (-) TimerEvent: {}
+[3.549887] (-) TimerEvent: {}
+[3.650374] (-) TimerEvent: {}
+[3.750924] (-) TimerEvent: {}
+[3.853778] (-) TimerEvent: {}
+[3.955303] (-) TimerEvent: {}
+[4.057356] (-) TimerEvent: {}
+[4.158593] (-) TimerEvent: {}
+[4.259555] (-) TimerEvent: {}
+[4.360356] (-) TimerEvent: {}
+[4.461202] (-) TimerEvent: {}
+[4.562165] (-) TimerEvent: {}
+[4.662985] (-) TimerEvent: {}
+[4.763825] (-) TimerEvent: {}
+[4.864747] (-) TimerEvent: {}
+[4.965649] (-) TimerEvent: {}
+[5.066469] (-) TimerEvent: {}
+[5.168910] (-) TimerEvent: {}
+[5.271565] (-) TimerEvent: {}
+[5.372397] (-) TimerEvent: {}
+[5.427066] (hello_world_cpp) StderrLine: {'line': b'\x1b[01m\x1b[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:\x1b[m\x1b[K In function \xe2\x80\x98\x1b[01m\x1b[Kint\x1b[01;32m\x1b[K main\x1b[m\x1b[K(int, char**)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[5.431032] (hello_world_cpp) StderrLine: {'line': b'\x1b[01m\x1b[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:6:21:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Krclcpp::NOde\x1b[m\x1b[K\xe2\x80\x99 has not been declared\n'}
+[5.431225] (hello_world_cpp) StderrLine: {'line': b'    6 |   auto node=rclcpp::\x1b[01;31m\x1b[KNOde\x1b[m\x1b[K::make_shared("helloworld_node_cpp");\n'}
+[5.431348] (hello_world_cpp) StderrLine: {'line': b'      |                     \x1b[01;31m\x1b[K^~~~\x1b[m\x1b[K\n'}
+[5.431452] (hello_world_cpp) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/opt/ros/jazzy/include/rclcpp/rclcpp/copy_all_parameter_values.hpp:27\x1b[m\x1b[K,\n'}
+[5.431555] (hello_world_cpp) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/jazzy/include/rclcpp/rclcpp/rclcpp.hpp:171\x1b[m\x1b[K,\n'}
+[5.431654] (hello_world_cpp) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:1\x1b[m\x1b[K:\n'}
+[5.431753] (hello_world_cpp) StderrLine: {'line': b'\x1b[01m\x1b[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:7:3:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Ktemplate argument 1 is invalid\n'}
+[5.431855] (hello_world_cpp) StderrLine: {'line': b'    7 |   \x1b[01;31m\x1b[KRCLCPP_INFO\x1b[m\x1b[K(node->get_logger(),"hello world");\n'}
+[5.431953] (hello_world_cpp) StderrLine: {'line': b'      |   \x1b[01;31m\x1b[K^~~~~~~~~~~\x1b[m\x1b[K\n'}
+[5.432090] (hello_world_cpp) StderrLine: {'line': b'\x1b[01m\x1b[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:7:3:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Ktemplate argument 1 is invalid\n'}
+[5.432204] (hello_world_cpp) StderrLine: {'line': b'    7 |   \x1b[01;31m\x1b[KRCLCPP_INFO\x1b[m\x1b[K(node->get_logger(),"hello world");\n'}
+[5.432303] (hello_world_cpp) StderrLine: {'line': b'      |   \x1b[01;31m\x1b[K^~~~~~~~~~~\x1b[m\x1b[K\n'}
+[5.432400] (hello_world_cpp) StderrLine: {'line': b'\x1b[01m\x1b[K/home/nyf/code/ROS2_workspace/hello_world/src/hello_world_cpp/src/hello_world.cpp:7:3:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Ktemplate argument 1 is invalid\n'}
+[5.432498] (hello_world_cpp) StderrLine: {'line': b'    7 |   \x1b[01;31m\x1b[KRCLCPP_INFO\x1b[m\x1b[K(node->get_logger(),"hello world");\n'}
+[5.432597] (hello_world_cpp) StderrLine: {'line': b'      |   \x1b[01;31m\x1b[K^~~~~~~~~~~\x1b[m\x1b[K\n'}
+[5.472495] (-) TimerEvent: {}
+[5.572895] (-) TimerEvent: {}
+[5.674958] (-) TimerEvent: {}
+[5.775469] (-) TimerEvent: {}
+[5.875878] (-) TimerEvent: {}
+[5.976278] (-) TimerEvent: {}
+[6.076683] (-) TimerEvent: {}
+[6.177085] (-) TimerEvent: {}
+[6.277545] (-) TimerEvent: {}
+[6.377994] (-) TimerEvent: {}
+[6.478439] (-) TimerEvent: {}
+[6.578931] (-) TimerEvent: {}
+[6.679439] (-) TimerEvent: {}
+[6.686297] (hello_world_cpp) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/hello_world.dir/build.make:76: CMakeFiles/hello_world.dir/src/hello_world.cpp.o] Error 1\n'}
+[6.686870] (hello_world_cpp) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/hello_world.dir/all] Error 2\n'}
+[6.687195] (hello_world_cpp) StderrLine: {'line': b'gmake: *** [Makefile:146: all] Error 2\n'}
+[6.690615] (hello_world_cpp) CommandEnded: {'returncode': 2}
+[6.777870] (hello_world_cpp) JobEnded: {'identifier': 'hello_world_cpp', 'rc': 2}
+[6.779500] (-) TimerEvent: {}
+[6.788586] (-) EventReactorShutdown: {}
