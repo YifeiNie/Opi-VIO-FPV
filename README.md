@@ -12,5 +12,5 @@
 ### 2024.10.08 bt Nyf --node helloworld
 - 实现了使用ROS2节点在终端中打印helloworld
 - 出现`rclcpp.hpp no such file or directory`报错，但不影响colcon的编译和最后的运行只是红波浪线看着难受，通过在vscode工作区添加.vscode文件夹并编辑json文件修复该报错
-- 无论是官方的还是自定义的功能包，都可以在.home目录下的隐藏文件bashrc中的最后一行添加命令，`source /opt/ros/jazzy/setup.bash source` 和 `/home/nyf/code/ROS2_workspace/hello_world/install/setup.bash`，前者是官方，后者是自定义的，当然后者的路径要匹配
+- 无论是官方的还是自定义的功能包，都可以在.home目录下的隐藏文件bashrc中的最后一行添加命令，`source /opt/ros/jazzy/setup.bash source` 和 `source /home/nyf/code/ROS2_workspace/hello_world/install/setup.bash`，前者是官方，后者是自定义的，当然后者的路径要匹配
 
