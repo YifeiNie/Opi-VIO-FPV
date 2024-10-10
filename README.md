@@ -29,7 +29,7 @@
 - 源码编译时记得在Opi-VIO-FPV/make/tools.mk里修改符合你安装工具链的版本号
 - 发现bf地面站不支持arm64的Ubuntu，所以后面计划在OPi上编程和烧录，参考[这里](https://www.carliatronics.eu/stm32-development-and-debug-with-vscode-on-ubuntu-2404/)
 ### 2024.10.07 by Nyf --尝试通过mavlink和mavROS打通飞控与电脑的通信
-- 给我自己买的Inav固件的F405飞控改刷了BF固件。需要用到zagig工具配置飞控的bootloader，然后按住boot键给飞控上电先刷固件，再进入bf地面站命令从文件加载MPU6500的配置即可，操作步骤见[bf文档](https://betaflight.com/docs/wiki/guides/current/installing-betaflight)，操作视频见[这里](https://www.bilibili.com/video/BV1824y1v7JB/?spm_id_from=333.788.top_right_bar_window_history.content.click&vd_source=3a6242b3cb9435a95f7d4a98159f0607)，配置文件见[这里](https://github.com/YifeiNie/F405Firmware-IMU-configFile)
+- 给我自己买的Inav固件的F405飞控改刷了BF固件。需要用到zagig工具配置飞控的bootloader，然后按住boot键给飞控上电先刷固件，再进入bf地面站的CLI命令从文件加载MPU6500的配置文件即可，操作步骤见[bf文档](https://betaflight.com/docs/wiki/guides/current/installing-betaflight)，操作视频见[这里](https://www.bilibili.com/video/BV1824y1v7JB/?spm_id_from=333.788.top_right_bar_window_history.content.click&vd_source=3a6242b3cb9435a95f7d4a98159f0607)，配置文件见[这里](https://github.com/YifeiNie/F405Firmware-IMU-configFile)
 - 简单了解了ROS2
 ### 2024.10.09 by Nyf --配置win下的飞控的编译环境
 - 由于前面说的，bf地面站不支持arm64的OPi，我又没有一台Linux电脑，故尝试在win下写飞控代码并编译。折腾了大半天各方面都想到了始终无法make，最终发现`make`命令一直在调用delphi的`make.exe`！！！且关键词检索，发现有个[论坛](http://www.qtcn.org/bbs/read-htm-tid-1075-page-1.html)也有人遇到相同问题，我的Matlab，Vitis，MRS等软件都没有这种情况，只有delphi有，不知道为啥，红温了
@@ -38,3 +38,5 @@
 即可),并将bin文件夹的路径添加到环境变量。然后下载[MinGW](https://zenlayer.dl.sourceforge.net/project/mingw/Installer/mingw-get-setup.exe?viasf=1)，安装包的时候安装第2，5，7（即最后一个），并添加bin路径的环境变量，最后将`mingw32-make.exe`改为`make.exe`，一定要等一会，或者重启，使用`-v`命令检测前面的工具链和后面的MinGW是否安装完毕。整个流程参考[这里](https://www.cnblogs.com/bangbangzoutianya/p/17402641.html)
 - 千辛万苦，终于在Win下过编，明天上电！
 - 新版的MinGW好像支持一些linux的命令，移植过来时不用在makefile里修改替代了（比如linux的`rm`和win的`del`）
+### 2024.10.09 by Nyf
+- BF_NeSC成功在我的405飞控上运行，前提是需要通过BF地面站的CLI命令行修改一下端口，具体操作见10.07的笔记
