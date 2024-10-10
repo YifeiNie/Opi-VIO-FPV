@@ -38,5 +38,5 @@
 即可),并将bin文件夹的路径添加到环境变量。然后下载[MinGW](https://zenlayer.dl.sourceforge.net/project/mingw/Installer/mingw-get-setup.exe?viasf=1)，安装包的时候安装第2，5，7（即最后一个），并添加bin路径的环境变量，最后将`mingw32-make.exe`改为`make.exe`，一定要等一会，或者重启，使用`-v`命令检测前面的工具链和后面的MinGW是否安装完毕。整个流程参考[这里](https://www.cnblogs.com/bangbangzoutianya/p/17402641.html)
 - 千辛万苦，终于在Win下过编，明天上电！
 - 新版的MinGW好像支持一些linux的命令，移植过来时不用在makefile里修改替代了（比如linux的`rm`和win的`del`）
-### 2024.10.09 by Nyf
+### 2024.10.10 by Nyf
 - BF_NeSC成功在我的405飞控上运行，前提是需要通过BF地面站的CLI命令行修改一下端口，具体操作见10.07的笔记
