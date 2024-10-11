@@ -43,3 +43,13 @@
 ### 2024.10.11 by Nyf
 - 由于使用PX4.launch启动mavROS，所以PX4飞控上的固件ArduPilot中回传的GPS数据包需要一个地图数据集才能被OPi解析（其实英国不用管那个报错也可以，而且有人说这里的“error”其实是警告，不影响mavROS的运行，[参见](https://github.com/mavlink/mavros/issues/246)）具体解决：运行`sudo geographiclib-get-magnetic emm2015`命令下载，然后在路径`/opt/ros/jazzy/lib/mavros`下运行shell脚本：`sudo bash install_geographiclib_datasets.sh`。注意，这个的安装非常慢且终端一直卡在一个语句上，直到对应的三个数据集都被成功安装才可以使用，在我的OPi上花费了大约十来分钟
 - 成功在Opi上运行mavROS，但不知道是什么原因飞控和Pi一直连不上，前者一直在发数据，后者的ROS结点也都开启了，有可能是波特率不对，白天在调一调
+- 飞控与OPi成功连接！以下是步骤
+    - OPi上下载CuteCom作为串口调试助手`sudo apt install cutecom`
+    - 飞控bf地面站左边栏目 “端口-遥测输出-选择mavlink，波特率115200”，“接收机-遥测”输出打开
+    - 使用CH340连接飞控与OPi，切记只连接tx，rx，g，不要连接5v，飞控上电，发现ch340上RXD字样边红灯长亮，说明有数据在发送，说明飞控配置完毕
+    - OPi上输入`sudo chmod 777 /dev/tty*`命令对串口赋予权限，然后打开CuteCom，点击连接会直接发现有源源不断的数据被接收，因为Linux上自带了CH340驱动。如果没有数据收到，请：
+        - 使用`dmesg | tail`检查USB是否被连接，如果输入命令后打印出`interface 0 claimed by ch341 while 'brltty' sets config #1`，说明软件brltty（这是个盲人辅助软件）影响了USB的连接，使用`sudo apt remove brltty`删除它。然后一定要重复赋予串口权限的操作，再进行连接即可
+    - 使用`sudo gedit /opt/ros/jazzy/share/mavros/launch/px4.launch`打开启动配置文件，修改fcu_url为`/dev/ttyUSB0:2000000`
+    - 使用`ros2 launch mavros px4.launch`启动，等一会儿后发现终端上源源不断打印类似`[mavros_node-1] [INFO] [1728627432.538089052] [mavros.mavros_router]: link[1000] removed stale remote address 194.121`的内容，说明飞控与OPi成功连接
+
+
