@@ -52,4 +52,4 @@
     - 使用`sudo gedit /opt/ros/jazzy/share/mavros/launch/px4.launch`打开启动配置文件，修改fcu_url为`/dev/ttyUSB0:2000000`
     - 使用`ros2 launch mavros px4.launch`启动，等一会儿后发现终端上源源不断打印类似`[mavros_node-1] [INFO] [1728627432.538089052] [mavros.mavros_router]: link[1000] removed stale remote address 194.121`的内容，说明飞控与OPi成功连接
 ### 2024.10.12 by Nyf
-- 学C++
+- 学C++，笔记见[这里](https://github.com/YifeiNie/Cpp-tutorial.git)
