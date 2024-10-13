@@ -49,7 +49,7 @@
     - 使用CH340连接飞控与OPi，切记只连接tx，rx，g，不要连接5v，飞控上电，发现ch340上RXD字样边红灯长亮，说明有数据在发送，说明飞控配置完毕
     - OPi上输入`sudo chmod 777 /dev/tty*`命令对串口赋予权限，然后打开CuteCom，点击连接会直接发现有源源不断的数据被接收，因为Linux上自带了CH340驱动。如果没有数据收到，请：
         - 使用`dmesg | tail`检查USB是否被连接，如果输入命令后打印出`interface 0 claimed by ch341 while 'brltty' sets config #1`，说明软件brltty（这是个盲人辅助软件）影响了USB的连接，使用`sudo apt remove brltty`删除它。然后一定要重复赋予串口权限的操作，再进行连接即可
-    - 使用`sudo gedit /opt/ros/jazzy/share/mavros/launch/px4.launch`打开启动配置文件，修改fcu_url为`/dev/ttyUSB0:2000000`
+    - 使用`dmesg | grep tty*`或者直接查看cutecom中的串口端口名，使用`sudo gedit /opt/ros/jazzy/share/mavros/launch/px4.launch`打开启动配置文件，修改fcu_url为`/dev/ttyCH341USB0:2000000`，其中CH341USB0是我的端口名，需要根据具体修改
     - 使用`ros2 launch mavros px4.launch`启动，等一会儿后发现终端上源源不断打印类似`[mavros_node-1] [INFO] [1728627432.538089052] [mavros.mavros_router]: link[1000] removed stale remote address 194.121`的内容，说明飞控与OPi成功连接
 ### 2024.10.12 by Nyf
 - 学C++，笔记见[这里](https://github.com/YifeiNie/Cpp-tutorial.git)
