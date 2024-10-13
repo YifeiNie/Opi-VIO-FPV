@@ -53,3 +53,5 @@
     - 使用`ros2 launch mavros px4.launch`启动，等一会儿后发现终端上源源不断打印类似`[mavros_node-1] [INFO] [1728627432.538089052] [mavros.mavros_router]: link[1000] removed stale remote address 194.121`的内容，说明飞控与OPi成功连接
 ### 2024.10.12 by Nyf
 - 学C++，笔记见[这里](https://github.com/YifeiNie/Cpp-tutorial.git)
+### 2024.10.12 by Nyf
+- 弄了一天，还是mavlink还是连不到mavros，不知道要怎么搞了，预计会卡在这里几天
