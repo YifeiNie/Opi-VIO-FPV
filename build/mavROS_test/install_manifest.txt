@@ -1,0 +1,16 @@
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/lib/mavROS_test/mavROS_test
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/ament_index/resource_index/package_run_dependencies/mavROS_test
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/ament_index/resource_index/parent_prefix_path/mavROS_test
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/environment/ament_prefix_path.sh
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/environment/ament_prefix_path.dsv
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/environment/path.sh
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/environment/path.dsv
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/local_setup.bash
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/local_setup.sh
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/local_setup.zsh
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/local_setup.dsv
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/package.dsv
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/ament_index/resource_index/packages/mavROS_test
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/cmake/mavROS_testConfig.cmake
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/cmake/mavROS_testConfig-version.cmake
+/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/package.xml

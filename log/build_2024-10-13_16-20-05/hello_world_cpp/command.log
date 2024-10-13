@@ -1,0 +1,2 @@
+Invoking command in '/home/nyf/code/ROS2_workspace/mavROS_test/build/hello_world_cpp': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/code/ROS2_workspace/mavROS_test/build/hello_world_cpp -- -j8 -l8
+Invoked command in '/home/nyf/code/ROS2_workspace/mavROS_test/build/hello_world_cpp' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/code/ROS2_workspace/mavROS_test/build/hello_world_cpp -- -j8 -l8

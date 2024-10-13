@@ -1,0 +1,7 @@
+[01m[K/home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test/src/mavROS_test.cpp:8:29:[m[K [01;35m[Kwarning: [m[Kuse of ‘[01m[Kauto[m[K’ in parameter declaration only available with ‘[01m[K-std=c++20[m[K’ or ‘[01m[K-fconcepts[m[K’
+    8 | void print(const char* msg, [01;35m[Kauto[m[K data){
+      |                             [01;35m[K^~~~[m[K
+[01m[K/home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test/src/mavROS_test.cpp:[m[K In member function ‘[01m[Kvoid IMU_Subscriber::[01;32m[Ktopic_callback[m[K(const sensor_msgs::msg::Imu&)[m[K’:
+[01m[K/home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test/src/mavROS_test.cpp:16:55:[m[K [01;35m[Kwarning: [m[Kunused parameter ‘[01m[Kmsg[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter-Wunused-parameter]8;;[m[K]
+   16 |     void topic_callback([01;35m[Kconst sensor_msgs::msg::Imu & msg[m[K){
+      |                         [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~[m[K

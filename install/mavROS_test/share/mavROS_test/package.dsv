@@ -1,0 +1,8 @@
+source;share/mavROS_test/hook/cmake_prefix_path.ps1
+source;share/mavROS_test/hook/cmake_prefix_path.dsv
+source;share/mavROS_test/hook/cmake_prefix_path.sh
+source;share/mavROS_test/local_setup.bash
+source;share/mavROS_test/local_setup.dsv
+source;share/mavROS_test/local_setup.ps1
+source;share/mavROS_test/local_setup.sh
+source;share/mavROS_test/local_setup.zsh

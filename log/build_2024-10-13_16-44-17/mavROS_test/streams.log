@@ -1,0 +1,32 @@
+[0.019s] Invoking command in '/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test -- -j8 -l8
+[0.251s] [ 50%] [32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o[0m
+[5.264s] [01m[K/home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test/src/mavROS_test.cpp:8:29:[m[K [01;35m[Kwarning: [m[Kuse of ‘[01m[Kauto[m[K’ in parameter declaration only available with ‘[01m[K-std=c++20[m[K’ or ‘[01m[K-fconcepts[m[K’
+[5.264s]     8 | void print(const char* msg, [01;35m[Kauto[m[K data){
+[5.265s]       |                             [01;35m[K^~~~[m[K
+[5.313s] [01m[K/home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test/src/mavROS_test.cpp:[m[K In member function ‘[01m[Kvoid IMU_Subscriber::[01;32m[Ktopic_callback[m[K(const sensor_msgs::msg::Imu&)[m[K’:
+[5.313s] [01m[K/home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test/src/mavROS_test.cpp:16:55:[m[K [01;35m[Kwarning: [m[Kunused parameter ‘[01m[Kmsg[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter-Wunused-parameter]8;;[m[K]
+[5.313s]    16 |     void topic_callback([01;35m[Kconst sensor_msgs::msg::Imu & msg[m[K){
+[5.313s]       |                         [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~[m[K
+[16.039s] [100%] [32m[1mLinking CXX executable mavROS_test[0m
+[16.828s] [100%] Built target mavROS_test
+[16.865s] Invoked command in '/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test -- -j8 -l8
+[16.992s] Invoking command in '/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test
+[17.017s] -- Install configuration: ""
+[17.017s] -- Installing: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/lib/mavROS_test/mavROS_test
+[17.042s] -- Set non-toolchain portion of runtime path of "/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/lib/mavROS_test/mavROS_test" to ""
+[17.043s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/ament_index/resource_index/package_run_dependencies/mavROS_test
+[17.043s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/ament_index/resource_index/parent_prefix_path/mavROS_test
+[17.044s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/environment/ament_prefix_path.sh
+[17.044s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/environment/ament_prefix_path.dsv
+[17.045s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/environment/path.sh
+[17.045s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/environment/path.dsv
+[17.047s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/local_setup.bash
+[17.047s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/local_setup.sh
+[17.048s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/local_setup.zsh
+[17.048s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/local_setup.dsv
+[17.049s] -- Installing: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/package.dsv
+[17.049s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/ament_index/resource_index/packages/mavROS_test
+[17.050s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/cmake/mavROS_testConfig.cmake
+[17.050s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/cmake/mavROS_testConfig-version.cmake
+[17.051s] -- Up-to-date: /home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test/share/mavROS_test/package.xml
+[17.051s] Invoked command in '/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test

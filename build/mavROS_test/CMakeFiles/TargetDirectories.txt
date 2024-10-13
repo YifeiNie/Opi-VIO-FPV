@@ -1,0 +1,10 @@
+/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles/uninstall.dir
+/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles/mavROS_test_uninstall.dir
+/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles/mavROS_test.dir
+/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles/test.dir
+/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles/edit_cache.dir
+/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles/rebuild_cache.dir
+/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles/list_install_components.dir
+/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles/install.dir
+/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles/install/local.dir
+/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles/install/strip.dir
