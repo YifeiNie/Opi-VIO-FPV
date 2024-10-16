@@ -55,3 +55,13 @@
 - 学C++，笔记见[这里](https://github.com/YifeiNie/Cpp-tutorial.git)
 ### 2024.10.12 by Nyf
 - 弄了一天，还是mavlink还是连不到mavros，不知道要怎么搞了，预计会卡在这里几天
+### 2024.10.16 by Nyf --测试失败
+- 折腾三天，结果如下：
+    - 使用`ros2 topic list`查看已发布话题，mavros在Opi上正常运行，话题全部启动
+    - 使用`/uas1/mavlink_source`查看mavlink消息，正常，说明飞控到ros连接建立，在`Opi-VIO-FPV/src/main/telementry/mavlink.c`路径里的`processMAVLinkTelemetry()`函数修改消息内容，并通过cutecom读取，可以修改并被读取
+    - 使用`ros2 topic echo /mavros/state`打印飞控与mavros连接情况，disconnected，说明是mavlink到mavros这个环节出问题
+    - 使用诊断`ros2 topic echo /diagnostics`查看，发现大多数消息都是level 2（错误），除了`'mavros_router: endpoint 1001: /uas1'`，`name: 'mavros_router: endpoint 1000: /dev/ttyCH341USB0:2000000'`，`'mavros_router: MAVROS Router'`话题为level 0（正常）
+- 期间尝试各种方法，有说改传输速率的，失败；修改固件，失败；更换版本，失败；尝试修改mavlink源码，失败...
+- 发现我的mavros版本是2.8.0,但是最新版是2.9.0,且根据github中的issue中提到2.8.0有诸多bug在刚刚发布的2.9.0中被修复，然而其release显示ustable，见[这里](https://github.com/mavlink/mavros/issues?q=is%3Aissue+is%3Aopen)
+- 尝试更新到2.9.0,发现apt的最新版本是2.8.0，尝试源码更新，出错，折腾一天，失败，见[这里](`https://github.com/mavlink/mavros/issues/2003`)
+- 后面的计划是：下载px4仿真再尝试mavros通信，如果成功，继续查找问题，如果失败，放弃ROS2和mavros2.8.0直到2.9.0正式在源中发布再做尝试
