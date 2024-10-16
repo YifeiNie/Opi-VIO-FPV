@@ -64,4 +64,4 @@
 - 期间尝试各种方法，有说改传输速率的，失败；修改固件，失败；更换版本，失败；尝试修改mavlink源码，失败...
 - 发现我的mavros版本是2.8.0,但是最新版是2.9.0,且根据github中的issue中提到2.8.0有诸多bug在刚刚发布的2.9.0中被修复，然而其release显示ustable，见[这里](https://github.com/mavlink/mavros/issues?q=is%3Aissue+is%3Aopen)
 - 尝试更新到2.9.0,发现apt的最新版本是2.8.0，尝试源码更新，出错，折腾一天，失败，见[这里](`https://github.com/mavlink/mavros/issues/2003`)
-- 后面的计划是：下载px4仿真再尝试mavros通信，如果成功，继续查找问题，如果失败，放弃ROS2和mavros2.8.0直到2.9.0正式在源中发布再做尝试
+- 后面的计划是：使用px4仿真环境再尝试mavros通信，如果成功，继续查找问题；如果失败，则放弃ROS2和mavros 2.8.0直到2.9.0正式在源中发布再做尝试，并暂时先使用Ubuntu 20.04和ROS1
