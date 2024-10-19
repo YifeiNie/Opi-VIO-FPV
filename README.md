@@ -65,9 +65,14 @@
 - 发现我的mavros版本是2.8.0,但是最新版是2.9.0,且根据github中的issue中提到2.8.0有诸多bug在刚刚发布的2.9.0中被修复，然而其release显示ustable，见[这里](https://github.com/mavlink/mavros/issues?q=is%3Aissue+is%3Aopen)
 - 尝试更新到2.9.0,发现apt的最新版本是2.8.0，尝试源码更新，出错，折腾一天，失败，见[这里](https://github.com/mavlink/mavros/issues/2003)
 - 后面的计划是：使用px4仿真环境再尝试mavros通信，如果成功，继续查找问题；如果失败，则放弃ROS2和mavros 2.8.0直到2.9.0正式在源中发布再做尝试，并暂时先使用Ubuntu 20.04和ROS1
+<<<<<<< HEAD
 ### 2024.10.17 by Nyf 
 - 折腾一天，给新笔记本装了Unbuntu 20.04
     - 其中网卡驱动非常折磨，后发现问题是我安装的系统Linux内核版本太老，且网络配置文件`sudo gedit /etc/NetworkManager/NetworkManager.conf`有一行要改为'true'，具体见[这里](https://blog.csdn.net/taoxicun/article/details/133200526)
     - 下载的Chrome，clash等双击无法运行并报错:'没有安装处理"shared library"文件的程序'，但在命令行里可以，这是因为双击的路径是系统路径，而命令行则是在文件所在路径，故需要配置环境变量
     - 但是我手动配置环境变量后，开机后会在输密码处无限循环，网上说就是因为改了环境变量的问题，说可以ctrl+alt+F1到F6任意按键以使用命令行输入密码登录，但我试了，全部失败，放弃，就用命令行挺好的
 - 安装了ROS Noetic，对应的mavros版本是1.19.0，成功，读到了飞控的imu等数据，且操作相同，进一步说明ROS2的mavros还存在一些问题，mavros的contributor回复说2.9.0 in testing，能正式通过apt安装还需等到下一次同步。
+=======
+### 2024.10.19 by Nyf
+- 血泪教训，在配置clash时，一定要在代理页面选择全局代理，不要选择直连！！
+>>>>>>> b7b10f1 (tem)
