@@ -56,7 +56,6 @@ typedef struct imuConfig_s {
     uint16_t dcm_kp;                        // DCM filter proportional gain ( x 10000)
     uint16_t dcm_ki;                        // DCM filter integral gain ( x 10000)
     uint8_t small_angle;
-    uint8_t acc_unarmedcal;                 // turn automatic acc compensation on/off
     uint8_t imu_process_denom;
 } imuConfig_t;
 
@@ -65,7 +64,6 @@ PG_DECLARE(imuConfig_t, imuConfig);
 typedef struct imuRuntimeConfig_s {
     float dcm_ki;
     float dcm_kp;
-    uint8_t acc_unarmedcal;                 // turn automatic acc compensation on/off
 } imuRuntimeConfig_t;
 
 void imuConfigure(uint16_t throttle_correction_angle, uint8_t throttle_correction_value);
@@ -74,8 +72,6 @@ float getCosTiltAngle(void);
 void getQuaternion(quaternion * q);
 void imuUpdateAttitude(timeUs_t currentTimeUs);
 
-void imuResetAccelerationSum(void);
-void imuTransformVectorBodyToEarth(t_fp_vector *v);
 void imuInit(void);
 
 #ifdef SIMULATOR_BUILD

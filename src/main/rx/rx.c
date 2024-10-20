@@ -198,7 +198,7 @@ STATIC_UNIT_TESTED bool isPulseValid(uint16_t pulseDuration)
             pulseDuration <= rxConfig()->rx_max_usec;
 }
 
-#ifdef USE_SERIAL_RX
+#ifdef USE_SERIALRX
 static bool serialRxInit(const rxConfig_t *rxConfig, rxRuntimeState_t *rxRuntimeState)
 {
     bool enabled = false;
@@ -303,7 +303,7 @@ void rxInit(void)
 
     rcData[THROTTLE] = (featureIsEnabled(FEATURE_3D)) ? rxConfig()->midrc : rxConfig()->rx_min_usec;
 
-   // Initialize ARM switch to OFF position when arming via switch is defined
+    // Initialize ARM switch to OFF position when arming via switch is defined
     // TODO - move to rc_mode.c
     for (int i = 0; i < MAX_MODE_ACTIVATION_CONDITION_COUNT; i++) {
         const modeActivationCondition_t *modeActivationCondition = modeActivationConditions(i);
@@ -324,7 +324,7 @@ void rxInit(void)
     default:
 
         break;
-#ifdef USE_SERIAL_RX
+#ifdef USE_SERIALRX
     case RX_PROVIDER_SERIAL:
         {
             const bool enabled = serialRxInit(rxConfig(), &rxRuntimeState);
@@ -357,7 +357,7 @@ void rxInit(void)
         break;
 #endif
 
-#if defined(USE_PWM) || defined(USE_PPM)
+#if defined(USE_RX_PWM) || defined(USE_RX_PPM)
     case RX_PROVIDER_PPM:
     case RX_PROVIDER_PARALLEL_PWM:
         rxPwmInit(rxConfig(), &rxRuntimeState);
@@ -406,7 +406,7 @@ bool rxAreFlightChannelsValid(void)
 
 void suspendRxSignal(void)
 {
-#if defined(USE_PWM) || defined(USE_PPM)
+#if defined(USE_RX_PWM) || defined(USE_RX_PPM)
     if (rxRuntimeState.rxProvider == RX_PROVIDER_PARALLEL_PWM || rxRuntimeState.rxProvider == RX_PROVIDER_PPM) {
         suspendRxSignalUntil = micros() + DELAY_1500_MS;  // 1.5s
         skipRxSamples = SKIP_RC_SAMPLES_ON_RESUME;
@@ -417,7 +417,7 @@ void suspendRxSignal(void)
 
 void resumeRxSignal(void)
 {
-#if defined(USE_PWM) || defined(USE_PPM)
+#if defined(USE_RX_PWM) || defined(USE_RX_PPM)
     if (rxRuntimeState.rxProvider == RX_PROVIDER_PARALLEL_PWM || rxRuntimeState.rxProvider == RX_PROVIDER_PPM) {
         suspendRxSignalUntil = micros();
         skipRxSamples = SKIP_RC_SAMPLES_ON_RESUME;
@@ -515,7 +515,7 @@ FAST_CODE_NOINLINE void rxFrameCheck(timeUs_t currentTimeUs, timeDelta_t current
     default:
 
         break;
-#if defined(USE_PWM) || defined(USE_PPM)
+#if defined(USE_RX_PWM) || defined(USE_RX_PPM)
     case RX_PROVIDER_PPM:
         if (isPPMDataBeingReceived()) {
             signalReceived = true;
@@ -564,10 +564,11 @@ FAST_CODE_NOINLINE void rxFrameCheck(timeUs_t currentTimeUs, timeDelta_t current
         }
     }
 
+    DEBUG_SET(DEBUG_FAILSAFE, 1, rxSignalReceived);
     DEBUG_SET(DEBUG_RX_SIGNAL_LOSS, 0, rxSignalReceived);
 }
 
-#if defined(USE_PWM) || defined(USE_PPM)
+#if defined(USE_RX_PWM) || defined(USE_RX_PPM)
 static uint16_t calculateChannelMovingAverage(uint8_t chan, uint16_t sample)
 {
     static int16_t rcSamples[MAX_SUPPORTED_RX_PARALLEL_PWM_OR_PPM_CHANNEL_COUNT][PPM_AND_PWM_SAMPLE_COUNT];
@@ -684,7 +685,7 @@ void detectAndApplySignalLossBehaviour(void)
             validRxSignalTimeout[channel] = currentTimeMs + MAX_INVALID_PULSE_TIME_MS;
         }
 
-       if (ARMING_FLAG(ARMED) && failsafeIsActive()) {
+        if (ARMING_FLAG(ARMED) && failsafeIsActive()) {
             // while in failsafe Stage 2, whether Rx loss or switch induced, pass valid incoming flight channel values
             // this allows GPS Rescue to detect the 30% requirement for termination
             if (channel < NON_AUX_CHANNEL_COUNT) {
@@ -723,7 +724,7 @@ void detectAndApplySignalLossBehaviour(void)
 
         sample = constrainf(sample, PWM_PULSE_MIN, PWM_PULSE_MAX);
 
-#if defined(USE_PWM) || defined(USE_PPM)
+#if defined(USE_RX_PWM) || defined(USE_RX_PPM)
         if (rxRuntimeState.rxProvider == RX_PROVIDER_PARALLEL_PWM || rxRuntimeState.rxProvider == RX_PROVIDER_PPM) {
             //  smooth output for PWM and PPM using moving average
             rcData[channel] = calculateChannelMovingAverage(channel, sample);

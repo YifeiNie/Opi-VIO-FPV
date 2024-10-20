@@ -101,6 +101,9 @@
 #define MSP_BOARD_INFO                  4    //out message
 #define MSP_BUILD_INFO                  5    //out message
 
+#define MSP_NAME                        10   //out message          Returns user set board name - betaflight
+#define MSP_SET_NAME                    11   //in message           Sets board name - betaflight
+
 //
 // MSP commands for Cleanflight original features
 //
@@ -231,6 +234,9 @@
 
 #define MSP_SET_TX_INFO                 186 // in message           Used to send runtime information from TX lua scripts to the firmware
 #define MSP_TX_INFO                     187 // out message          Used by TX lua scripts to read information from the firmware
+
+#define MSP_SET_OSD_CANVAS              188 // in message           Set osd canvas size COLSxROWS
+#define MSP_OSD_CANVAS                  189 // out message          Get osd canvas size COLSxROWS
 
 //
 // Multwii original MSP commands

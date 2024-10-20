@@ -116,6 +116,9 @@ typedef enum {
 #ifdef USE_GPS
     TASK_GPS,
 #endif
+#ifdef USE_GPS_RESCUE
+    TASK_GPS_RESCUE,
+#endif
 #ifdef USE_MAG
     TASK_COMPASS,
 #endif
@@ -161,31 +164,17 @@ typedef enum {
 #ifdef USE_CAMERA_CONTROL
     TASK_CAMCTRL,
 #endif
-
 #ifdef USE_RCDEVICE
     TASK_RCDEVICE,
 #endif
-
 #ifdef USE_ADC_INTERNAL
     TASK_ADC_INTERNAL,
 #endif
-
 #ifdef USE_PINIOBOX
     TASK_PINIOBOX,
 #endif
-
 #ifdef USE_CRSF_V3
     TASK_SPEED_NEGOTIATION,
-#endif
-
-#ifdef USE_POSITION_YAW_HOLD
-    // TASK_KALMAN_FILTER,
-    TASK_ALT_CTRL,
-    // TASK_ANGLE_CTRL,
-#endif
-
-#ifdef USE_ANGLE_RATE_HOLD
-    TASK_POSITION_CTRL,
 #endif
 
     /* Count of real tasks */

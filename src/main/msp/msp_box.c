@@ -58,7 +58,7 @@ static const box_t boxes[CHECKBOX_ITEM_COUNT] = {
     { .boxId = BOXCAMSTAB, .boxName = "CAMSTAB", .permanentId = 8 },
 //    { .boxId = BOXCAMTRIG, .boxName = "CAMTRIG", .permanentId = 9 },
 //    { .boxId = BOXGPSHOME, .boxName = "GPS HOME", .permanentId = 10 },
-//    { .boxId = BOXPOSITION, .boxName = "POSITION HOLD", .permanentId = 11 },
+//    { .boxId = BOXGPSHOLD, .boxName = "GPS HOLD", .permanentId = 11 },
     { .boxId = BOXPASSTHRU, .boxName = "PASSTHRU", .permanentId = 12 },
     { .boxId = BOXBEEPERON, .boxName = "BEEPER", .permanentId = 13 },
 //    { .boxId = BOXLEDMAX, .boxName = "LEDMAX", .permanentId = 14 }, (removed)
@@ -69,7 +69,7 @@ static const box_t boxes[CHECKBOX_ITEM_COUNT] = {
     { .boxId = BOXOSD, .boxName = "OSD DISABLE", .permanentId = 19 },
     { .boxId = BOXTELEMETRY, .boxName = "TELEMETRY", .permanentId = 20 },
 //    { .boxId = BOXGTUNE, .boxName = "GTUNE", .permanentId = 21 }, (removed)
-    { .boxId = BOXRANGEFINDER, .boxName = "RANGEFINDER", .permanentId = 22 }, //(removed)
+//    { .boxId = BOXRANGEFINDER, .boxName = "RANGEFINDER", .permanentId = 22 }, (removed)
     { .boxId = BOXSERVO1, .boxName = "SERVO1", .permanentId = 23 },
     { .boxId = BOXSERVO2, .boxName = "SERVO2", .permanentId = 24 },
     { .boxId = BOXSERVO3, .boxName = "SERVO3", .permanentId = 25 },
@@ -87,11 +87,10 @@ static const box_t boxes[CHECKBOX_ITEM_COUNT] = {
     { .boxId = BOXBEEPGPSCOUNT, .boxName = "GPS BEEP SATELLITE COUNT", .permanentId = 37 },
 //    { .boxId = BOX3DONASWITCH, .boxName = "3D ON A SWITCH", .permanentId = 38 }, (removed)
     { .boxId = BOXVTXPITMODE, .boxName = "VTX PIT MODE", .permanentId = 39 },
-    { .boxId = BOXUSER1, .boxName = "IMU_INIT_MODE", .permanentId = 40 },
-    { .boxId = BOXUSER2, .boxName = "BOOTLOADER_MODE", .permanentId = 41 },
-//    { .boxId = BOXUSER3, .boxName = "POSITION_YAW_HOLD_MODE", .permanentId = 42 },
-    { .boxId = BOXUSER3, .boxName = "FLOW_CTRL", .permanentId = 42 },
-    { .boxId = BOXUSER4, .boxName = "ANGLE_RATE_HOLD_1", .permanentId = 43 },
+    { .boxId = BOXUSER1, .boxName = "USER1", .permanentId = 40 },
+    { .boxId = BOXUSER2, .boxName = "USER2", .permanentId = 41 },
+    { .boxId = BOXUSER3, .boxName = "USER3", .permanentId = 42 },
+    { .boxId = BOXUSER4, .boxName = "USER4", .permanentId = 43 },
     { .boxId = BOXPIDAUDIO, .boxName = "PID AUDIO", .permanentId = 44 },
     { .boxId = BOXPARALYZE, .boxName = "PARALYZE", .permanentId = 45 },
     { .boxId = BOXGPSRESCUE, .boxName = "GPS RESCUE", .permanentId = 46 },
@@ -101,8 +100,7 @@ static const box_t boxes[CHECKBOX_ITEM_COUNT] = {
     { .boxId = BOXMSPOVERRIDE, .boxName = "MSP OVERRIDE", .permanentId = 50},
     { .boxId = BOXSTICKCOMMANDDISABLE, .boxName = "STICK COMMANDS DISABLE", .permanentId = 51},
     { .boxId = BOXBEEPERMUTE, .boxName = "BEEPER MUTE", .permanentId = 52},
-    { .boxId = BOXREADY, .boxName = "READY", .permanentId = 53},
-    { .boxId = BOXANGLERATEHOLD, .boxName = "ANGLE_RATE_HOLD_2", .permanentId = 54 }
+    { .boxId = BOXREADY, .boxName = "READY", .permanentId = 53}
 };
 
 // mask of enabled IDs, calculated on startup based on enabled features. boxId_e is used as bit index
@@ -234,28 +232,6 @@ void initActiveBoxIds(void)
     }
 #endif
 
-#ifdef USE_IMU_INIT
-    BME(BOXUSER1);
-#endif
-
-#ifdef USE_BOOTLOADER
-    BME(BOXUSER2);
-#endif
-
-#ifdef USE_POSITION_YAW_HOLD
-    BME(BOXUSER3);
-#endif
-
-#ifdef USE_ANGLE_RATE_HOLD
-    BME(BOXUSER4);
-#endif
-
-
-#ifdef USE_RANGEFINDER
-    if (featureIsEnabled(FEATURE_RANGEFINDER)) { // XXX && sensors(SENSOR_RANGEFINDER)?
-        BME(BOXRANGEFINDER);
-    }
-#endif
     BME(BOXFAILSAFE);
 
     if (mixerConfig()->mixerMode == MIXER_FLYING_WING || mixerConfig()->mixerMode == MIXER_AIRPLANE || mixerConfig()->mixerMode == MIXER_CUSTOM_AIRPLANE) {
@@ -361,11 +337,6 @@ void initActiveBoxIds(void)
 
     BME(BOXSTICKCOMMANDDISABLE);
     BME(BOXREADY);
-
-// #ifdef USE_ANGLE_RATE_HOLD
-//     BME(BOXANGLERATEHOLD);
-// #endif
-    // BME(BOXFLOWCTRL)
 
 #undef BME
     // check that all enabled IDs are in boxes array (check may be skipped when using findBoxById() functions)

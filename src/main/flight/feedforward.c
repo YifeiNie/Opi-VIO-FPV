@@ -30,7 +30,6 @@
 #include "fc/rc.h"
 
 #include "flight/pid.h"
-#include "flight/alt_ctrl.h"
 
 #include "feedforward.h"
 
@@ -65,7 +64,6 @@ FAST_CODE_NOINLINE float feedforwardApply(int axis, bool newRcFrame, feedforward
 
     if (newRcFrame) {
 
-        state_check.feedforward_apply = 1;
         const float feedforwardTransitionFactor = pidGetFeedforwardTransitionFactor();
         const float feedforwardSmoothFactor = pidGetFeedforwardSmoothFactor();
                     // good values : 25 for 111hz FrSky, 30 for 150hz, 50 for 250hz, 65 for 500hz links
@@ -191,10 +189,6 @@ FAST_CODE_NOINLINE float feedforwardApply(int axis, bool newRcFrame, feedforward
         // apply feedforward transition
         setpointDelta[axis] *= feedforwardTransitionFactor > 0 ? MIN(1.0f, getRcDeflectionAbs(axis) * feedforwardTransitionFactor) : 1.0f;
 
-    }
-    else
-    {
-        state_check.feedforward_apply = 0;
     }
     return setpointDelta[axis]; // the value used by the PID code
 }

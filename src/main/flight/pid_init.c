@@ -251,7 +251,7 @@ void pidInit(const pidProfile_t *pidProfile)
     pidInitFilters(pidProfile);
     pidInitConfig(pidProfile);
 #ifdef USE_RPM_FILTER
-    rpmFilterInit(rpmFilterConfig());
+    rpmFilterInit(rpmFilterConfig(), gyro.targetLooptime);
 #endif
 }
 
@@ -292,7 +292,6 @@ void pidInitConfig(const pidProfile_t *pidProfile)
         pidRuntime.pidCoefficient[FD_YAW].Ki *= 2.5f;
     }
     pidRuntime.levelGain = pidProfile->pid[PID_LEVEL].P / 10.0f;
-    //pidRuntime.levelGain = pidProfile->pid[PID_LEVEL].P / 5.0f;
     pidRuntime.horizonGain = pidProfile->pid[PID_LEVEL].I / 10.0f;
     pidRuntime.horizonTransition = (float)pidProfile->pid[PID_LEVEL].D;
     pidRuntime.horizonTiltExpertMode = pidProfile->horizon_tilt_expert_mode;

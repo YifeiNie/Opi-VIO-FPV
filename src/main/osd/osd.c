@@ -113,6 +113,9 @@ const char * const osdTimerSourceNames[] = {
     "ON/ARM   "
 };
 
+#define OSD_LOGO_ROWS 4
+#define OSD_LOGO_COLS 24
+
 // Things in both OSD and CMS
 
 #define IS_HI(X)  (rcData[X] > 1750)
@@ -147,9 +150,9 @@ static bool backgroundLayerSupported = false;
 escSensorData_t *osdEscDataCombined;
 #endif
 
-STATIC_ASSERT(OSD_POS_MAX == OSD_POS(31,31), OSD_POS_MAX_incorrect);
+STATIC_ASSERT(OSD_POS_MAX == OSD_POS(63,31), OSD_POS_MAX_incorrect);
 
-PG_REGISTER_WITH_RESET_FN(osdConfig_t, osdConfig, PG_OSD_CONFIG, 11);
+PG_REGISTER_WITH_RESET_FN(osdConfig_t, osdConfig, PG_OSD_CONFIG, 12);
 
 PG_REGISTER_WITH_RESET_FN(osdElementConfig_t, osdElementConfig, PG_OSD_ELEMENT_CONFIG, 1);
 
@@ -398,13 +401,30 @@ void pgResetFn_osdConfig(osdConfig_t *osdConfig)
     osdConfig->aux_channel = 1;
     osdConfig->aux_scale = 200;
     osdConfig->aux_symbol = 'A';
+
+    // Make it obvious on the configurator that the FC doesn't support HD
+#ifdef USE_OSD_HD
+    osdConfig->canvas_cols = OSD_HD_COLS;
+    osdConfig->canvas_rows = OSD_HD_ROWS;
+#else
+    osdConfig->canvas_cols = OSD_SD_COLS;
+    osdConfig->canvas_rows = OSD_SD_ROWS;
+#endif
 }
 
 void pgResetFn_osdElementConfig(osdElementConfig_t *osdElementConfig)
 {
+#ifdef USE_OSD_SD
+    uint8_t midRow = 7;
+    uint8_t midCol = 15;
+#else
+    uint8_t midRow = 10;
+    uint8_t midCol = 26;
+#endif
+
     // Position elements near centre of screen and disabled by default
     for (int i = 0; i < OSD_ITEM_COUNT; i++) {
-        osdElementConfig->item_pos[i] = OSD_POS(10, 7);
+        osdElementConfig->item_pos[i] = OSD_POS((midCol - 5), midRow);
     }
 
     // Always enable warnings elements by default
@@ -412,30 +432,33 @@ void pgResetFn_osdElementConfig(osdElementConfig_t *osdElementConfig)
     for (unsigned i = 1; i <= OSD_PROFILE_COUNT; i++) {
         profileFlags |= OSD_PROFILE_FLAG(i);
     }
-    osdElementConfig->item_pos[OSD_WARNINGS] = OSD_POS(9, 10) | profileFlags;
+    osdElementConfig->item_pos[OSD_WARNINGS] = OSD_POS((midCol - 6), (midRow + 3)) | profileFlags;
 
     // Default to old fixed positions for these elements
-    osdElementConfig->item_pos[OSD_CROSSHAIRS]         = OSD_POS(13, 6);
-    osdElementConfig->item_pos[OSD_ARTIFICIAL_HORIZON] = OSD_POS(14, 2);
-    osdElementConfig->item_pos[OSD_HORIZON_SIDEBARS]   = OSD_POS(14, 6);
-    osdElementConfig->item_pos[OSD_CAMERA_FRAME]       = OSD_POS(3, 1);
-    osdElementConfig->item_pos[OSD_UP_DOWN_REFERENCE]  = OSD_POS(13, 6);
+    osdElementConfig->item_pos[OSD_CROSSHAIRS]         = OSD_POS((midCol - 2), (midRow - 1));
+    osdElementConfig->item_pos[OSD_ARTIFICIAL_HORIZON] = OSD_POS((midCol - 1), (midRow - 5));
+    osdElementConfig->item_pos[OSD_HORIZON_SIDEBARS]   = OSD_POS((midCol - 1), (midRow - 1));
+    osdElementConfig->item_pos[OSD_CAMERA_FRAME]       = OSD_POS((midCol - 12), (midRow - 6));
+    osdElementConfig->item_pos[OSD_UP_DOWN_REFERENCE]  = OSD_POS((midCol - 2), (midRow - 1));
 }
 
 static void osdDrawLogo(int x, int y)
 {
     // display logo and help
     int fontOffset = 160;
-    for (int row = 0; row < 4; row++) {
-        for (int column = 0; column < 24; column++) {
+    for (int row = 0; row < OSD_LOGO_ROWS; row++) {
+        for (int column = 0; column < OSD_LOGO_COLS; column++) {
             if (fontOffset <= SYM_END_OF_FONT)
-                displayWriteChar(osdDisplayPort, x + column, y + row, DISPLAYPORT_ATTR_NONE, fontOffset++);
+                displayWriteChar(osdDisplayPort, x + column, y + row, DISPLAYPORT_ATTR_NORMAL, fontOffset++);
         }
     }
 }
 
 static void osdCompleteInitialization(void)
 {
+    uint8_t midRow = osdDisplayPort->rows / 2;
+    uint8_t midCol = osdDisplayPort->cols / 2;
+
     armState = ARMING_FLAG(ARMED);
 
     osdResetAlarms();
@@ -446,21 +469,21 @@ static void osdCompleteInitialization(void)
     displayBeginTransaction(osdDisplayPort, DISPLAY_TRANSACTION_OPT_RESET_DRAWING);
     displayClearScreen(osdDisplayPort, DISPLAY_CLEAR_WAIT);
 
-    osdDrawLogo(3, 1);
+    osdDrawLogo(midCol - (OSD_LOGO_COLS) / 2, midRow - 5);
 
     char string_buffer[30];
     tfp_sprintf(string_buffer, "V%s", FC_VERSION_STRING);
-    displayWrite(osdDisplayPort, 20, 6, DISPLAYPORT_ATTR_NONE, string_buffer);
+    displayWrite(osdDisplayPort, midCol + 5, midRow, DISPLAYPORT_ATTR_NORMAL, string_buffer);
 #ifdef USE_CMS
-    displayWrite(osdDisplayPort, 7, 8,  DISPLAYPORT_ATTR_NONE, CMS_STARTUP_HELP_TEXT1);
-    displayWrite(osdDisplayPort, 11, 9, DISPLAYPORT_ATTR_NONE, CMS_STARTUP_HELP_TEXT2);
-    displayWrite(osdDisplayPort, 11, 10, DISPLAYPORT_ATTR_NONE, CMS_STARTUP_HELP_TEXT3);
+    displayWrite(osdDisplayPort, midCol - 8, midRow + 2,  DISPLAYPORT_ATTR_NORMAL, CMS_STARTUP_HELP_TEXT1);
+    displayWrite(osdDisplayPort, midCol - 4, midRow + 3, DISPLAYPORT_ATTR_NORMAL, CMS_STARTUP_HELP_TEXT2);
+    displayWrite(osdDisplayPort, midCol - 4, midRow + 4, DISPLAYPORT_ATTR_NORMAL, CMS_STARTUP_HELP_TEXT3);
 #endif
 
 #ifdef USE_RTC_TIME
     char dateTimeBuffer[FORMATTED_DATE_TIME_BUFSIZE];
     if (osdFormatRtcDateTime(&dateTimeBuffer[0])) {
-        displayWrite(osdDisplayPort, 5, 12, DISPLAYPORT_ATTR_NONE, dateTimeBuffer);
+        displayWrite(osdDisplayPort, midCol - 10, midRow + 6, DISPLAYPORT_ATTR_NORMAL, dateTimeBuffer);
     }
 #endif
 
@@ -487,6 +510,39 @@ void osdInit(displayPort_t *osdDisplayPortToUse, osdDisplayPortDevice_e displayP
 #ifdef USE_CMS
     cmsDisplayPortRegister(osdDisplayPort);
 #endif
+
+    if (osdDisplayPort->cols && osdDisplayPort->rows) {
+        // Ensure that osd_canvas_width/height are correct
+        if (osdConfig()->canvas_cols != osdDisplayPort->cols) {
+            osdConfigMutable()->canvas_cols = osdDisplayPort->cols;
+        }
+        if (osdConfig()->canvas_rows != osdDisplayPort->rows) {
+            osdConfigMutable()->canvas_rows = osdDisplayPort->rows;
+        }
+
+        // Ensure that all OSD elements are on the canvas once number of row/columns is known
+        for (int i = 0; i < OSD_ITEM_COUNT; i++) {
+            uint16_t itemPos = osdElementConfig()->item_pos[i];
+            uint8_t elemPosX = OSD_X(itemPos);
+            uint8_t elemPosY = OSD_Y(itemPos);
+            uint16_t elemProfileType = itemPos & (OSD_PROFILE_MASK | OSD_TYPE_MASK);
+            bool pos_reset = false;
+
+            if (elemPosX >= osdDisplayPort->cols) {
+                elemPosX = osdDisplayPort->cols - 1;
+                pos_reset  = true;
+            }
+
+            if (elemPosY >= osdDisplayPort->rows) {
+                elemPosY = osdDisplayPort->rows - 1;
+                pos_reset  = true;
+            }
+
+            if (pos_reset) {
+                osdElementConfigMutable()->item_pos[i] = elemProfileType | OSD_POS(elemPosX, elemPosY);
+            }
+        }
+    }
 }
 
 static void osdResetStats(void)
@@ -674,11 +730,11 @@ static void osdGetBlackboxStatusString(char * buff)
 }
 #endif
 
-static void osdDisplayStatisticLabel(uint8_t y, const char * text, const char * value)
+static void osdDisplayStatisticLabel(uint8_t x, uint8_t y, const char * text, const char * value)
 {
-    displayWrite(osdDisplayPort, 2, y, DISPLAYPORT_ATTR_NONE, text);
-    displayWrite(osdDisplayPort, 20, y, DISPLAYPORT_ATTR_NONE, ":");
-    displayWrite(osdDisplayPort, 22, y, DISPLAYPORT_ATTR_NONE, value);
+    displayWrite(osdDisplayPort, x - 13, y, DISPLAYPORT_ATTR_NORMAL, text);
+    displayWrite(osdDisplayPort, x + 5, y, DISPLAYPORT_ATTR_NORMAL, ":");
+    displayWrite(osdDisplayPort, x + 7, y, DISPLAYPORT_ATTR_NORMAL, value);
 }
 
 /*
@@ -698,6 +754,7 @@ static bool isSomeStatEnabled(void)
 
 static bool osdDisplayStat(int statistic, uint8_t displayRow)
 {
+    uint8_t midCol = osdDisplayPort->cols / 2;
     char buff[OSD_ELEMENT_BUFFER_LENGTH];
 
     switch (statistic) {
@@ -710,23 +767,23 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
             tfp_sprintf(buff, "NO RTC");
         }
 
-        displayWrite(osdDisplayPort, 2, displayRow, DISPLAYPORT_ATTR_NONE, buff);
+        displayWrite(osdDisplayPort, midCol - 13, displayRow, DISPLAYPORT_ATTR_NORMAL, buff);
         return true;
     }
 
     case OSD_STAT_TIMER_1:
         osdFormatTimer(buff, false, (OSD_TIMER_SRC(osdConfig()->timers[OSD_TIMER_1]) == OSD_TIMER_SRC_ON ? false : true), OSD_TIMER_1);
-        osdDisplayStatisticLabel(displayRow, osdTimerSourceNames[OSD_TIMER_SRC(osdConfig()->timers[OSD_TIMER_1])], buff);
+        osdDisplayStatisticLabel(midCol, displayRow, osdTimerSourceNames[OSD_TIMER_SRC(osdConfig()->timers[OSD_TIMER_1])], buff);
         return true;
 
     case OSD_STAT_TIMER_2:
         osdFormatTimer(buff, false, (OSD_TIMER_SRC(osdConfig()->timers[OSD_TIMER_2]) == OSD_TIMER_SRC_ON ? false : true), OSD_TIMER_2);
-        osdDisplayStatisticLabel(displayRow, osdTimerSourceNames[OSD_TIMER_SRC(osdConfig()->timers[OSD_TIMER_2])], buff);
+        osdDisplayStatisticLabel(midCol, displayRow, osdTimerSourceNames[OSD_TIMER_SRC(osdConfig()->timers[OSD_TIMER_2])], buff);
         return true;
 
     case OSD_STAT_MAX_ALTITUDE: {
         osdPrintFloat(buff, SYM_NONE, osdGetMetersToSelectedUnit(stats.max_altitude) / 100.0f, "", 1, true, osdGetMetersToSelectedUnitSymbol());
-        osdDisplayStatisticLabel(displayRow, "MAX ALTITUDE", buff);
+        osdDisplayStatisticLabel(midCol, displayRow, "MAX ALTITUDE", buff);
         return true;
     }
 
@@ -734,7 +791,7 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
     case OSD_STAT_MAX_SPEED:
         if (featureIsEnabled(FEATURE_GPS)) {
             tfp_sprintf(buff, "%d%c", osdGetSpeedToSelectedUnit(stats.max_speed), osdGetSpeedToSelectedUnitSymbol());
-            osdDisplayStatisticLabel(displayRow, "MAX SPEED", buff);
+            osdDisplayStatisticLabel(midCol, displayRow, "MAX SPEED", buff);
             return true;
         }
         break;
@@ -742,7 +799,7 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
     case OSD_STAT_MAX_DISTANCE:
         if (featureIsEnabled(FEATURE_GPS)) {
             osdFormatDistanceString(buff, stats.max_distance, SYM_NONE);
-            osdDisplayStatisticLabel(displayRow, "MAX DISTANCE", buff);
+            osdDisplayStatisticLabel(midCol, displayRow, "MAX DISTANCE", buff);
             return true;
         }
         break;
@@ -751,7 +808,7 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
         if (featureIsEnabled(FEATURE_GPS)) {
             const int distanceFlown = GPS_distanceFlownInCm / 100;
             osdFormatDistanceString(buff, distanceFlown, SYM_NONE);
-            osdDisplayStatisticLabel(displayRow, "FLIGHT DISTANCE", buff);
+            osdDisplayStatisticLabel(midCol, displayRow, "FLIGHT DISTANCE", buff);
             return true;
         }
         break;
@@ -759,19 +816,19 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
 
     case OSD_STAT_MIN_BATTERY:
         osdPrintFloat(buff, SYM_NONE, stats.min_voltage / 100.0f, "", 2, true, SYM_VOLT);
-        osdDisplayStatisticLabel(displayRow, osdConfig()->stat_show_cell_value? "MIN AVG CELL" : "MIN BATTERY", buff);
+        osdDisplayStatisticLabel(midCol, displayRow, osdConfig()->stat_show_cell_value? "MIN AVG CELL" : "MIN BATTERY", buff);
         return true;
 
     case OSD_STAT_END_BATTERY:
         osdPrintFloat(buff, SYM_NONE, stats.end_voltage / 100.0f, "", 2, true, SYM_VOLT);
-        osdDisplayStatisticLabel(displayRow, osdConfig()->stat_show_cell_value ? "END AVG CELL" : "END BATTERY", buff);
+        osdDisplayStatisticLabel(midCol, displayRow, osdConfig()->stat_show_cell_value ? "END AVG CELL" : "END BATTERY", buff);
         return true;
 
     case OSD_STAT_BATTERY: 
         {
             const uint16_t statsVoltage = getStatsVoltage();
             osdPrintFloat(buff, SYM_NONE, statsVoltage / 100.0f, "", 2, true, SYM_VOLT);
-            osdDisplayStatisticLabel(displayRow, osdConfig()->stat_show_cell_value ? "AVG BATT CELL" : "BATTERY", buff);
+            osdDisplayStatisticLabel(midCol, displayRow, osdConfig()->stat_show_cell_value ? "AVG BATT CELL" : "BATTERY", buff);
             return true;
         }
         break;
@@ -779,13 +836,13 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
     case OSD_STAT_MIN_RSSI:
         itoa(stats.min_rssi, buff, 10);
         strcat(buff, "%");
-        osdDisplayStatisticLabel(displayRow, "MIN RSSI", buff);
+        osdDisplayStatisticLabel(midCol, displayRow, "MIN RSSI", buff);
         return true;
 
     case OSD_STAT_MAX_CURRENT:
         if (batteryConfig()->currentMeterSource != CURRENT_METER_NONE) {
             tfp_sprintf(buff, "%d%c", stats.max_current, SYM_AMP);
-            osdDisplayStatisticLabel(displayRow, "MAX CURRENT", buff);
+            osdDisplayStatisticLabel(midCol, displayRow, "MAX CURRENT", buff);
             return true;
         }
         break;
@@ -793,7 +850,7 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
     case OSD_STAT_USED_MAH:
         if (batteryConfig()->currentMeterSource != CURRENT_METER_NONE) {
             tfp_sprintf(buff, "%d%c", getMAhDrawn(), SYM_MAH);
-            osdDisplayStatisticLabel(displayRow, "USED MAH", buff);
+            osdDisplayStatisticLabel(midCol, displayRow, "USED MAH", buff);
             return true;
         }
         break;
@@ -801,7 +858,7 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
     case OSD_STAT_WATT_HOURS_DRAWN:
         if (batteryConfig()->currentMeterSource != CURRENT_METER_NONE) {
             osdPrintFloat(buff, SYM_NONE, getWhDrawn(), "", 2, true, SYM_NONE);
-            osdDisplayStatisticLabel(displayRow, "USED WATT HOURS", buff);
+            osdDisplayStatisticLabel(midCol, displayRow, "USED WATT HOURS", buff);
             return true;
         }
         break;
@@ -810,7 +867,7 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
     case OSD_STAT_BLACKBOX:
         if (blackboxConfig()->device && blackboxConfig()->device != BLACKBOX_DEVICE_SERIAL) {
             osdGetBlackboxStatusString(buff);
-            osdDisplayStatisticLabel(displayRow, "BLACKBOX", buff);
+            osdDisplayStatisticLabel(midCol, displayRow, "BLACKBOX", buff);
             return true;
         }
         break;
@@ -820,7 +877,7 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
             int32_t logNumber = blackboxGetLogNumber();
             if (logNumber >= 0) {
                 itoa(logNumber, buff, 10);
-                osdDisplayStatisticLabel(displayRow, "BB LOG NUM", buff);
+                osdDisplayStatisticLabel(midCol, displayRow, "BB LOG NUM", buff);
                 return true;
             }
         }
@@ -831,7 +888,7 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
     case OSD_STAT_MAX_G_FORCE:
         if (sensors(SENSOR_ACC)) {
             osdPrintFloat(buff, SYM_NONE, stats.max_g_force, "", 1, true, 'G');
-            osdDisplayStatisticLabel(displayRow, "MAX G-FORCE", buff);
+            osdDisplayStatisticLabel(midCol, displayRow, "MAX G-FORCE", buff);
             return true;
         }
         break;
@@ -840,20 +897,20 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
 #ifdef USE_ESC_SENSOR
     case OSD_STAT_MAX_ESC_TEMP:
     {
-    	uint16_t ix = 0;
-    	if (stats.max_esc_temp_ix > 0) {
-    		ix = tfp_sprintf(buff, "%d ", stats.max_esc_temp_ix);
-    	}
-    	tfp_sprintf(buff + ix, "%d%c", osdConvertTemperatureToSelectedUnit(stats.max_esc_temp), osdGetTemperatureSymbolForSelectedUnit());
-    	osdDisplayStatisticLabel(displayRow, "MAX ESC TEMP", buff);
-    	return true;
+        uint16_t ix = 0;
+        if (stats.max_esc_temp_ix > 0) {
+            ix = tfp_sprintf(buff, "%d ", stats.max_esc_temp_ix);
+        }
+        tfp_sprintf(buff + ix, "%d%c", osdConvertTemperatureToSelectedUnit(stats.max_esc_temp), osdGetTemperatureSymbolForSelectedUnit());
+        osdDisplayStatisticLabel(midCol, displayRow, "MAX ESC TEMP", buff);
+        return true;
     }
 #endif
 
 #if defined(USE_ESC_SENSOR) || defined(USE_DSHOT_TELEMETRY)
     case OSD_STAT_MAX_ESC_RPM:
         itoa(stats.max_esc_rpm, buff, 10);
-        osdDisplayStatisticLabel(displayRow, "MAX ESC RPM", buff);
+        osdDisplayStatisticLabel(midCol, displayRow, "MAX ESC RPM", buff);
         return true;
 #endif
 
@@ -861,7 +918,7 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
     case OSD_STAT_MIN_LINK_QUALITY:
         tfp_sprintf(buff, "%d", stats.min_link_quality);
         strcat(buff, "%");
-        osdDisplayStatisticLabel(displayRow, "MIN LINK", buff);
+        osdDisplayStatisticLabel(midCol, displayRow, "MIN LINK", buff);
         return true;
 #endif
 
@@ -871,9 +928,9 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
             int value = getMaxFFT();
             if (value > 0) {
                 tfp_sprintf(buff, "%dHZ", value);
-                osdDisplayStatisticLabel(displayRow, "PEAK FFT", buff);
+                osdDisplayStatisticLabel(midCol, displayRow, "PEAK FFT", buff);
             } else {
-                osdDisplayStatisticLabel(displayRow, "PEAK FFT", "THRT<20%");
+                osdDisplayStatisticLabel(midCol, displayRow, "PEAK FFT", "THRT<20%");
             }
             return true;
         }
@@ -883,27 +940,27 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
 #ifdef USE_RX_RSSI_DBM
     case OSD_STAT_MIN_RSSI_DBM:
         tfp_sprintf(buff, "%3d", stats.min_rssi_dbm);
-        osdDisplayStatisticLabel(displayRow, "MIN RSSI DBM", buff);
+        osdDisplayStatisticLabel(midCol, displayRow, "MIN RSSI DBM", buff);
         return true;
 #endif
 
 #ifdef USE_RX_RSNR
     case OSD_STAT_MIN_RSNR:
         tfp_sprintf(buff, "%3d", stats.min_rsnr);
-        osdDisplayStatisticLabel(displayRow, "MIN RSNR", buff);
+        osdDisplayStatisticLabel(midCol, displayRow, "MIN RSNR", buff);
         return true;
 #endif
 
 #ifdef USE_PERSISTENT_STATS
     case OSD_STAT_TOTAL_FLIGHTS:
         itoa(statsConfig()->stats_total_flights, buff, 10);
-        osdDisplayStatisticLabel(displayRow, "TOTAL FLIGHTS", buff);
+        osdDisplayStatisticLabel(midCol, displayRow, "TOTAL FLIGHTS", buff);
         return true;
 
     case OSD_STAT_TOTAL_TIME: {
         int minutes = statsConfig()->stats_total_time_s / 60;
         tfp_sprintf(buff, "%d:%02dH", minutes / 60, minutes % 60);
-        osdDisplayStatisticLabel(displayRow, "TOTAL FLIGHT TIME", buff);
+        osdDisplayStatisticLabel(midCol, displayRow, "TOTAL FLIGHT TIME", buff);
         return true;
     }
 
@@ -915,7 +972,7 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
         } else {
             tfp_sprintf(buff, "%d%c", statsConfig()->stats_total_dist_m / METERS_PER_KILOMETER, SYM_KM);
         }
-        osdDisplayStatisticLabel(displayRow, "TOTAL DISTANCE", buff);
+        osdDisplayStatisticLabel(midCol, displayRow, "TOTAL DISTANCE", buff);
         return true;
 #endif
     }
@@ -946,6 +1003,8 @@ static void osdRenderStatsBegin(void)
 // call repeatedly until it returns true which indicates that all stats have been rendered.
 static bool osdRenderStatsContinue(void)
 {
+    uint8_t midCol = osdDisplayPort->cols / 2;
+
     if (osdStatsRenderingState.row == 0) {
 
         bool displayLabel = false;
@@ -962,7 +1021,7 @@ static bool osdRenderStatsContinue(void)
         }
 
         if (displayLabel) {
-            displayWrite(osdDisplayPort, 2, osdStatsRenderingState.row++, DISPLAYPORT_ATTR_NONE, "  --- STATS ---");
+            displayWrite(osdDisplayPort, midCol - (strlen("--- STATS ---") / 2), osdStatsRenderingState.row++, DISPLAYPORT_ATTR_NORMAL, "--- STATS ---");
             return false;
         }
     }
@@ -1055,20 +1114,24 @@ static bool osdRefreshStats(void)
 
 static timeDelta_t osdShowArmed(void)
 {
+    uint8_t midRow = osdDisplayPort->rows / 2;
+    uint8_t midCol = osdDisplayPort->cols / 2;
     timeDelta_t ret;
 
     displayClearScreen(osdDisplayPort, DISPLAY_CLEAR_WAIT);
 
     if ((osdConfig()->logo_on_arming == OSD_LOGO_ARMING_ON) || ((osdConfig()->logo_on_arming == OSD_LOGO_ARMING_FIRST) && !ARMING_FLAG(WAS_EVER_ARMED))) {
-        osdDrawLogo(3, 1);
+        uint8_t midRow = osdDisplayPort->rows / 2;
+        uint8_t midCol = osdDisplayPort->cols / 2;
+        osdDrawLogo(midCol - (OSD_LOGO_COLS) / 2, midRow - 5);
         ret = osdConfig()->logo_on_arming_duration * 1e5;
     } else {
         ret = (REFRESH_1S / 2);
     }
-    displayWrite(osdDisplayPort, 12, 7, DISPLAYPORT_ATTR_NONE, "ARMED");
+    displayWrite(osdDisplayPort, midCol - (strlen("ARMED") / 2), midRow, DISPLAYPORT_ATTR_NORMAL, "ARMED");
 
     if (isFlipOverAfterCrashActive()) {
-        displayWrite(osdDisplayPort, 8, 8, DISPLAYPORT_ATTR_NONE, CRASH_FLIP_WARNING);
+        displayWrite(osdDisplayPort, midCol - (strlen(CRASH_FLIP_WARNING) / 2), midRow + 1, DISPLAYPORT_ATTR_NORMAL, CRASH_FLIP_WARNING);
     }
 
     return ret;

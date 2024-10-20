@@ -16,8 +16,7 @@
 #
 
 # The target to build, see VALID_TARGETS below
-FIRSTNAME ?= Mjh_Ldd
-TARGET    ?= STM32H743
+TARGET    ?= STM32F405
 BOARD     ?= 
 
 # Compile-time options
@@ -98,10 +97,6 @@ HSE_VALUE       ?= 8000000
 # used for turning on features like VCP and SDCARD
 FEATURES        =
 
-# used to disable features based on flash space shortage (larger number => more features disabled)
-FEATURE_CUT_LEVEL_SUPPLIED := $(FEATURE_CUT_LEVEL)
-FEATURE_CUT_LEVEL =
-
 ifneq ($(BOARD),)
 # silently ignore if the file is not present. Allows for target defaults.
 -include $(ROOT)/src/main/board/$(BOARD)/board.mk
@@ -174,12 +169,6 @@ ifneq ($(HSE_VALUE),)
 DEVICE_FLAGS  := $(DEVICE_FLAGS) -DHSE_VALUE=$(HSE_VALUE)
 endif
 
-ifneq ($(FEATURE_CUT_LEVEL_SUPPLIED),)
-DEVICE_FLAGS  := $(DEVICE_FLAGS) -DFEATURE_CUT_LEVEL=$(FEATURE_CUT_LEVEL_SUPPLIED)
-else ifneq ($(FEATURE_CUT_LEVEL),)
-DEVICE_FLAGS  := $(DEVICE_FLAGS) -DFEATURE_CUT_LEVEL=$(FEATURE_CUT_LEVEL)
-endif
-
 TARGET_DIR     = $(ROOT)/src/main/target/$(TARGET)
 TARGET_DIR_SRC = $(notdir $(wildcard $(TARGET_DIR)/*.c))
 
@@ -242,7 +231,7 @@ CFLAGS     += $(ARCH_FLAGS) \
               $(addprefix -I,$(INCLUDE_DIRS)) \
               $(DEBUG_FLAGS) \
               -std=gnu17 \
-              -Wall -Wextra -Wpedantic -Wunsafe-loop-optimizations -Wdouble-promotion \
+              -Wall -Wextra -Werror -Wpedantic -Wunsafe-loop-optimizations -Wdouble-promotion \
               $(EXTRA_WARNING_FLAGS) \
               -ffunction-sections \
               -fdata-sections \
@@ -294,7 +283,7 @@ CPPCHECK        = cppcheck $(CSOURCES) --enable=all --platform=unix64 \
                   $(addprefix -I,$(INCLUDE_DIRS)) \
                   -I/usr/include -I/usr/include/linux
 
-TARGET_BASENAME = $(BIN_DIR)/$(FORKNAME)_$(FC_VER)_$(TARGET)_$(FIRSTNAME)
+TARGET_BASENAME = $(BIN_DIR)/$(FORKNAME)_$(FC_VER)_$(TARGET)
 
 #
 # Things we will build
@@ -313,6 +302,9 @@ TARGET_DEPS     = $(addsuffix .d,$(addprefix $(OBJECT_DIR)/$(TARGET)/,$(basename
 TARGET_MAP      = $(OBJECT_DIR)/$(FORKNAME)_$(TARGET).map
 
 TARGET_EXST_HASH_SECTION_FILE = $(OBJECT_DIR)/$(TARGET)/exst_hash_section.bin
+
+TARGET_EF_HASH      := $(shell echo -n "$(EXTRA_FLAGS)" | openssl dgst -md5 | awk '{print $$2;}')
+TARGET_EF_HASH_FILE := $(OBJECT_DIR)/$(TARGET)/.efhash_$(TARGET_EF_HASH)
 
 CLEAN_ARTIFACTS := $(TARGET_BIN)
 CLEAN_ARTIFACTS += $(TARGET_HEX_REV) $(TARGET_HEX)
@@ -654,9 +646,14 @@ test_versions:
 test_%:
 	$(V0) cd src/test && $(MAKE) $@
 
+$(TARGET_EF_HASH_FILE):
+	$(V1) mkdir -p $(dir $@)
+	$(V0) rm -f $(OBJECT_DIR)/$(TARGET)/.efhash_*
+	@echo "EF HASH -> $(TARGET_EF_HASH_FILE)"
+	$(V1) touch $(TARGET_EF_HASH_FILE)
 
-# rebuild everything when makefile changes
-$(TARGET_OBJS): Makefile $(TARGET_DIR)/target.mk $(wildcard make/*)
+# rebuild everything when makefile changes or the extra flags have changed
+$(TARGET_OBJS): $(TARGET_EF_HASH_FILE) Makefile $(TARGET_DIR)/target.mk $(wildcard make/*)
 
 # include auto-generated dependencies
 -include $(TARGET_DEPS)

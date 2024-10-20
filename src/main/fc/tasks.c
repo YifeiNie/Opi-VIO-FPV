@@ -45,7 +45,6 @@
 #include "drivers/transponder_ir.h"
 #include "drivers/usb_io.h"
 #include "drivers/vtx_common.h"
-#include "drivers/rangefinder/rangefinder.h"
 
 #include "config/config.h"
 #include "fc/core.h"
@@ -54,13 +53,11 @@
 #include "fc/rc_controls.h"
 #include "fc/runtime_config.h"
 
-#include "flight/position.h"
+#include "flight/gps_rescue.h"
 #include "flight/imu.h"
 #include "flight/mixer.h"
 #include "flight/pid.h"
-#include "flight/wifi.h"
-#include "flight/alt_ctrl.h"
-#include "flight/kalman_filter.h"
+#include "flight/position.h"
 
 #include "io/asyncfatfs/asyncfatfs.h"
 #include "io/beeper.h"
@@ -100,7 +97,6 @@
 
 #include "telemetry/telemetry.h"
 #include "telemetry/crsf.h"
-#include "telemetry/mavlink.h"
 
 #ifdef USE_BST
 #include "i2c_bst.h"
@@ -254,6 +250,18 @@ static void taskUpdateRxMain(timeUs_t currentTimeUs)
     schedulerSetNextStateTime(rxStateDurationFractionUs[rxState] >> RX_TASK_DECAY_SHIFT);
 }
 
+#ifdef USE_GPS_RESCUE
+static void taskGpsRescue(timeUs_t currentTimeUs)
+{
+    UNUSED(currentTimeUs);
+
+    if (gpsRescueIsConfigured()) {
+        gpsRescueUpdate();
+    } else {
+        schedulerIgnoreTaskStateTime();
+    }
+}
+#endif
 
 #ifdef USE_BARO
 static void taskUpdateBaro(timeUs_t currentTimeUs)
@@ -283,23 +291,6 @@ static void taskUpdateMag(timeUs_t currentTimeUs)
 }
 #endif
 
-#if defined(USE_RANGEFINDER)
-void taskUpdateRangefinder(timeUs_t currentTimeUs)
-{
-    // UNUSED(currentTimeUs);
-
-    if (!sensors(SENSOR_RANGEFINDER)) {
-        return;
-    }
-    
-    rangefinderUpdate(currentTimeUs);
-
-    // rangefinderProcess(getCosTiltAngle());   
-
-    // Update_Kalman();
-}
-#endif
-
 #if defined(USE_BARO) || defined(USE_GPS)
 static void taskCalculateAltitude(timeUs_t currentTimeUs)
 {
@@ -308,17 +299,28 @@ static void taskCalculateAltitude(timeUs_t currentTimeUs)
 }
 #endif // USE_BARO || USE_GPS
 
+#if defined(USE_RANGEFINDER)
+void taskUpdateRangefinder(timeUs_t currentTimeUs)
+{
+    UNUSED(currentTimeUs);
+
+    if (!sensors(SENSOR_RANGEFINDER)) {
+        return;
+    }
+
+    rangefinderUpdate();
+
+    rangefinderProcess(getCosTiltAngle());
+}
+#endif
+
 #ifdef USE_TELEMETRY
 static void taskTelemetry(timeUs_t currentTimeUs)
 {
-    UNUSED(currentTimeUs);
     if (!cliMode && featureIsEnabled(FEATURE_TELEMETRY)) {
-//        subTaskTelemetryPollSensors(currentTimeUs);
+        subTaskTelemetryPollSensors(currentTimeUs);
 
-//        telemetryProcess(currentTimeUs);
-#ifdef USE_TELEMETRY_MAVLINK
-    handleMAVLinkTelemetry();
-#endif
+        telemetryProcess(currentTimeUs);
     }
 }
 #endif
@@ -348,6 +350,7 @@ task_t tasks[TASK_COUNT];
 
 // Task ID data in .data (initialised data)
 task_attribute_t task_attributes[TASK_COUNT] = {
+
     [TASK_SYSTEM] = DEFINE_TASK("SYSTEM", "LOAD", NULL, taskSystemLoad, TASK_PERIOD_HZ(10), TASK_PRIORITY_MEDIUM_HIGH),
     [TASK_MAIN] = DEFINE_TASK("SYSTEM", "UPDATE", NULL, taskMain, TASK_PERIOD_HZ(1000), TASK_PRIORITY_MEDIUM_HIGH),
     [TASK_SERIAL] = DEFINE_TASK("SERIAL", NULL, NULL, taskHandleSerial, TASK_PERIOD_HZ(100), TASK_PRIORITY_LOW), // 100 Hz should be enough to flush up to 115 bytes @ 115200 baud
@@ -366,19 +369,25 @@ task_attribute_t task_attributes[TASK_COUNT] = {
     [TASK_GYRO] = DEFINE_TASK("GYRO", NULL, NULL, taskGyroSample, TASK_GYROPID_DESIRED_PERIOD, TASK_PRIORITY_REALTIME),
     [TASK_FILTER] = DEFINE_TASK("FILTER", NULL, NULL, taskFiltering, TASK_GYROPID_DESIRED_PERIOD, TASK_PRIORITY_REALTIME),
     [TASK_PID] = DEFINE_TASK("PID", NULL, NULL, taskMainPidLoop, TASK_GYROPID_DESIRED_PERIOD, TASK_PRIORITY_REALTIME),
+
 #ifdef USE_ACC
     [TASK_ACCEL] = DEFINE_TASK("ACC", NULL, NULL, taskUpdateAccelerometer, TASK_PERIOD_HZ(1000), TASK_PRIORITY_MEDIUM),
-    [TASK_ATTITUDE] = DEFINE_TASK("ATTITUDE", NULL, NULL, imuUpdateAttitude, TASK_PERIOD_HZ(200), TASK_PRIORITY_MEDIUM),
+    [TASK_ATTITUDE] = DEFINE_TASK("ATTITUDE", NULL, NULL, imuUpdateAttitude, TASK_PERIOD_HZ(100), TASK_PRIORITY_MEDIUM),
 #endif
+
     [TASK_RX] = DEFINE_TASK("RX", NULL, rxUpdateCheck, taskUpdateRxMain, TASK_PERIOD_HZ(33), TASK_PRIORITY_HIGH), // If event-based scheduling doesn't work, fallback to periodic scheduling
     [TASK_DISPATCH] = DEFINE_TASK("DISPATCH", NULL, NULL, dispatchProcess, TASK_PERIOD_HZ(1000), TASK_PRIORITY_HIGH),
 
 #ifdef USE_BEEPER
-    [TASK_BEEPER] = DEFINE_TASK("BEEPER", NULL, NULL, beeperUpdate, TASK_PERIOD_HZ(50), TASK_PRIORITY_LOW),
+    [TASK_BEEPER] = DEFINE_TASK("BEEPER", NULL, NULL, beeperUpdate, TASK_PERIOD_HZ(100), TASK_PRIORITY_LOW),
 #endif
 
 #ifdef USE_GPS
     [TASK_GPS] = DEFINE_TASK("GPS", NULL, NULL, gpsUpdate, TASK_PERIOD_HZ(TASK_GPS_RATE), TASK_PRIORITY_MEDIUM), // Required to prevent buffer overruns if running at 115200 baud (115 bytes / period < 256 bytes buffer)
+#endif
+
+#ifdef USE_GPS_RESCUE
+    [TASK_GPS_RESCUE] = DEFINE_TASK("GPS_RESCUE", NULL, NULL, taskGpsRescue, TASK_PERIOD_HZ(TASK_GPS_RESCUE_RATE_HZ), TASK_PRIORITY_MEDIUM),
 #endif
 
 #ifdef USE_MAG
@@ -402,11 +411,11 @@ task_attribute_t task_attributes[TASK_COUNT] = {
 #endif
 
 #ifdef USE_TELEMETRY
-    [TASK_TELEMETRY] = DEFINE_TASK("TELEMETRY", NULL, NULL, taskTelemetry, TASK_PERIOD_HZ(180), TASK_PRIORITY_LOW),
+    [TASK_TELEMETRY] = DEFINE_TASK("TELEMETRY", NULL, NULL, taskTelemetry, TASK_PERIOD_HZ(250), TASK_PRIORITY_LOW),
 #endif
 
 #ifdef USE_LED_STRIP
-    [TASK_LEDSTRIP] = DEFINE_TASK("LEDSTRIP", NULL, NULL, ledStripUpdate, TASK_PERIOD_HZ(50), TASK_PRIORITY_LOW),
+    [TASK_LEDSTRIP] = DEFINE_TASK("LEDSTRIP", NULL, NULL, ledStripUpdate, TASK_PERIOD_HZ(100), TASK_PRIORITY_LOW),
 #endif
 
 #ifdef USE_BST
@@ -426,7 +435,7 @@ task_attribute_t task_attributes[TASK_COUNT] = {
 #endif
 
 #ifdef USE_RCDEVICE
-    [TASK_RCDEVICE] = DEFINE_TASK("RCDEVICE", NULL, NULL, rcdeviceUpdate, TASK_PERIOD_HZ(1), TASK_PRIORITY_MEDIUM),
+    [TASK_RCDEVICE] = DEFINE_TASK("RCDEVICE", NULL, NULL, rcdeviceUpdate, TASK_PERIOD_HZ(20), TASK_PRIORITY_MEDIUM),
 #endif
 
 #ifdef USE_CAMERA_CONTROL
@@ -442,20 +451,11 @@ task_attribute_t task_attributes[TASK_COUNT] = {
 #endif
 
 #ifdef USE_RANGEFINDER
-    [TASK_RANGEFINDER] = DEFINE_TASK("RANGEFINDER", NULL, NULL, taskUpdateRangefinder, TASK_PERIOD_HZ(50), TASK_PRIORITY_LOW),
+    [TASK_RANGEFINDER] = DEFINE_TASK("RANGEFINDER", NULL, NULL, taskUpdateRangefinder, TASK_PERIOD_HZ(10), TASK_PRIORITY_LOWEST),
 #endif
 
 #ifdef USE_CRSF_V3
     [TASK_SPEED_NEGOTIATION] = DEFINE_TASK("SPEED_NEGOTIATION", NULL, NULL, speedNegotiationProcess, TASK_PERIOD_HZ(100), TASK_PRIORITY_LOW),
-#endif
-
-#ifdef USE_POSITION_YAW_HOLD
-  //  [TASK_KALMAN_FILTER] = DEFINE_TASK("TASK_KALMAN_FILTER", NULL, NULL, Update_Kalman_filter, TASK_PERIOD_HZ(400), TASK_PRIORITY_LOW),
-    [TASK_ALT_CTRL] = DEFINE_TASK("TASK_ALT_CTRL", NULL, NULL, Update_PID_Position, TASK_PERIOD_HZ(100), TASK_PRIORITY_LOW),
-#endif
-
-#ifdef USE_ANGLE_RATE_HOLD
-    //[TASK_POSITION_CTRL] = DEFINE_TASK("TASK_POSITION_CTRL", NULL, NULL, Update_Lowpass_Fiter, TASK_PERIOD_HZ(200), TASK_PRIORITY_LOW),
 #endif
 };
 
@@ -518,6 +518,11 @@ void tasksInit(void)
     }
 #endif
 
+#ifdef USE_RANGEFINDER
+    if (sensors(SENSOR_RANGEFINDER)) {
+        setTaskEnabled(TASK_RANGEFINDER, featureIsEnabled(FEATURE_RANGEFINDER));
+    }
+#endif
 
     setTaskEnabled(TASK_RX, true);
 
@@ -529,6 +534,10 @@ void tasksInit(void)
 
 #ifdef USE_GPS
     setTaskEnabled(TASK_GPS, featureIsEnabled(FEATURE_GPS));
+#endif
+
+#ifdef USE_GPS_RESCUE
+    setTaskEnabled(TASK_GPS_RESCUE, featureIsEnabled(FEATURE_GPS));
 #endif
 
 #ifdef USE_MAG
@@ -545,13 +554,6 @@ void tasksInit(void)
 
 #ifdef USE_DASHBOARD
     setTaskEnabled(TASK_DASHBOARD, featureIsEnabled(FEATURE_DASHBOARD));
-#endif
-
-#ifdef USE_RANGEFINDER
-    if (sensors(SENSOR_RANGEFINDER)) {
-        // setTaskEnabled(TASK_RANGEFINDER, featureIsEnabled(FEATURE_RANGEFINDER));
-        setTaskEnabled(TASK_RANGEFINDER, true);
-    }
 #endif
 
 #ifdef USE_TELEMETRY
@@ -622,16 +624,5 @@ void tasksInit(void)
     const bool useCRSF = rxRuntimeState.serialrxProvider == SERIALRX_CRSF;
     setTaskEnabled(TASK_SPEED_NEGOTIATION, useCRSF);
 #endif
-
-#ifdef USE_POSITION_YAW_HOLD
-    // setTaskEnabled(TASK_KALMAN_FILTER, true);
-    setTaskEnabled(TASK_ALT_CTRL, true);
-    // setTaskEnabled(TASK_ANGLE_CTRL, true);
-#endif
-
-#ifdef USE_ANGLE_RATE_HOLD
-    setTaskEnabled(TASK_POSITION_CTRL, true);
-#endif
-
 }
 

@@ -51,7 +51,6 @@
 #include "drivers/system.h"
 #include "drivers/time.h"
 #include "drivers/transponder_ir.h"
-#include "drivers/rangefinder/rangefinder.h"
 
 #include "fc/controlrate_profile.h"
 #include "fc/rc.h"
@@ -362,7 +361,7 @@ void updateArmingStatus(void)
 
 #ifdef USE_RPM_FILTER
         // USE_RPM_FILTER will only be defined if USE_DSHOT and USE_DSHOT_TELEMETRY are defined
-        // If the RPM filter is anabled and any motor isn't providing telemetry, then disable arming
+        // If the RPM filter is enabled and any motor isn't providing telemetry, then disable arming
         if (isRpmFilterEnabled() && !isDshotTelemetryActive()) {
             setArmingDisabled(ARMING_DISABLED_RPMFILTER);
         } else {
@@ -684,18 +683,7 @@ static bool canUpdateVTX(void)
 bool areSticksActive(uint8_t stickPercentLimit)
 {
     for (int axis = FD_ROLL; axis <= FD_YAW; axis ++) {
-        const uint8_t deadband = axis == FD_YAW ? rcControlsConfig()->yaw_deadband : rcControlsConfig()->deadband;
-        uint8_t stickPercent = 0;
-        if ((rcData[axis] >= PWM_RANGE_MAX) || (rcData[axis] <= PWM_RANGE_MIN)) {
-            stickPercent = 100;
-        } else {
-            if (rcData[axis] > (rxConfig()->midrc + deadband)) {
-                stickPercent = ((rcData[axis] - rxConfig()->midrc - deadband) * 100) / (PWM_RANGE_MAX - rxConfig()->midrc - deadband);
-            } else if (rcData[axis] < (rxConfig()->midrc - deadband)) {
-                stickPercent = ((rxConfig()->midrc - deadband - rcData[axis]) * 100) / (rxConfig()->midrc - deadband - PWM_RANGE_MIN);
-            }
-        }
-        if (stickPercent >= stickPercentLimit) {
+        if (getRcDeflectionAbs(axis) * 100.f >= stickPercentLimit) {
             return true;
         }
     }
@@ -1014,7 +1002,7 @@ void processRxModes(timeUs_t currentTimeUs)
         rescheduleTask(TASK_ATTITUDE, TASK_PERIOD_HZ(acc.sampleRateHz / (float)imuConfig()->imu_process_denom));
     } else {
         LED1_OFF;
-        rescheduleTask(TASK_ATTITUDE, TASK_PERIOD_HZ(acc.sampleRateHz / 10.0f));
+        rescheduleTask(TASK_ATTITUDE, TASK_PERIOD_HZ(100));
     }
 
     if (!IS_RC_MODE_ACTIVE(BOXPREARM) && ARMING_FLAG(WAS_ARMED_WITH_PREARM)) {
@@ -1094,53 +1082,6 @@ void processRxModes(timeUs_t currentTimeUs)
     }
 #endif
 
-#ifdef USE_IMU_INIT
-    if(!IS_RC_MODE_ACTIVE(BOXUSER1))
-    {
-        DISABLE_FLIGHT_MODE(IMU_INIT_MODE);     
-    }else{
-        ENABLE_FLIGHT_MODE(IMU_INIT_MODE); 
-    }
-#endif
-
-#ifdef USE_BOOTLOADER
-    if(!IS_RC_MODE_ACTIVE(BOXUSER2))
-    {
-        DISABLE_FLIGHT_MODE(BOOTLOADER_MODE);     
-    }else{
-        ENABLE_FLIGHT_MODE(BOOTLOADER_MODE); 
-    }
-#endif
-
-#ifdef USE_POSITION_YAW_HOLD
-    if(!IS_RC_MODE_ACTIVE(BOXUSER3))
-    {
-        opti_flow_rc_state = 0;
-        //DISABLE_FLIGHT_MODE(POSITION_YAW_HOLD_MODE);     
-    }else{
-        opti_flow_rc_state = 1;
-        //ENABLE_FLIGHT_MODE(POSITION_YAW_HOLD_MODE); 
-    }
-#endif
-
-// #ifdef USE_ANGLE_RATE_HOLD
-//     if(!IS_RC_MODE_ACTIVE(BOXANGLERATEHOLD))
-//     {
-//         DISABLE_FLIGHT_MODE(ANGLE_RATE_HOLD_MODE);     
-//     }else{
-//         ENABLE_FLIGHT_MODE(ANGLE_RATE_HOLD_MODE); 
-//     }
-// #endif
-
-#ifdef USE_ANGLE_RATE_HOLD
-    if(!IS_RC_MODE_ACTIVE(BOXUSER4))
-    {
-        DISABLE_FLIGHT_MODE(ANGLE_RATE_HOLD_MODE);     
-    }else{
-        ENABLE_FLIGHT_MODE(ANGLE_RATE_HOLD_MODE); 
-    }
-#endif
-    
     pidSetAntiGravityState(IS_RC_MODE_ACTIVE(BOXANTIGRAVITY) || featureIsEnabled(FEATURE_ANTI_GRAVITY));
 }
 
@@ -1200,7 +1141,6 @@ static FAST_CODE_NOINLINE void subTaskPidController(timeUs_t currentTimeUs)
 
 static FAST_CODE_NOINLINE void subTaskPidSubprocesses(timeUs_t currentTimeUs)
 {
-    static uint16_t wifiTime = 0;
     uint32_t startTime = 0;
     if (debugMode == DEBUG_PIDLOOP) {
         startTime = micros();
@@ -1213,19 +1153,14 @@ static FAST_CODE_NOINLINE void subTaskPidSubprocesses(timeUs_t currentTimeUs)
 #endif
 
 #ifdef USE_BLACKBOX
-    if(wifiTime == 500)
-    {
-        if (!cliMode && blackboxConfig()->device) {
-            blackboxUpdate(currentTimeUs);
-        }
-        wifiTime = 0;
+    if (!cliMode && blackboxConfig()->device) {
+        blackboxUpdate(currentTimeUs);
     }
 #else
     UNUSED(currentTimeUs);
 #endif
 
     DEBUG_SET(DEBUG_PIDLOOP, 3, micros() - startTime);
-    wifiTime++;
 }
 
 #ifdef USE_TELEMETRY

@@ -29,9 +29,6 @@
 #define RC_SMOOTHING_AUTO_FACTOR_MAX 250
 #endif
 
-extern bool Timestamp;
-extern bool Timestamp_out;
-
 void processRcCommand(void);
 float getSetpointRate(int axis);
 float getRcDeflection(int axis);
@@ -50,9 +47,3 @@ bool getShouldUpdateFeedforward();
 void updateRcRefreshRate(timeUs_t currentTimeUs);
 uint16_t getCurrentRxRefreshRate(void);
 bool getRxRateValid(void);
-
-#ifdef USE_ANGLE_RATE_HOLD
-float getOuterSetpointAngle(int axis);
-float getOuterSetpointAngleAbs(int axis);
-float getOuterSetpointRate(int axis);
-#endif

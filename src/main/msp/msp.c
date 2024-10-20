@@ -82,8 +82,6 @@
 #include "fc/rc_modes.h"
 #include "fc/runtime_config.h"
 
-//#include "flight/alt_ctrl.h"
-#include "flight/kalman_filter.h"
 #include "flight/failsafe.h"
 #include "flight/gps_rescue.h"
 #include "flight/imu.h"
@@ -243,7 +241,7 @@ static bool mspIsMspArmingEnabled(void)
 static uint8_t mspPassthroughMode;
 static uint8_t mspPassthroughArgument;
 
-#ifdef USE_ESCSERIAL
+#if defined(USE_ESCSERIAL) && defined(USE_SERIAL_4WAY_BLHELI_INTERFACE)
 static void mspEscPassthroughFn(serialPort_t *serialPort)
 {
     escEnablePassthrough(serialPort, &motorConfig()->dev, mspPassthroughArgument, mspPassthroughMode);
@@ -332,7 +330,7 @@ static void mspFcSetPassthroughCommand(sbuf_t *dst, sbuf_t *src, mspPostProcessF
         }
         FALLTHROUGH;
 #endif // USE_ESCSERIAL
-#endif //USE_SERIAL_4WAY_BLHELI_INTERFACE
+#endif // USE_SERIAL_4WAY_BLHELI_INTERFACE
     default:
         sbufWriteU8(dst, 0);
     }
@@ -984,11 +982,11 @@ static bool mspCommonProcessOutCommand(int16_t cmdMSP, sbuf_t *dst, mspPostProce
 #endif
         sbufWriteU8(dst, osdFlags);
 
-#ifdef USE_MAX7456
-        // send video system (AUTO/PAL/NTSC)
+#ifdef USE_OSD_SD
+        // send video system (AUTO/PAL/NTSC/HD)
         sbufWriteU8(dst, vcdProfile()->video_system);
 #else
-        sbufWriteU8(dst, 0);
+        sbufWriteU8(dst, VIDEO_SYSTEM_HD);
 #endif
 
 #ifdef USE_OSD
@@ -1055,6 +1053,14 @@ static bool mspCommonProcessOutCommand(int16_t cmdMSP, sbuf_t *dst, mspPostProce
         sbufWriteU8(dst, osdConfig()->camera_frame_height);
 
 #endif // USE_OSD
+        break;
+    }
+
+    case MSP_OSD_CANVAS: {
+#ifdef USE_OSD
+        sbufWriteU8(dst, osdConfig()->canvas_cols);
+        sbufWriteU8(dst, osdConfig()->canvas_rows);
+#endif
         break;
     }
 
@@ -1153,6 +1159,15 @@ static bool mspProcessOutCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, sbuf_t
         }
         break;
 
+case MSP_NAME:
+        {
+            const int nameLen = strlen(pilotConfig()->craftName);
+            for (int i = 0; i < nameLen; i++) {
+                sbufWriteU8(dst, pilotConfig()->craftName[i]);
+            }
+        }
+        break;
+
 #ifdef USE_SERVOS
     case MSP_SERVO:
         sbufWriteData(dst, &servo, MAX_SUPPORTED_SERVOS * 2);
@@ -1238,7 +1253,7 @@ static bool mspProcessOutCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, sbuf_t
 
                     // Voltage -> 0-63,75V step 0,25V
                     if ((dshotTelemetryState.motorState[i].telemetryTypes & (1 << DSHOT_TELEMETRY_TYPE_VOLTAGE)) != 0) {
-                    	escVoltage = dshotTelemetryState.motorState[i].telemetryData[DSHOT_TELEMETRY_TYPE_VOLTAGE] >> 2;
+                        escVoltage = dshotTelemetryState.motorState[i].telemetryData[DSHOT_TELEMETRY_TYPE_VOLTAGE] >> 2;
                     }
                 }
             }
@@ -1299,7 +1314,7 @@ static bool mspProcessOutCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, sbuf_t
             if (isBlinking) {
                 displayAttr |= DISPLAYPORT_ATTR_BLINK;
             }
-            sbufWriteU8(dst, displayAttr);  // see displayPortAttr_e
+            sbufWriteU8(dst, displayAttr);  // see displayPortSeverity_e
             sbufWriteU8(dst, warningsLen);  // length byte followed by the actual characters
             for (unsigned i = 0; i < warningsLen; i++) {
                 sbufWriteU8(dst, warningsBuffer[i]);
@@ -1317,8 +1332,6 @@ static bool mspProcessOutCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, sbuf_t
     case MSP_ATTITUDE:
         sbufWriteU16(dst, attitude.values.roll);
         sbufWriteU16(dst, attitude.values.pitch);
-        // sbufWriteU16(dst, 0);
-        // sbufWriteU16(dst, 0);
         sbufWriteU16(dst, DECIDEGREES_TO_DEGREES(attitude.values.yaw));
         break;
 
@@ -2518,6 +2531,14 @@ static mspResult_e mspFcProcessOutCommandWithArg(mspDescriptor_t srcDesc, int16_
 
                 case MSP2TEXT_CRAFT_NAME:
                     textVar = pilotConfigMutable()->craftName;
+                    break;
+
+                case MSP2TEXT_PID_PROFILE_NAME:
+                    textVar = currentPidProfile->profileName;
+                    break;
+
+                case MSP2TEXT_RATE_PROFILE_NAME:
+                    textVar = currentControlRateProfile->profileName;
                     break;
 
                 default:
@@ -3817,6 +3838,16 @@ static mspResult_e mspProcessInCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, 
         break;
 #endif
 
+    case MSP_SET_NAME:
+        memset(pilotConfigMutable()->craftName, 0, ARRAYLEN(pilotConfig()->craftName));
+        for (unsigned int i = 0; i < MIN(MAX_NAME_LENGTH, dataSize); i++) {
+            pilotConfigMutable()->craftName[i] = sbufReadU8(src);
+        }
+#ifdef USE_OSD
+        osdAnalyzeActiveElements();
+#endif
+        break;
+
 #ifdef USE_RTC_TIME
     case MSP_SET_RTC:
         {
@@ -3902,6 +3933,14 @@ static mspResult_e mspProcessInCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, 
 
                 case MSP2TEXT_CRAFT_NAME:
                     textVar = pilotConfigMutable()->craftName;
+                    break;
+
+                case MSP2TEXT_PID_PROFILE_NAME:
+                    textVar = currentPidProfile->profileName;
+                    break;
+
+                case MSP2TEXT_RATE_PROFILE_NAME:
+                    textVar = currentControlRateProfile->profileName;
                     break;
 
                 default:
@@ -4042,12 +4081,22 @@ static mspResult_e mspCommonProcessInCommand(mspDescriptor_t srcDesc, int16_t cm
 
             if ((int8_t)addr == -1) {
                 /* Set general OSD settings */
-#ifdef USE_MAX7456
-                vcdProfileMutable()->video_system = sbufReadU8(src);
-#else
-                sbufReadU8(src); // Skip video system
+                videoSystem_e video_system = sbufReadU8(src);
+#ifndef USE_OSD_HD
+                if (video_system == VIDEO_SYSTEM_HD) {
+                    video_system = VIDEO_SYSTEM_AUTO;
+                }
 #endif
-#if defined(USE_OSD)
+
+                if ((video_system == VIDEO_SYSTEM_HD) && (vcdProfile()->video_system != VIDEO_SYSTEM_HD)) {
+                    // If switching to HD, don't wait for the VTX to communicate the correct resolution, just
+                    // increase the canvas size to the HD default as that is what the user will expect
+                    osdConfigMutable()->canvas_cols = OSD_HD_COLS;
+                    osdConfigMutable()->canvas_rows = OSD_HD_ROWS;
+                }
+
+                vcdProfileMutable()->video_system = video_system;
+
                 osdConfigMutable()->units = sbufReadU8(src);
 
                 // Alarms
@@ -4095,19 +4144,16 @@ static mspResult_e mspCommonProcessInCommand(mspDescriptor_t srcDesc, int16_t cm
                     osdConfigMutable()->camera_frame_width = sbufReadU8(src);
                     osdConfigMutable()->camera_frame_height = sbufReadU8(src);
                 }
-#endif
             } else if ((int8_t)addr == -2) {
-#if defined(USE_OSD)
                 // Timers
                 uint8_t index = sbufReadU8(src);
                 if (index > OSD_TIMER_COUNT) {
                   return MSP_RESULT_ERROR;
                 }
                 osdConfigMutable()->timers[index] = sbufReadU16(src);
-#endif
+
                 return MSP_RESULT_ERROR;
             } else {
-#if defined(USE_OSD)
                 const uint16_t value = sbufReadU16(src);
 
                 /* Get screen index, 0 is post flight statistics, 1 and above are in flight OSD screens */
@@ -4123,9 +4169,6 @@ static mspResult_e mspCommonProcessInCommand(mspDescriptor_t srcDesc, int16_t cm
                 } else {
                   return MSP_RESULT_ERROR;
                 }
-#else
-                return MSP_RESULT_ERROR;
-#endif
             }
         }
         break;
@@ -4167,6 +4210,27 @@ static mspResult_e mspCommonProcessInCommand(mspDescriptor_t srcDesc, int16_t cm
             }
         }
         break;
+
+#ifdef USE_OSD_HD
+    case MSP_SET_OSD_CANVAS:
+        {
+            osdConfigMutable()->canvas_cols = sbufReadU8(src);
+            osdConfigMutable()->canvas_rows = sbufReadU8(src);
+
+            if ((vcdProfile()->video_system != VIDEO_SYSTEM_HD) ||
+                (osdConfig()->displayPortDevice != OSD_DISPLAYPORT_DEVICE_MSP)) {
+                // An HD VTX has communicated it's canvas size, so we must be in HD mode
+                vcdProfileMutable()->video_system = VIDEO_SYSTEM_HD;
+                // And using MSP displayport
+                osdConfigMutable()->displayPortDevice = OSD_DISPLAYPORT_DEVICE_MSP;
+
+                // Save settings and reboot or the user won't see the effect and will have to manually save
+                writeEEPROM();
+                systemReset();
+            }
+        }
+        break;
+#endif //USE_OSD_HD
 #endif // OSD
 
     default:

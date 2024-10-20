@@ -54,8 +54,6 @@
 #include "flight/mixer_tricopter.h"
 #include "flight/pid.h"
 #include "flight/rpm_filter.h"
-#include "flight/alt_ctrl.h"
-
 
 #include "pg/rx.h"
 
@@ -224,8 +222,8 @@ static void calculateThrottleAndCurrentMotorEndpoints(timeUs_t currentTimeUs)
 #ifdef USE_DYN_IDLE
         if (mixerRuntime.dynIdleMinRps > 0.0f) {
             const float maxIncrease = isAirmodeActivated() ? mixerRuntime.dynIdleMaxIncrease : 0.05f;
-            float minRps = rpmMinMotorFrequency();
-            DEBUG_SET(DEBUG_DYN_IDLE, 3, lrintf(minRps * 10));
+            float minRps = getMinMotorFrequency();
+            DEBUG_SET(DEBUG_DYN_IDLE, 3, lrintf(minRps * 10.0f));
             float rpsError = mixerRuntime.dynIdleMinRps - minRps;
             // PT1 type lowpass delay and smoothing for D
             minRps = mixerRuntime.prevMinRps + mixerRuntime.minRpsDelayK * (minRps - mixerRuntime.prevMinRps);
@@ -244,7 +242,7 @@ static void calculateThrottleAndCurrentMotorEndpoints(timeUs_t currentTimeUs)
         }
 #endif
 
-#if defined(USE_BATTERmotorMixMinY_VOLTAGE_SAG_COMPENSATION)
+#if defined(USE_BATTERY_VOLTAGE_SAG_COMPENSATION)
         float motorRangeAttenuationFactor = 0;
         // reduce motorRangeMax when battery is full
         if (mixerRuntime.vbatSagCompensationFactor > 0.0f) {
@@ -267,7 +265,6 @@ static void calculateThrottleAndCurrentMotorEndpoints(timeUs_t currentTimeUs)
     }
 
     throttle = constrainf(throttle / currentThrottleInputRange, 0.0f, 1.0f);
-
 }
 
 #define CRASH_FLIP_DEADBAND 20
@@ -618,16 +615,6 @@ FAST_CODE_NOINLINE void mixTable(timeUs_t currentTimeUs)
     // like throttle boost or throttle limit from negatively affecting the throttle.
     if (FLIGHT_MODE(GPS_RESCUE_MODE)) {
         throttle = gpsRescueGetThrottle();
-    }
-#endif
-
-#if (defined USE_POSITION_YAW_HOLD) || (defined USE_ANGLE_RATE_HOLD)
-    if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE) && get_offboard.mavros_state == true)
-    {
-        throttle = Get_offboard_thrust();
-    }else if(FLIGHT_MODE(POSITION_YAW_HOLD_MODE) && attitude_controller.mavlink_state == true)
-    {
-        throttle = Get_Velocity_throttle(2);
     }
 #endif
 

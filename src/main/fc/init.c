@@ -100,9 +100,6 @@
 #include "flight/pid_init.h"
 #include "flight/position.h"
 #include "flight/servos.h"
-#include "flight/wifi.h"
-#include "flight/alt_ctrl.h"
-#include "flight/kalman_filter.h"
 
 #include "io/asyncfatfs/asyncfatfs.h"
 #include "io/beeper.h"
@@ -181,7 +178,6 @@
 #ifdef TARGET_PREINIT
 void targetPreInit(void);
 #endif
-
 
 uint8_t systemState = SYSTEM_STATE_INITIALISING;
 
@@ -562,15 +558,17 @@ void init(void)
      * receiver may share timer with motors so motors MUST be initialized here. */
     motorDevInit(&motorConfig()->dev, idlePulse, getMotorCount());
     systemState |= SYSTEM_STATE_MOTORS_READY;
+#else
+    UNUSED(idlePulse);
 #endif
 
     if (0) {}
-#if defined(USE_PPM)
+#if defined(USE_RX_PPM)
     else if (featureIsEnabled(FEATURE_RX_PPM)) {
         ppmRxInit(ppmConfig());
     }
 #endif
-#if defined(USE_PWM)
+#if defined(USE_RX_PWM)
     else if (featureIsEnabled(FEATURE_RX_PARALLEL_PWM)) {
         pwmRxInit(pwmConfig());
     }
@@ -819,7 +817,7 @@ void init(void)
         }
     }
 #endif
-    // blackboxInit();
+    blackboxInit();
 #endif
 
 #ifdef USE_ACC
@@ -998,11 +996,6 @@ void init(void)
     motorPostInit();
     motorEnable();
 #endif
-
-#if (defined USE_POSITION_YAW_HOLD) || (defined USE_ANGLE_RATE_HOLD)
-    Controller_Init();
-#endif
-
 
     // On H7/G4 allocate SPI DMA streams after motor timers as SPI DMA allocate will always be possible
 #if defined(STM32H7) || defined(STM32G4)

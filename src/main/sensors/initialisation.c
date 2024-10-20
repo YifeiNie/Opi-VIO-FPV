@@ -32,8 +32,6 @@
 #include "fc/runtime_config.h"
 
 #include "flight/pid.h"
-//#include "flight/alt_ctrl.h"
-#include "flight/kalman_filter.h"
 
 #include "pg/pg.h"
 #include "pg/pg_ids.h"
@@ -89,7 +87,6 @@ bool sensorsAutodetect(void)
 
 #ifdef USE_RANGEFINDER
     rangefinderInit();
-    // Kalman_filter_init();
 #endif
 
 #ifdef USE_ADC_INTERNAL

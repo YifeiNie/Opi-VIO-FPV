@@ -20,17 +20,9 @@
 
 #pragma once
 
-extern float scale1;
-
 void initMAVLinkTelemetry(void);
 void handleMAVLinkTelemetry(void);
 void checkMAVLinkTelemetryState(void);
 
 void freeMAVLinkTelemetryPort(void);
 void configureMAVLinkTelemetryPort(void);
-void WifiInitHardware_Esp8266(void);
-void mavlinkSendHeartbeat(void);
-void mavlinksendAltitude(void);
-void mavlinkSendHUD(void);
-void mavlinkSendAttitude(void);
-void mavlinkSendImuRaw(void);

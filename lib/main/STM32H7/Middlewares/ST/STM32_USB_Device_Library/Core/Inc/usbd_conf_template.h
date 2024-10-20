@@ -95,7 +95,7 @@ extern "C" {
 #if (USBD_DEBUG_LEVEL > 1U)
 
 #define  USBD_ErrLog(...) do { \
-                            printf("1ERROR: ") ; \
+                            printf("ERROR: ") ; \
                             printf(__VA_ARGS__); \
                             printf("\n"); \
 } while (0)

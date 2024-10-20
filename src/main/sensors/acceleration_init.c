@@ -396,7 +396,7 @@ bool accInit(uint16_t accSampleRateHz)
     }
     acc.dev.acc_1G = 256; // set default
     acc.dev.initFn(&acc.dev); // driver initialisation
-    acc.dev.acc_1G_rec = 1.0f / acc.dev.acc_1G; // acc.dev.acc_1G;
+    acc.dev.acc_1G_rec = 1.0f / acc.dev.acc_1G;
 
     acc.sampleRateHz = accSampleRateHz;
     accInitFilters();

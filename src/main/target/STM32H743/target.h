@@ -41,8 +41,6 @@
 
 #define SERIAL_PORT_COUNT       (UNIFIED_SERIAL_PORT_COUNT + 9)
 
-#define DEFAULT_FEATURES   (FEATURE_RANGEFINDER | FEATURE_TELEMETRY)
-
 #define USE_SPI_DEVICE_1
 #define USE_SPI_DEVICE_2
 #define USE_SPI_DEVICE_3
@@ -58,129 +56,15 @@
 #define TARGET_IO_PORTF 0xffff
 #define TARGET_IO_PORTG 0xffff
 
-// #if defined(USE_RX_SPI) || !defined(CLOUD_BUILD)
-// #define USE_RX_FRSKY_SPI_D
-// #define USE_RX_FRSKY_SPI_X
-// #define USE_RX_SFHSS_SPI
-// #define USE_RX_REDPINE_SPI
-// #define USE_RX_FRSKY_SPI_TELEMETRY
-// #define USE_RX_CC2500_SPI_PA_LNA
-// #define USE_RX_CC2500_SPI_DIVERSITY
-
-// #define USE_RX_FLYSKY
-// #define USE_RX_FLYSKY_SPI_LED
-
-// #define USE_RX_SPEKTRUM
-// #define USE_RX_SPEKTRUM_TELEMETRY
-// #endif
-
 #define USE_I2C
 #define I2C_FULL_RECONFIGURABILITY
 
 #define USE_BEEPER
 
-#if !defined(CLOUD_BUILD)
-
-#define USE_MAG
-
-#define USE_ACC
-#define USE_GYRO
-
-#define USE_ACC_MPU6500
-#define USE_GYRO_MPU6500
-#define USE_ACC_SPI_MPU6000
-#define USE_GYRO_SPI_MPU6000
-#define USE_ACC_SPI_MPU6500
-#define USE_GYRO_SPI_MPU6500
-#define USE_ACC_SPI_ICM20689
-#define USE_GYRO_SPI_ICM20689
-#define USE_ACCGYRO_LSM6DSO
-#define USE_ACCGYRO_BMI270
-// #define USE_GYRO_SPI_ICM42605systemInit
-// #define USE_ACC_SPI_ICM42688P
-
-#ifdef USE_MAG
-#define USE_MAG_DATA_READY_SIGNAL
-#define USE_MAG_HMC5883
-#define USE_MAG_SPI_HMC5883
-#define USE_MAG_QMC5883
-#define USE_MAG_LIS3MDL
-#define USE_MAG_AK8963
-#define USE_MAG_MPU925X_AK8963
-#define USE_MAG_SPI_AK8963
-#define USE_MAG_AK8975
+#ifdef USE_SDCARD
+#define USE_SDCARD_SPI
+#define USE_SDCARD_SDIO
 #endif
-
-#ifdef USE_BARO
-// #define USE_BARO_MS5611
-// #define USE_BARO_SPI_MS5611
-#define USE_BARO_BMP280
-// #define USE_BARO_SPI_BMP280
-// #define USE_BARO_BMP388
-// #define USE_BARO_SPI_BMP388
-// #define USE_BARO_LPS
-// #define USE_BARO_SPI_LPS
-// #define USE_BARO_QMP6988
-// #define USE_BARO_SPI_QMP6988
-// #define USE_BARO_DPS310
-// #define USE_BARO_SPI_DPS310
-#endif
-
-// #define USE_FLASHFS
-// #define USE_FLASH_TOOLS
-// #define USE_FLASH_M25P16
-// #define USE_FLASH_W25N01G          // 1Gb NAND flash support
-// #define USE_FLASH_W25M             // Stacked die support
-// #define USE_FLASH_W25M512          // 512Kb (256Kb x 2 stacked) NOR flash support
-// #define USE_FLASH_W25M02G          // 2Gb (1Gb x 2 stacked) NAND flash support
-// #define USE_FLASH_W25Q128FV        // 16MB Winbond 25Q128
-
-// #define USE_MAX7456
-
-#define USE_RX_SPI
-// #define USE_ACC_MPU6050
-// #define USE_GYRO_MPU6050
-// #define USE_ACCGYRO_BMI160
-
-// #define USE_BARO_BMP085
-
-// #define USE_VTX_RTC6705
-// #define USE_VTX_RTC6705_SOFTSPI
-
-// #define USE_TRANSPONDER
-
-// *************** WIFI *****************************
-#define USE_WIFI_ESP8266
-
-// *************** TELEMETER_MAVLINK *****************************
-#define USE_TELEMETRY
-#define USE_TELEMETRY_MAVLINK
-
-// *************** RANGEFINDER *****************************
-#define USE_POSITION_YAW_HOLD
-#define USE_IMU_INIT
-#define USE_BOOTLOADER
-#define USE_DATA_CTRL
-#define USE_ANGLE_RATE_HOLD
-
-#define USE_RANGEFINDER
-// #define USE_RANGEFINDER_HCSR04
-#define USE_RANGEFINDER_TF
-
-
-// #define USE_RX_EXPRESSLRS
-// #define RX_EXPRESSLRS_TIMER_INSTANCE     TIM5
-// #define USE_RX_SX1280
-// #define USE_RX_SX127X
-
-// #define USE_SDCARD
-
-#endif // CLOUD_BUILD
-
-// #ifdef USE_SDCARD
-// #define USE_SDCARD_SPI
-// #define USE_SDCARD_SDIO
-// #endif
 
 #define USE_SPI
 #define SPI_FULL_RECONFIGURABILITY
@@ -199,6 +83,3 @@
 #define USE_ADC
 
 #define USE_CUSTOM_DEFAULTS
-
-#define USABLE_TIMER_CHANNEL_COUNT 10
-#define USED_TIMERS    (TIM_N(1)|TIM_N(2)|TIM_N(3)|TIM_N(4)|TIM_N(5)|TIM_N(8))

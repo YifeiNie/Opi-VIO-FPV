@@ -103,10 +103,6 @@ COMMON_SRC = \
             flight/rpm_filter.c \
             flight/servos.c \
             flight/servos_tricopter.c \
-            flight/wifi.c  \
-            flight/Matrix.c \
-            flight/kalman_filter.c \
-            flight/alt_ctrl.c \
             io/serial_4way.c \
             io/serial_4way_avrootloader.c \
             io/serial_4way_stk500v2.c \
@@ -161,9 +157,6 @@ COMMON_SRC = \
             cms/cms_menu_persistent_stats.c \
             drivers/display_ug2864hsweg01.c \
             drivers/light_ws2811strip.c \
-            drivers/rangefinder/flow_check.c \
-            drivers/rangefinder/flow_decode.c \
-            drivers/rangefinder/flow_fusion.c \
             drivers/rangefinder/rangefinder_hcsr04.c \
             drivers/rangefinder/rangefinder_lidartf.c \
             drivers/serial_escserial.c \
@@ -302,6 +295,7 @@ SIZE_OPTIMISED_SRC := $(SIZE_OPTIMISED_SRC) \
             drivers/barometer/barometer_ms5611.c \
             drivers/barometer/barometer_lps.c \
             drivers/barometer/barometer_qmp6988.c \
+            drivers/barometer/barometer_2smpb_02b.c \
             drivers/bus_i2c_config.c \
             drivers/bus_i2c_timing.c \
             drivers/bus_spi_config.c \

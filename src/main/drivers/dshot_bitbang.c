@@ -541,13 +541,9 @@ static bool bbUpdateStart(void)
             if (rawValue != DSHOT_TELEMETRY_INVALID) {
                 // Check EDT enable or store raw value
                 if ((rawValue == 0x0E00) && (dshotCommandGetCurrent(motorIndex) == DSHOT_CMD_EXTENDED_TELEMETRY_ENABLE)) {
-                    dshotTelemetryState.motorState[motorIndex].telemetryTypes = DSHOT_TELEMETRY_TYPE_STATE_EVENTS;
+                    dshotTelemetryState.motorState[motorIndex].telemetryTypes = 1 << DSHOT_TELEMETRY_TYPE_STATE_EVENTS;
                 } else {
                     dshotTelemetryState.motorState[motorIndex].rawValue = rawValue;
-                }
-
-                if (motorIndex < 4) {
-                    DEBUG_SET(DEBUG_DSHOT_RPM_TELEMETRY, motorIndex, rawValue);
                 }
             } else {
                 dshotTelemetryState.invalidPacketCount++;

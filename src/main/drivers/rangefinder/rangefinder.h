@@ -34,7 +34,7 @@ typedef struct rangefinderHardwarePins_s {
 
 struct rangefinderDev_s;
 typedef void (*rangefinderOpInitFuncPtr)(struct rangefinderDev_s * dev);
-typedef void (*rangefinderOpStartFuncPtr)(struct rangefinderDev_s * dev, timeUs_t currentTimeUs);
+typedef void (*rangefinderOpStartFuncPtr)(struct rangefinderDev_s * dev);
 typedef int32_t (*rangefinderOpReadFuncPtr)(struct rangefinderDev_s * dev);
 
 typedef struct rangefinderDev_s {
@@ -51,13 +51,6 @@ typedef struct rangefinderDev_s {
     rangefinderOpReadFuncPtr read;
 } rangefinderDev_t;
 
-int16_t FlowGetX(rangefinderDev_t *dev);
-int16_t FlowGetY(rangefinderDev_t *dev);
-uint8_t FlowGetValid(rangefinderDev_t *dev);
-uint8_t GetTofConfidence(rangefinderDev_t *dev);
-int16_t FlowGetIntegrationTimespan(rangefinderDev_t *dev);
-
 extern int16_t rangefinderMaxRangeCm;
 extern int16_t rangefinderMaxAltWithTiltCm;
 extern int16_t rangefinderCfAltCm;
-extern uint8_t opti_flow_rc_state;

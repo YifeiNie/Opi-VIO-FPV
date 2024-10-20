@@ -90,15 +90,17 @@
 
 #define USE_PARAMETER_GROUPS
 
+#define USE_PWM_OUTPUT
+
 #undef USE_STACK_CHECK // I think SITL don't need this
 #undef USE_DASHBOARD
 #undef USE_TELEMETRY_LTM
 #undef USE_ADC
 #undef USE_VCP
 #undef USE_OSD
-#undef USE_PPM
-#undef USE_PWM
-#undef USE_SERIAL_RX
+#undef USE_RX_PPM
+#undef USE_RX_PWM
+#undef USE_SERIALRX
 #undef USE_SERIALRX_CRSF
 #undef USE_SERIALRX_GHST
 #undef USE_SERIALRX_IBUS

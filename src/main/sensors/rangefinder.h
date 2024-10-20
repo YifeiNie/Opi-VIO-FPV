@@ -26,7 +26,6 @@
 
 #include "pg/pg.h"
 
-
 typedef enum {
     RANGEFINDER_NONE        = 0,
     RANGEFINDER_HCSR04      = 1,
@@ -44,32 +43,20 @@ typedef struct rangefinder_s {
     rangefinderDev_t dev;
     float maxTiltCos;
     int32_t rawAltitude;
-    float calculatedAltitude;
+    int32_t calculatedAltitude;
     timeMs_t lastValidResponseTimeMs;
 
     bool snrThresholdReached;
     int32_t dynamicDistanceThreshold;
     int16_t snr;
-
-    int16_t flow_x_integral;
-    int16_t flow_y_integral;
-    int16_t integration_timespan;
-    uint8_t flow_valid;
-    uint8_t tof_confidence;
-
 } rangefinder_t;
 
 void rangefinderResetDynamicThreshold(void);
 bool rangefinderInit(void);
 
-float rangefinderGetLatestAltitude(void);
+int32_t rangefinderGetLatestAltitude(void);
 int32_t rangefinderGetLatestRawAltitude(void);
 
-void rangefinderUpdate(timeUs_t currentTimeUs);
+void rangefinderUpdate(void);
 bool rangefinderProcess(float cosTiltAngle);
 bool rangefinderIsHealthy(void);
-
-float FlowGetLatestOptiX(void);
-float FlowGetLatestOptiY(void);
-uint8_t FlowGetConfidence(void);
-int16_t FlowGetTime(void);

@@ -295,7 +295,6 @@ static void rcdeviceProcessDeviceRequest(runcamDeviceRequest_t *request)
 
 void rcdeviceUpdate(timeUs_t currentTimeUs)
 {
-    UNUSED(currentTimeUs);
     rcdeviceReceive(currentTimeUs);
 
     rcdeviceCameraControlProcess();

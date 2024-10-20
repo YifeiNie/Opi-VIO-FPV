@@ -43,8 +43,6 @@
 #include "drivers/rangefinder/rangefinder_lidartf.h"
 #include "drivers/time.h"
 
-//#include "flight/alt_ctrl.h"
-#include "flight/kalman_filter.h"
 #include "fc/runtime_config.h"
 
 #include "pg/pg.h"
@@ -225,10 +223,10 @@ static int16_t computePseudoSnr(int32_t newReading)
 /*
  * This is called periodically by the scheduler
  */
-void rangefinderUpdate(timeUs_t currentTimeUs)
+void rangefinderUpdate(void)
 {
     if (rangefinder.dev.update) {
-        rangefinder.dev.update(&rangefinder.dev, currentTimeUs);
+        rangefinder.dev.update(&rangefinder.dev);
     }
 }
 
@@ -269,89 +267,64 @@ bool rangefinderProcess(float cosTiltAngle)
     if (rangefinder.dev.read) {
         const int32_t distance = rangefinder.dev.read(&rangefinder.dev);
 
-    //     // If driver reported no new measurement - don't do anything
-    //     if (distance == RANGEFINDER_NO_NEW_DATA) {
-    //         return false;
-    //     }
+        // If driver reported no new measurement - don't do anything
+        if (distance == RANGEFINDER_NO_NEW_DATA) {
+            return false;
+        }
 
-    //     if (distance >= 0) {
-    //         rangefinder.lastValidResponseTimeMs = millis();
-    //         rangefinder.rawAltitude = applyMedianFilter(distance);
-    //     } else if (distance == RANGEFINDER_OUT_OF_RANGE) {
-    //         rangefinder.lastValidResponseTimeMs = millis();
-    //         rangefinder.rawAltitude = RANGEFINDER_OUT_OF_RANGE;
-    //     }
-    //     else {
-    //         // Invalid response / hardware failure
-    //         rangefinder.rawAltitude = RANGEFINDER_HARDWARE_FAILURE;
-    //     }
+        if (distance >= 0) {
+            rangefinder.lastValidResponseTimeMs = millis();
+            rangefinder.rawAltitude = applyMedianFilter(distance);
+        } else if (distance == RANGEFINDER_OUT_OF_RANGE) {
+            rangefinder.lastValidResponseTimeMs = millis();
+            rangefinder.rawAltitude = RANGEFINDER_OUT_OF_RANGE;
+        }
+        else {
+            // Invalid response / hardware failure
+            rangefinder.rawAltitude = RANGEFINDER_HARDWARE_FAILURE;
+        }
 
-    //     rangefinder.snr = computePseudoSnr(distance);
+        rangefinder.snr = computePseudoSnr(distance);
 
-    //     if (rangefinder.snrThresholdReached == false && rangefinder.rawAltitude > 0) {
+        if (rangefinder.snrThresholdReached == false && rangefinder.rawAltitude > 0) {
 
-    //         if (rangefinder.snr < RANGEFINDER_DYNAMIC_THRESHOLD && rangefinder.dynamicDistanceThreshold < rangefinder.rawAltitude) {
-    //             rangefinder.dynamicDistanceThreshold = rangefinder.rawAltitude * RANGEFINDER_DYNAMIC_FACTOR / 100;
-    //         }
+            if (rangefinder.snr < RANGEFINDER_DYNAMIC_THRESHOLD && rangefinder.dynamicDistanceThreshold < rangefinder.rawAltitude) {
+                rangefinder.dynamicDistanceThreshold = rangefinder.rawAltitude * RANGEFINDER_DYNAMIC_FACTOR / 100;
+            }
 
-    //         if (rangefinder.snr >= RANGEFINDER_DYNAMIC_THRESHOLD) {
-    //             rangefinder.snrThresholdReached = true;
-    //         }
+            if (rangefinder.snr >= RANGEFINDER_DYNAMIC_THRESHOLD) {
+                rangefinder.snrThresholdReached = true;
+            }
 
-    //     }
+        }
 
-    //     DEBUG_SET(DEBUG_RANGEFINDER, 3, rangefinder.snr);
+        DEBUG_SET(DEBUG_RANGEFINDER, 3, rangefinder.snr);
 
-    //     DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 0, rangefinder.rawAltitude);
-    //     DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 1, rangefinder.snrThresholdReached);
-    //     DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 2, rangefinder.dynamicDistanceThreshold);
-    //     DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 3, isSurfaceAltitudeValid());
+        DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 0, rangefinder.rawAltitude);
+        DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 1, rangefinder.snrThresholdReached);
+        DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 2, rangefinder.dynamicDistanceThreshold);
+        DEBUG_SET(DEBUG_RANGEFINDER_QUALITY, 3, isSurfaceAltitudeValid());
 
-    // }
-    // else {
-    //     // Bad configuration
-    //     rangefinder.rawAltitude = RANGEFINDER_OUT_OF_RANGE;
-    // }
-
-    // /**
-    // * Apply tilt correction to the given raw sonar reading in order to compensate for the tilt of the craft when estimating
-    // * the altitude. Returns the computed altitude in centimeters.
-    // *
-    // * When the ground is too far away or the tilt is too large, RANGEFINDER_OUT_OF_RANGE is returned.
-    // */
-    // if (cosTiltAngle < rangefinder.maxTiltCos || rangefinder.rawAltitude < 0) {
-    //     rangefinder.calculatedAltitude = RANGEFINDER_OUT_OF_RANGE;
-    //     rangefinder.calculatedAltitude = 0.0f;
-    //     //kalman_filter1.Z_current->element[0] = rangefinder.calculatedAltitude/100.0f;
-    // } else {
-        //rangefinder.calculatedAltitude = distance * cosTiltAngle;
-        rangefinder.calculatedAltitude = distance * cosTiltAngle;
-        rangefinder.flow_x_integral = FlowGetX(&rangefinder.dev);
-        rangefinder.flow_y_integral = FlowGetY(&rangefinder.dev);
-        rangefinder.flow_valid = FlowGetValid(&rangefinder.dev);
-        rangefinder.tof_confidence = GetTofConfidence(&rangefinder.dev);
-        rangefinder.integration_timespan = FlowGetIntegrationTimespan(&rangefinder.dev);
-        //kalman_filter1.Z_current->element[0] = rangefinder.calculatedAltitude/100.0f;
+    }
+    else {
+        // Bad configuration
+        rangefinder.rawAltitude = RANGEFINDER_OUT_OF_RANGE;
     }
 
-    // if (rangefinder.dev.read) {
-    //     const int32_t distance = rangefinder.dev.read(&rangefinder.dev);
-    //     rangefinder.rawAltitude = applyMedianFilter(distance);
-    //     rangefinder.calculatedAltitude = rangefinder.rawAltitude * cosTiltAngle;
-    //     rangefinder.flow_x_integral = FlowGetX(&rangefinder.dev);
-    //     rangefinder.flow_y_integral = FlowGetY(&rangefinder.dev);
-    //     rangefinder.flow_valid = FlowGetValid(&rangefinder.dev);
-    //     rangefinder.tof_confidence = GetTofConfidence(&rangefinder.dev);
-    //     rangefinder.integration_timespan = FlowGetIntegrationTimespan(&rangefinder.dev);
-    // }else
-    // {
-    //     return false;
-    // }
+    /**
+    * Apply tilt correction to the given raw sonar reading in order to compensate for the tilt of the craft when estimating
+    * the altitude. Returns the computed altitude in centimeters.
+    *
+    * When the ground is too far away or the tilt is too large, RANGEFINDER_OUT_OF_RANGE is returned.
+    */
+    if (cosTiltAngle < rangefinder.maxTiltCos || rangefinder.rawAltitude < 0) {
+        rangefinder.calculatedAltitude = RANGEFINDER_OUT_OF_RANGE;
+    } else {
+        rangefinder.calculatedAltitude = rangefinder.rawAltitude * cosTiltAngle;
+    }
 
-    // kalman_filter1.alt_update = 1;
-
- //   DEBUG_SET(DEBUG_RANGEFINDER, 1, rangefinder.rawAltitude);
- //   DEBUG_SET(DEBUG_RANGEFINDER, 2, rangefinder.calculatedAltitude);
+    DEBUG_SET(DEBUG_RANGEFINDER, 1, rangefinder.rawAltitude);
+    DEBUG_SET(DEBUG_RANGEFINDER, 2, rangefinder.calculatedAltitude);
 
     return true;
 }
@@ -360,35 +333,9 @@ bool rangefinderProcess(float cosTiltAngle)
  * Get the latest altitude that was computed, or RANGEFINDER_OUT_OF_RANGE if sonarCalculateAltitude
  * has never been called.
  */
-float rangefinderGetLatestAltitude(void)
+int32_t rangefinderGetLatestAltitude(void)
 {
     return rangefinder.calculatedAltitude;
-}
-float FlowGetLatestOptiX(void)
-{
-    //X像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
-    float flow_x = (float)rangefinder.flow_x_integral/10000.0*(float)rangefinder.calculatedAltitude;
-    return flow_x;
-}
-float FlowGetLatestOptiY(void)
-{
-    //Y像素点累计时间内的累加位移(除以10000乘以高度后为实际位移)
-    float flow_y = (float)rangefinder.flow_y_integral/10000.0*(float)rangefinder.calculatedAltitude;
-    return flow_y;
-}
-
-uint8_t FlowGetConfidence(void)
-{
-    return rangefinder.tof_confidence;
-}
-// int32_t FlowGetLatestOptiZ(void)
-// {
-//     return rangefinder.rawAltitude;
-// }
-
-int16_t FlowGetTime(void)
-{
-    return rangefinder.integration_timespan;
 }
 
 int32_t rangefinderGetLatestRawAltitude(void)

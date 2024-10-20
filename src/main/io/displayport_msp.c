@@ -40,6 +40,8 @@
 #include "msp/msp_protocol.h"
 #include "msp/msp_serial.h"
 
+#include "osd/osd.h"
+
 #include "pg/vcd.h"
 
 static displayPort_t mspDisplayPort;
@@ -60,7 +62,7 @@ static int output(displayPort_t *displayPort, uint8_t cmd, uint8_t *buf, int len
 
 static int heartbeat(displayPort_t *displayPort)
 {
-    uint8_t subcmd[] = { 0 };
+    uint8_t subcmd[] = { MSP_DP_HEARTBEAT };
 
     // heartbeat is used to:
     // a) ensure display is not released by MW OSD software
@@ -117,7 +119,7 @@ static int writeString(displayPort_t *displayPort, uint8_t col, uint8_t row, uin
     buf[0] = MSP_DP_WRITE_STRING;
     buf[1] = row;
     buf[2] = col;
-    buf[3] = displayPortProfileMsp()->attrValues[attr] & ~DISPLAYPORT_MSP_ATTR_BLINK & DISPLAYPORT_MSP_ATTR_MASK;
+    buf[3] = displayPortProfileMsp()->fontSelection[attr] & ~DISPLAYPORT_MSP_ATTR_BLINK & DISPLAYPORT_MSP_ATTR_MASK;
 
     if (attr & DISPLAYPORT_ATTR_BLINK) {
         buf[3] |= DISPLAYPORT_MSP_ATTR_BLINK;
@@ -128,13 +130,25 @@ static int writeString(displayPort_t *displayPort, uint8_t col, uint8_t row, uin
     return output(displayPort, MSP_DISPLAYPORT, buf, len + 4);
 }
 
+static int writeSys(displayPort_t *displayPort, uint8_t col, uint8_t row, displayPortSystemElement_e systemElement)
+{
+    uint8_t syscmd[4];
+
+    syscmd[0] = MSP_DP_SYS;
+    syscmd[1] = row;
+    syscmd[2] = col;
+    syscmd[3] = systemElement;
+
+    return output(displayPort, MSP_DISPLAYPORT, syscmd, sizeof(syscmd));
+}
+
 static int writeChar(displayPort_t *displayPort, uint8_t col, uint8_t row, uint8_t attr, uint8_t c)
 {
     char buf[2];
 
     buf[0] = c;
     buf[1] = 0;
-    return writeString(displayPort, col, row, attr, buf); //!!TODO - check if there is a direct MSP command to do this
+    return writeString(displayPort, col, row, attr, buf);
 }
 
 static bool isTransferInProgress(const displayPort_t *displayPort)
@@ -151,9 +165,6 @@ static bool isSynced(const displayPort_t *displayPort)
 
 static void redraw(displayPort_t *displayPort)
 {
-    const uint8_t displayRows = (vcdProfile()->video_system == VIDEO_SYSTEM_PAL) ? 16 : 13;
-    displayPort->rows = displayRows + displayPortProfileMsp()->rowAdjust;
-    displayPort->cols = 30 + displayPortProfileMsp()->colAdjust;
     drawScreen(displayPort);
 }
 
@@ -169,6 +180,7 @@ static const displayPortVTable_t mspDisplayPortVTable = {
     .clearScreen = clearScreen,
     .drawScreen = drawScreen,
     .screenSize = screenSize,
+    .writeSys = writeSys,
     .writeString = writeString,
     .writeChar = writeChar,
     .isTransferInProgress = isTransferInProgress,
@@ -189,7 +201,28 @@ displayPort_t *displayPortMspInit(void)
         mspDisplayPort.useDeviceBlink = true;
     }
 
+#ifndef USE_OSD_SD
+    if (vcdProfile()->video_system != VIDEO_SYSTEM_HD) {
+        vcdProfileMutable()->video_system = VIDEO_SYSTEM_HD;
+    }
+#endif
+#ifndef USE_OSD_HD
+    if (vcdProfile()->video_system == VIDEO_SYSTEM_HD) {
+        vcdProfileMutable()->video_system = VIDEO_SYSTEM_AUTO;
+    }
+#endif
+
+    if (vcdProfile()->video_system == VIDEO_SYSTEM_HD) {
+        mspDisplayPort.rows = osdConfig()->canvas_rows;
+        mspDisplayPort.cols = osdConfig()->canvas_cols;
+    } else {
+        const uint8_t displayRows = (vcdProfile()->video_system == VIDEO_SYSTEM_PAL) ? VIDEO_LINES_PAL : VIDEO_LINES_NTSC;
+        mspDisplayPort.rows = displayRows + displayPortProfileMsp()->rowAdjust;
+        mspDisplayPort.cols = OSD_SD_COLS + displayPortProfileMsp()->colAdjust;
+    }
+
     redraw(&mspDisplayPort);
+
     return &mspDisplayPort;
 }
 

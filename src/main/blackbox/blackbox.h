@@ -24,7 +24,6 @@
 #include "build/build_config.h"
 #include "common/time.h"
 #include "pg/pg.h"
-#include "drivers/serial.h"
 
 typedef enum BlackboxDevice {
     BLACKBOX_DEVICE_NONE = 0,
@@ -59,18 +58,12 @@ typedef enum FlightLogEvent {
     FLIGHT_LOG_EVENT_LOG_END = 255
 } FlightLogEvent;
 
-typedef enum Blackboxwifi{
-    BLACKBOX_WIFI_NONE = 0,
-    WIFI_ESP8266,
-}Blackboxwifi_e;
-
 typedef struct blackboxConfig_s {
     uint32_t fields_disabled_mask;
     uint8_t sample_rate; // sample rate
     uint8_t device;
     uint8_t mode;
     uint8_t high_resolution;
-    Blackboxwifi_e provider;
 } blackboxConfig_t;
 
 PG_DECLARE(blackboxConfig_t, blackboxConfig);
@@ -88,8 +81,6 @@ uint8_t blackboxCalculateSampleRate(uint16_t pRatio);
 void blackboxValidateConfig(void);
 void blackboxFinish(void);
 bool blackboxMayEditConfig(void);
-void wifiInitHardware(void);
-void wifiInitHardware_Esp8266(void);
 #ifdef UNIT_TEST
 STATIC_UNIT_TESTED void blackboxLogIteration(timeUs_t currentTimeUs);
 STATIC_UNIT_TESTED bool blackboxShouldLogPFrame(void);

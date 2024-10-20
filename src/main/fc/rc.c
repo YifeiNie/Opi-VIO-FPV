@@ -36,7 +36,6 @@
 #include "fc/controlrate_profile.h"
 #include "fc/core.h"
 #include "fc/rc.h"
-#include "fc/init.h"
 #include "fc/rc_controls.h"
 #include "fc/rc_modes.h"
 #include "fc/runtime_config.h"
@@ -46,13 +45,6 @@
 #include "flight/feedforward.h"
 #include "flight/gps_rescue.h"
 #include "flight/pid_init.h"
-#include "flight/wifi.h"
-#include "flight/alt_ctrl.h"
-
-#include "drivers/system.h"
-#include "drivers/motor.h"
-
-#include "io/beeper.h"
 
 #include "pg/rx.h"
 
@@ -60,7 +52,6 @@
 
 #include "sensors/battery.h"
 #include "sensors/gyro.h"
-#include "sensors/initialisation.h"
 
 #include "rc.h"
 
@@ -74,10 +65,6 @@ float rcCommandDelta[XYZ_AXIS_COUNT];
 #endif
 static float rawSetpoint[XYZ_AXIS_COUNT];
 static float setpointRate[3], rcDeflection[3], rcDeflectionAbs[3];
-#ifdef USE_ANGLE_RATE_HOLD
-static float OuterSetpointAngle[3], OuterSetpointAngleAbs[3];
-static float OuterSetpointRate[3];
-#endif
 static bool reverseMotors = false;
 static applyRatesFn *applyRates;
 static uint16_t currentRxRefreshRate;
@@ -87,9 +74,6 @@ static float rcCommandDivider = 500.0f;
 static float rcCommandYawDivider = 500.0f;
 
 static FAST_DATA_ZERO_INIT bool newRxDataForFF;
-
-bool Timestamp;
-bool Timestamp_out;
 
 enum {
     ROLL_FLAG = 1 << ROLL,
@@ -120,11 +104,7 @@ bool getShouldUpdateFeedforward(void)
 {
     const bool updateFf = newRxDataForFF;
     if (newRxDataForFF == true){
-        state_check.rc_receive = 1;
         newRxDataForFF = false;
-    }
-    else{
-        state_check.rc_receive = 0;
     }
     return updateFf;
 }
@@ -151,24 +131,6 @@ float getRcDeflectionAbs(int axis)
 {
     return rcDeflectionAbs[axis];
 }
-
-#ifdef USE_ANGLE_RATE_HOLD
-float getOuterSetpointAngle(int axis)
-{
-    return OuterSetpointAngle[axis];
-}
-
-float getOuterSetpointAngleAbs(int axis)
-{
-    return OuterSetpointAngleAbs[axis];
-}
-
-float getOuterSetpointRate(int axis)
-{
-    return OuterSetpointRate[axis];
-}
-
-#endif
 
 #ifdef USE_FEEDFORWARD
 float getRawSetpoint(int axis)
@@ -494,7 +456,7 @@ static FAST_CODE void processRcSmoothingFilter(void)
                         sampleState = 1;
                     }
 
-                    // if the gTimestampuard time has expired then process the rx frame time
+                    // if the guard time has expired then process the rx frame time
                     if (currentTimeMs > validRxFrameTimeMs) {
                         sampleState = 2;
                         bool accumulateSample = true;
@@ -599,24 +561,25 @@ FAST_CODE void processRcCommand(void)
                 // Treat the stick input as centered to avoid any stick deflection base modifications (like acceleration limit)
                 rcDeflection[axis] = 0;
                 rcDeflectionAbs[axis] = 0;
-            } else 
+            } else
 #endif
             {
-                // scale rcCommandf attitude_controllerto range [-1.0, 1.0]
+                // scale rcCommandf to range [-1.0, 1.0]
                 float rcCommandf;
                 if (axis == FD_YAW) {
                     rcCommandf = rcCommand[axis] / rcCommandYawDivider;
                 } else {
                     rcCommandf = rcCommand[axis] / rcCommandDivider;
                 }
+
                 rcDeflection[axis] = rcCommandf;
                 const float rcCommandfAbs = fabsf(rcCommandf);
                 rcDeflectionAbs[axis] = rcCommandfAbs;
 
                 angleRate = applyRates(axis, rcCommandf, rcCommandfAbs);
-            }
 
-            rawSetpoint[axis] = constrainf(angleRate, -1.0f * currentControlRateProfile->rate_limit[axis], 1.0f * currentControlRateProfile->rate_limit[axis]);  //-1998  -  +1998
+            }
+            rawSetpoint[axis] = constrainf(angleRate, -1.0f * currentControlRateProfile->rate_limit[axis], 1.0f * currentControlRateProfile->rate_limit[axis]);
             DEBUG_SET(DEBUG_ANGLERATE, axis, lrintf(angleRate));
         }
         // adjust raw setpoint steps to camera angle (mixing Roll and Yaw)
@@ -624,85 +587,6 @@ FAST_CODE void processRcCommand(void)
             scaleRawSetpointToFpvCamAngle();
         }
     }
-    
-#ifdef USE_ANGLE_RATE_HOLD
-    if(FLIGHT_MODE(ANGLE_RATE_HOLD_MODE) && (get_offboard.mavros_state == true))
-    {
-        Timestamp_out = true;
-        for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
-            switch(get_offboard.type_mask)
-            {
-                case 7:{
-                    for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
-                    {
-                        OuterSetpointAngle[0] = get_offboard.roll_angle * 180 / M_PI;
-                        OuterSetpointAngle[1] = get_offboard.pitch_angle * 180 / M_PI;
-                        OuterSetpointAngle[2] = get_offboard.yaw_angle * 180 / M_PI;
-
-                    }
-                    mode_seclct.angle_mode = 1;
-                    mode_seclct.angularrate_mode = 0;
-                    break;
-                }
-
-                case 128:{
-                    for(int axis = FD_ROLL; axis <= FD_YAW; axis++)
-                    {
-                        OuterSetpointRate[0] = get_offboard.roll_rate * 180 / M_PI;
-                        OuterSetpointRate[1] = get_offboard.pitch_rate * 180 / M_PI;
-                        OuterSetpointRate[2] = get_offboard.yaw_rate * 180 / M_PI;
-                    }
-                    mode_seclct.angle_mode = 0;
-                    mode_seclct.angularrate_mode = 1;
-                    break;
-                }
-            default:
-                    // mode_seclct.angle_mode = 0;
-                    // mode_seclct.angularrate_mode = 0;
-                break;
-            }
-        }
-    }else
-    {
-        Timestamp_out = false;
-    }
-#endif
-
-#ifdef USE_IMU_INIT
-    if(FLIGHT_MODE(IMU_INIT_MODE) && !IS_RC_MODE_ACTIVE(BOXARM))
-    {
-        motorShutdown();
-        systemReset();
-    }
-#endif
-
-#ifdef USE_BOOTLOADER
-    if(FLIGHT_MODE(BOOTLOADER_MODE) && !IS_RC_MODE_ACTIVE(BOXARM))
-    {
-        motorShutdown();
-        systemResetToBootloader(BOOTLOADER_REQUEST_ROM);
-    }
-#endif
-
-// #ifdef USE_DATA_CTRL
-//     // if(FLIGHT_MODE(DATA_CTRL_MODE))
-//     // {
-//     //     Timestamp = true;
-//     // }else
-//     // {
-//     //     Timestamp = false;
-//     // }
-// #endif
-
-#ifdef USE_POSITION_YAW_HOLD
-    if(FLIGHT_MODE(POSITION_YAW_HOLD_MODE) && (attitude_controller.mavlink_state == true))
-    {
-        Timestamp = true;
-    }else
-    {
-        Timestamp = false;
-    }
-#endif
 
 #ifdef USE_RC_SMOOTHING_FILTER
     processRcSmoothingFilter();
@@ -745,7 +629,7 @@ FAST_CODE_NOINLINE void updateRcCommands(void)
         tmp = (uint32_t)(tmp - PWM_RANGE_MIN);
     } else {
         tmp = constrain(rcData[THROTTLE], rxConfig()->mincheck, PWM_RANGE_MAX);
-        tmp = (uint32_t)(tmp - rxConfig()->mincheck) * PWM_RANGE_MIN / (PWM_RANGE_MAX - rxConfig()->mincheck); //get throttle 
+        tmp = (uint32_t)(tmp - rxConfig()->mincheck) * PWM_RANGE_MIN / (PWM_RANGE_MAX - rxConfig()->mincheck);
     }
 
     if (getLowVoltageCutoff()->enabled) {
@@ -789,7 +673,6 @@ FAST_CODE_NOINLINE void updateRcCommands(void)
             rcCommand[YAW] = rcCommandBuff.Z;
         }
     }
-
 }
 
 void resetYawAxis(void)
