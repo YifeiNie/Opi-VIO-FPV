@@ -107,23 +107,27 @@ static mavlink_message_t mavMsg;
 static uint8_t mavBuffer[MAVLINK_MAX_PACKET_LEN];
 static uint32_t lastMavlinkMessage = 0;
 
+// 检测当前streamNum对应的消息是否需要发送，发送函数返回1，否则返回0
+// streamN由自动飞行算法设计者自己定义，官方的程序也给了一些他们的定义以供参考，见common.h中的MAV_DATA_STREAM变量
 static int mavlinkStreamTrigger(enum MAV_DATA_STREAM streamNum)
 {
-    uint8_t rate = (uint8_t) mavRates[streamNum];
+    // 获取当前消息的发送速率，如果为0则不发送，直接退出函数
+    uint8_t rate = (uint8_t) mavRates[streamNum]; 
     if (rate == 0) {
         return 0;
     }
 
+    // mavlink的滴答计时器如果倒计时为0，则准备发送，首先进行一个速率限幅
     if (mavTicks[streamNum] == 0) {
         // we're triggering now, setup the next trigger point
         if (rate > TELEMETRY_MAVLINK_MAXRATE) {
             rate = TELEMETRY_MAVLINK_MAXRATE;
         }
-
+        // 复位计时器从新开始计时
         mavTicks[streamNum] = (TELEMETRY_MAVLINK_MAXRATE / rate);
         return 1;
     }
-
+    // 如果mavlink的滴答计时器如果倒计时不为0，说明还未到发送时机，计时器减一，同时返回0表示不发送
     // count down at TASK_RATE_HZ
     mavTicks[streamNum]--;
     return 0;
@@ -169,7 +173,7 @@ void configureMAVLinkTelemetryPort(void)
     baudRate_e baudRateIndex = portConfig->telemetry_baudrateIndex;
     if (baudRateIndex == BAUD_AUTO) {
         // default rate for minimOSD
-        baudRateIndex = BAUD_57600;
+        baudRateIndex = BAUD_2000000;
     }
 
     mavlinkPort = openSerialPort(portConfig->identifier, FUNCTION_TELEMETRY_MAVLINK, NULL, NULL, baudRates[baudRateIndex], TELEMETRY_MAVLINK_INITIAL_PORT_MODE, telemetryConfig()->telemetry_inverted ? SERIAL_INVERTED : SERIAL_NOT_INVERTED);
@@ -391,11 +395,11 @@ void mavlinkSendAttitude(void)
         // yaw Yaw angle (rad)
         DECIDEGREES_TO_RADIANS(attitude.values.yaw),
         // rollspeed Roll angular speed (rad/s)
-        0,
+        0.2,
         // pitchspeed Pitch angular speed (rad/s)
-        0,
+        0.4,
         // yawspeed Yaw angular speed (rad/s)
-        0);
+        0.5);
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);
 }
@@ -536,6 +540,7 @@ void processMAVLinkTelemetry(void)
     }
 }
 
+// 下面的函数最终在task.c中被调用
 void handleMAVLinkTelemetry(void)
 {
     if (!mavlinkTelemetryEnabled) {
