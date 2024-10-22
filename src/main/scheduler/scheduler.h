@@ -24,7 +24,7 @@
 #include "config/config.h"
 #include "pg/scheduler.h"
 
-#define TASK_PERIOD_HZ(hz) (1000000 / (hz))
+#define TASK_PERIOD_HZ(hz) (1000000 / (hz))  // 将hz转化为微秒
 #define TASK_PERIOD_MS(ms) ((ms) * 1000)
 #define TASK_PERIOD_US(us) (us)
 

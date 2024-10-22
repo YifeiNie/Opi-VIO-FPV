@@ -80,7 +80,7 @@
 #pragma GCC diagnostic pop
 
 #define TELEMETRY_MAVLINK_INITIAL_PORT_MODE MODE_TX
-#define TELEMETRY_MAVLINK_MAXRATE 50
+#define TELEMETRY_MAVLINK_MAXRATE 200
 #define TELEMETRY_MAVLINK_DELAY ((1000 * 1000) / TELEMETRY_MAVLINK_MAXRATE)
 
 extern uint16_t rssi; // FIXME dependency on mw.c
@@ -92,11 +92,12 @@ static bool mavlinkTelemetryEnabled =  false;
 static portSharing_e mavlinkPortSharing;
 
 /* MAVLink datastream rates in Hz */
+// 在这里设置mavlink的发送速率，其中姿态为EXTRA1
 static const uint8_t mavRates[] = {
     [MAV_DATA_STREAM_EXTENDED_STATUS] = 2, //2Hz
     [MAV_DATA_STREAM_RC_CHANNELS] = 5, //5Hz
     [MAV_DATA_STREAM_POSITION] = 2, //2Hz
-    [MAV_DATA_STREAM_EXTRA1] = 10, //10Hz
+    [MAV_DATA_STREAM_EXTRA1] = 200, //100Hz
     [MAV_DATA_STREAM_EXTRA2] = 10 //2Hz
 };
 
@@ -387,6 +388,7 @@ void mavlinkSendAttitude(void)
     uint16_t msgLength;
     mavlink_msg_attitude_pack(0, 200, &mavMsg,
         // time_boot_ms Timestamp (milliseconds since system boot)
+        // 时间戳
         millis(),
         // roll Roll angle (rad)
         DECIDEGREES_TO_RADIANS(attitude.values.roll),
@@ -517,30 +519,31 @@ void mavlinkSendHUDAndHeartbeat(void)
 void processMAVLinkTelemetry(void)
 {
     // is executed @ TELEMETRY_MAVLINK_MAXRATE rate
-    if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTENDED_STATUS)) {
-        mavlinkSendSystemStatus();
-    }
+//     if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTENDED_STATUS)) {
+//         mavlinkSendSystemStatus();
+//     }
 
-    if (mavlinkStreamTrigger(MAV_DATA_STREAM_RC_CHANNELS)) {
-        mavlinkSendRCChannelsAndRSSI();
-    }
+//     if (mavlinkStreamTrigger(MAV_DATA_STREAM_RC_CHANNELS)) {
+//         mavlinkSendRCChannelsAndRSSI();
+//     }
 
-#ifdef USE_GPS
-    if (mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
-        mavlinkSendPosition();
-    }
-#endif
+// #ifdef USE_GPS
+//     if (mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
+//         mavlinkSendPosition();
+//     }
+// #endif
 
-    if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTRA1)) {
-        mavlinkSendAttitude();
-    }
-
+//     if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTRA1)) {
+//         mavlinkSendAttitude();
+//     }
+    
     if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTRA2)) {
         mavlinkSendHUDAndHeartbeat();
     }
+    mavlinkSendAttitude();
 }
 
-// 下面的函数最终在task.c中被调用
+// 下面的函数最终在task.c中的TASK_TELEMETRY任务被调用
 void handleMAVLinkTelemetry(void)
 {
     if (!mavlinkTelemetryEnabled) {

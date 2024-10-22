@@ -198,6 +198,7 @@ static float invSqrt(float x)
     return 1.0f / sqrtf(x);
 }
 
+// 使用Mahony滤波器，融合角速度，角加速度，磁罗盘三个传感器的数据，以四元数形式估计姿态
 static void imuMahonyAHRSupdate(float dt, float gx, float gy, float gz,
                                 bool useAcc, float ax, float ay, float az,
                                 bool useMag,
@@ -324,11 +325,13 @@ static void imuMahonyAHRSupdate(float dt, float gx, float gy, float gz,
     attitudeIsEstablished = true;
 }
 
+// 通过四元数计算欧拉角（yaw，pitch和roll）
 STATIC_UNIT_TESTED void imuUpdateEulerAngles(void)
 {
     quaternionProducts buffer;
 
     if (FLIGHT_MODE(HEADFREE_MODE)) {
+        // 由于通过四元数计算欧拉角需要复用四元数之间的乘积，故提前计算好减少计算量，
        imuQuaternionComputeProducts(&headfree, &buffer);
 
        attitude.values.roll = lrintf(atan2_approx((+2.0f * (buffer.wx + buffer.yz)), (+1.0f - 2.0f * (buffer.xx + buffer.yy))) * (1800.0f / M_PIf));

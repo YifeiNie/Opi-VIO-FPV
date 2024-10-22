@@ -97,6 +97,8 @@
 
 #include "telemetry/telemetry.h"
 #include "telemetry/crsf.h"
+// 添加头文件以声明函数handleMAVLinkTelemetry()
+#include "telemetry/mavlink.h"
 
 #ifdef USE_BST
 #include "i2c_bst.h"
@@ -317,10 +319,14 @@ void taskUpdateRangefinder(timeUs_t currentTimeUs)
 #ifdef USE_TELEMETRY
 static void taskTelemetry(timeUs_t currentTimeUs)
 {
+    // 告诉编译器参数currentTimeUs不使用，否则报错
+    UNUSED(currentTimeUs);
     if (!cliMode && featureIsEnabled(FEATURE_TELEMETRY)) {
-        subTaskTelemetryPollSensors(currentTimeUs);
-
-        telemetryProcess(currentTimeUs);
+        // subTaskTelemetryPollSensors(currentTimeUs);
+        // telemetryProcess(currentTimeUs);
+        #ifdef USE_TELEMETRY_MAVLINK
+            handleMAVLinkTelemetry();
+        #endif
     }
 }
 #endif
@@ -410,8 +416,9 @@ task_attribute_t task_attributes[TASK_COUNT] = {
     [TASK_OSD] = DEFINE_TASK("OSD", NULL, osdUpdateCheck, osdUpdate, TASK_PERIOD_HZ(OSD_FRAMERATE_DEFAULT_HZ), TASK_PRIORITY_LOW),
 #endif
 
+// 以微秒为单位
 #ifdef USE_TELEMETRY
-    [TASK_TELEMETRY] = DEFINE_TASK("TELEMETRY", NULL, NULL, taskTelemetry, TASK_PERIOD_HZ(250), TASK_PRIORITY_LOW),
+    [TASK_TELEMETRY] = DEFINE_TASK("TELEMETRY", NULL, NULL, taskTelemetry, TASK_PERIOD_HZ(200), TASK_PRIORITY_MEDIUM),
 #endif
 
 #ifdef USE_LED_STRIP
