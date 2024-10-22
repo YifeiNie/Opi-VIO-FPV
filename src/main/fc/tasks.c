@@ -319,8 +319,7 @@ void taskUpdateRangefinder(timeUs_t currentTimeUs)
 #ifdef USE_TELEMETRY
 static void taskTelemetry(timeUs_t currentTimeUs)
 {
-    // 告诉编译器参数currentTimeUs不使用，否则报错
-    UNUSED(currentTimeUs);
+    UNUSED(currentTimeUs);    // 告诉编译器参数currentTimeUs不使用，否则会报错
     if (!cliMode && featureIsEnabled(FEATURE_TELEMETRY)) {
         // subTaskTelemetryPollSensors(currentTimeUs);
         // telemetryProcess(currentTimeUs);
