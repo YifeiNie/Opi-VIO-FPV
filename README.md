@@ -82,6 +82,6 @@
 - 使用F4飞控组装一架穿越机，电机正常工作，计划今日试飞
 - 计划使用cool Pi作为上位，使用d435作为VIO，使用VINS进行数据融合进行视觉导航
 ### 2024.10.26 -by Nyf
-- `roscore`是ros节点运行前必须执行的，在运行后卡死在`Done checking log file disk usage.Usage is <1GB`，然后等很久会报错`unable to contact my own server at xxxxxx`，这说明此时该ros运行的电脑是从机并且没有连上主机，可以通过`sudo gedit ~/.bashrc`打开shell配置文件，并将对应的内容修改为`export ROS_HOSTNAME=localhost`和`export ROS_MASTER_URI=http://localhost:11311`，然后一定要重启，再次运行，发现roscore可以运行，使用`rviz`进行测试发现可以打开了。
+- `roscore`是ros节点运行前必须执行的，在运行后卡死在`Done checking log file disk usage.Usage is <1GB`，然后等很久会报错`unable to contact my own server at xxxxxx`，这说明此时该ros运行的电脑是从机并且没有连上主机，可以通过`sudo gedit ~/.bashrc`打开shell配置文件，并将对应的内容修改为`export ROS_HOSTNAME=localhost`和`export ROS_MASTER_URI=http://localhost:11311`，然后一定要重启，再次运行，发现roscore可以运行，使用`rviz`进行测试发现可以打开了，参考[这里](https://blog.csdn.net/qq_42535748/article/details/125818486)。
 
 
