@@ -84,5 +84,5 @@
 ### 2024.10.26 -by Nyf
 - `roscore`是ros节点运行前必须执行的，在运行后卡死在`Done checking log file disk usage.Usage is <1GB`，然后等很久会报错`unable to contact my own server at xxxxxx`，这说明此时该ros运行的电脑是从机并且没有连上主机，可以通过`sudo gedit ~/.bashrc`打开shell配置文件，并将对应的内容修改为`export ROS_HOSTNAME=localhost`和`export ROS_MASTER_URI=http://localhost:11311`，然后一定要重启，再次运行，发现roscore可以运行，使用`rviz`进行测试发现可以打开了，参考[这里](https://blog.csdn.net/qq_42535748/article/details/125818486)。
 - 成功使用CoolPi运行planner仿真，但是卡成PPT，不知道是Rviz的问题还是本身CoolPi就跑不了，初步怀疑是前者
-
+- 简单学习了Fusion360，计划给Pi和相机画一个架子
 
