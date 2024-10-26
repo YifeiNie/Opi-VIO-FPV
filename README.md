@@ -77,7 +77,11 @@
 - 这两天一直在看源码，由于调度问题，mavlink发送imu数据的频率往往会低于设定频率，通过修改srv/main/fc/task.c中的`TASK_TELEMETRY`优先级可解决此问题，同样在下面也可以修改imu数据的更新频率，进而解决了最初需要解决的问题
 - 下一步计划编写飞控的mavlink接收函数，并搭建控制器的框架，但目前仍不太清楚其回调的原理，需要进一步对serial.c文件里的openSerialPort()函数进行分析
 - 另发现可以使用`cliPrint`函数来在BF地面站打印调试信息，用法和C语言的printf一样，便于后续的调试  
-### 2024.10.20-22 by Nyf
+### 2024.10.25 -by Nyf
 - 成功安装d435驱动，读取到了点云数据
 - 使用F4飞控组装一架穿越机，电机正常工作，计划今日试飞
 - 计划使用cool Pi作为上位，使用d435作为VIO，使用VINS进行数据融合进行视觉导航
+### 2024.10.26 -by Nyf
+- `roscore`是ros节点运行前必须执行的，在运行后卡死在`Done checking log file disk usage.Usage is <1GB`，然后等很久会报错`unable to contact my own server at xxxxxx`，这说明此时该ros运行的电脑是从机并且没有连上主机，可以通过`sudo gedit ~/.bashrc`打开shell配置文件，并将对应的内容修改为`export ROS_HOSTNAME=localhost`和`export ROS_MASTER_URI=http://localhost:11311`，然后一定要重启，再次运行，发现roscore可以运行，使用`rviz`进行测试发现可以打开了。
+
+
