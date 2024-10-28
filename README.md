@@ -96,6 +96,7 @@
         - 使用source ~/.bashrc更新
         - 重新编译planner，得到新的不含任何引用setup.bash
         - 为了防止影响此电脑上的其他程序，取消注释
-        - 使用source ~/.bashrc更新，问题解决，可以启动vins了
+        - 使用source ~/.bashrc更新，该问题解决
+- 但vins还是启动不了，一直在等待imu数据，估计是数据格式发送仍然不对，需要进一步debug
   
   
