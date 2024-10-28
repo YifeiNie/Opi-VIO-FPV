@@ -93,10 +93,10 @@
 [camera/realsense2_camera_manager-2] process has died [pid 27915, exit code 127, cmd /opt/ros/noetic/lib/nodelet/nodelet manager __name:=realsense2_camera_manager __log:=/home/coolpi/.ros/log/09d5dc34-952f-11ef-9e4f-e0752666340d/camera-realsense2_camera_manager-2.log]`，注意到关键词ddynamic_reconfigure
     - 经检查，除了apt默认的/ros/noetic/share路径下，在别的工作空间也安装了这个包，而新部署的planner在编译时，会引用原有的.bashrc中source的内容，并写入到其环境变量配置脚本devel/setup.bash中。而使用这个planner，必须要启动它的setup.bash，但由于它对.bashrc引用，会导致两个ddynamic_reconfigure相互冲突。因此也容易得到解决办法，参考[这里](https://github.com/IntelRealSense/realsense-ros/issues/838)：
         - 注释掉全部.bashrc中的source
-        - 使用source ~/.bashrc更新
+        - 使用`source ~/.bashrc`更新
         - 重新编译planner，得到新的不含任何引用setup.bash
         - 为了防止影响此电脑上的其他程序，取消注释
-        - 使用source ~/.bashrc更新，该问题解决
+        - 使用`source ~/.bashrc`更新，该问题解决
 - 但vins还是启动不了，一直在等待imu数据，估计是数据格式发送仍然不对，需要进一步debug
   
   
