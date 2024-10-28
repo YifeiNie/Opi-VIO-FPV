@@ -72,6 +72,16 @@
 #include "telemetry/telemetry.h"
 #include "telemetry/mavlink.h"
 
+/*以下是我添加的部分*/
+#include "sensors/acceleration.h"
+#include "sensors/gyro.h"
+#include "common/axis.h"
+#include "flight/imu.h"
+#define GRAVITY_EARTH (9.80665f)
+void mavlinkSendImuData(void);
+/*以上是我添加的部分*/
+
+
 // mavlink library uses unnames unions that's causes GCC to complain if -Wpedantic is used
 // until this is resolved in mavlink library - ignore -Wpedantic for mavlink code
 #pragma GCC diagnostic push
@@ -80,7 +90,7 @@
 #pragma GCC diagnostic pop
 
 #define TELEMETRY_MAVLINK_INITIAL_PORT_MODE MODE_TX
-#define TELEMETRY_MAVLINK_MAXRATE 200
+#define TELEMETRY_MAVLINK_MAXRATE 300
 #define TELEMETRY_MAVLINK_DELAY ((1000 * 1000) / TELEMETRY_MAVLINK_MAXRATE)
 
 extern uint16_t rssi; // FIXME dependency on mw.c
@@ -93,27 +103,28 @@ static portSharing_e mavlinkPortSharing;
 
 /* MAVLink datastream rates in Hz */
 // 在这里设置mavlink的发送速率，其中姿态为EXTRA1
-static const uint8_t mavRates[] = {
+static const uint16_t mavRates[] = {
     [MAV_DATA_STREAM_EXTENDED_STATUS] = 2, //2Hz
     [MAV_DATA_STREAM_RC_CHANNELS] = 5, //5Hz
     [MAV_DATA_STREAM_POSITION] = 2, //2Hz
-    [MAV_DATA_STREAM_EXTRA1] = 200, //100Hz
+    [MAV_DATA_STREAM_EXTRA1] = 300, //201Hz
     [MAV_DATA_STREAM_EXTRA2] = 10 //2Hz
 };
 
 #define MAXSTREAMS ARRAYLEN(mavRates)
 
-static uint8_t mavTicks[MAXSTREAMS];
+static uint16_t mavTicks[MAXSTREAMS];
 static mavlink_message_t mavMsg;
 static uint8_t mavBuffer[MAVLINK_MAX_PACKET_LEN];
 static uint32_t lastMavlinkMessage = 0;
+
 
 // 检测当前streamNum对应的消息是否需要发送，发送函数返回1，否则返回0
 // streamN由自动飞行算法设计者自己定义，官方的程序也给了一些他们的定义以供参考，见common.h中的MAV_DATA_STREAM变量
 static int mavlinkStreamTrigger(enum MAV_DATA_STREAM streamNum)
 {
     // 获取当前消息的发送速率，如果为0则不发送，直接退出函数
-    uint8_t rate = (uint8_t) mavRates[streamNum]; 
+    uint16_t rate = (uint16_t) mavRates[streamNum]; 
     if (rate == 0) {
         return 0;
     }
@@ -121,10 +132,10 @@ static int mavlinkStreamTrigger(enum MAV_DATA_STREAM streamNum)
     // mavlink的滴答计时器如果倒计时为0，则准备发送，首先进行一个速率限幅
     if (mavTicks[streamNum] == 0) {
         // we're triggering now, setup the next trigger point
-        if (rate > TELEMETRY_MAVLINK_MAXRATE) {
-            rate = TELEMETRY_MAVLINK_MAXRATE;
+        if (rate >= TELEMETRY_MAVLINK_MAXRATE) {
+            rate = TELEMETRY_MAVLINK_MAXRATE + 1;
         }
-        // 复位计时器从新开始计时
+        // 复位计时器从新开始计时，这里整数除法，所以如果TELEMETRY_MAVLINK_MAXRATE和rate恰好相等，得到1，会导致其实频率被除以2了
         mavTicks[streamNum] = (TELEMETRY_MAVLINK_MAXRATE / rate);
         return 1;
     }
@@ -383,6 +394,21 @@ void mavlinkSendPosition(void)
 }
 #endif
 
+// 如果直接使用该函数发送imu数据，机载电脑端通过mavros读取的数据是有问题的，因为该格式与mavros包的解码方式不匹配
+// 故参考了发送imu数据格式符合mavros包解码规则的px4固件，在px4源码中的头文件mavlink_msg_scaled_imu.h中可以查看px4的发送方式为：
+// mavlink_scaled_imu_t packet;
+//     packet.time_boot_ms = time_boot_ms;
+//     packet.xacc = xacc;
+//     packet.yacc = yacc;
+//     packet.zacc = zacc;
+//     packet.xgyro = xgyro;
+//     packet.ygyro = ygyro;
+//     packet.zgyro = zgyro;
+//     packet.xmag = xmag;
+//     packet.ymag = ymag;
+//     packet.zmag = zmag;
+//     packet.temperature = temperature;
+//     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_SCALED_IMU, (const char *)&packet, MAVLINK_MSG_ID_SCALED_IMU_MIN_LEN, MAVLINK_MSG_ID_SCALED_IMU_LEN, MAVLINK_MSG_ID_SCALED_IMU_CRC);
 void mavlinkSendAttitude(void)
 {
     uint16_t msgLength;
@@ -396,15 +422,37 @@ void mavlinkSendAttitude(void)
         DECIDEGREES_TO_RADIANS(-attitude.values.pitch),
         // yaw Yaw angle (rad)
         DECIDEGREES_TO_RADIANS(attitude.values.yaw),
-        // rollspeed Roll angular speed (rad/s)
-        0.2,
+        //rollspeed Roll angular speed (rad/s)
+        DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL]),
         // pitchspeed Pitch angular speed (rad/s)
-        0.4,
+        DEGREES_TO_RADIANS(gyro.gyroADCf[FD_PITCH]),
         // yawspeed Yaw angular speed (rad/s)
-        0.5);
+        DEGREES_TO_RADIANS(gyro.gyroADCf[FD_YAW]));
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);
 }
+
+void mavlinkSendImuRawData(void)
+{
+    uint16_t msgLength;
+    mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
+        // time_boot_ms Timestamp (milliseconds since system boot)
+            millis(),
+            (int16_t)((float)(acc.accADC[X])*1.953125*GRAVITY_EARTH),
+            (int16_t)((float)(acc.accADC[Y])*1.953125*GRAVITY_EARTH),
+            (int16_t)((float)(acc.accADC[Z])*1.953125*GRAVITY_EARTH),
+            (int16_t)(gyro.gyroADCf[FD_ROLL] * 10.0f),
+            (int16_t)(gyro.gyroADCf[FD_PITCH] * 10.0f),
+            (int16_t)(gyro.gyroADCf[FD_YAW] * 10.0f),
+            0,
+            0,
+            0                                               
+        );
+        
+    msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
+    mavlinkSerialWrite(mavBuffer, msgLength);
+}
+
 
 void mavlinkSendHUDAndHeartbeat(void)
 {
@@ -519,28 +567,26 @@ void mavlinkSendHUDAndHeartbeat(void)
 void processMAVLinkTelemetry(void)
 {
     // is executed @ TELEMETRY_MAVLINK_MAXRATE rate
-//     if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTENDED_STATUS)) {
-//         mavlinkSendSystemStatus();
-//     }
-
-//     if (mavlinkStreamTrigger(MAV_DATA_STREAM_RC_CHANNELS)) {
-//         mavlinkSendRCChannelsAndRSSI();
-//     }
-
-// #ifdef USE_GPS
-//     if (mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
-//         mavlinkSendPosition();
-//     }
-// #endif
-
-//     if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTRA1)) {
-//         mavlinkSendAttitude();
-//     }
-    
-    if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTRA2)) {
-        mavlinkSendHUDAndHeartbeat();
+    if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTENDED_STATUS)) {
+        mavlinkSendSystemStatus();
     }
-    mavlinkSendAttitude();
+
+    if (mavlinkStreamTrigger(MAV_DATA_STREAM_RC_CHANNELS)) {
+        mavlinkSendRCChannelsAndRSSI();
+    }
+
+#ifdef USE_GPS
+    if (mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
+        mavlinkSendPosition();
+    }
+#endif
+
+    if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTRA1)) {
+            mavlinkSendAttitude();
+            mavlinkSendImuRawData();
+
+    }
+
 }
 
 // 下面的函数最终在task.c中的TASK_TELEMETRY任务被调用
@@ -561,4 +607,9 @@ void handleMAVLinkTelemetry(void)
     }
 }
 
+
 #endif
+
+
+
+

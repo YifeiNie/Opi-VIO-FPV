@@ -85,4 +85,7 @@
 - `roscore`是ros节点运行前必须执行的，在运行后卡死在`Done checking log file disk usage.Usage is <1GB`，然后等很久会报错`unable to contact my own server at xxxxxx`，这说明此时该ros运行的电脑是从机并且没有连上主机，可以通过`sudo gedit ~/.bashrc`打开shell配置文件，并将对应的内容修改为`export ROS_HOSTNAME=localhost`和`export ROS_MASTER_URI=http://localhost:11311`，然后一定要重启，再次运行，发现roscore可以运行，使用`rviz`进行测试发现可以打开了，参考[这里](https://blog.csdn.net/qq_42535748/article/details/125818486)。
 - 成功使用CoolPi运行planner仿真，但是卡成PPT，不知道是Rviz的问题还是本身CoolPi就跑不了，初步怀疑是前者
 - 简单学习了Fusion360，计划给Pi和相机画一个架子
-
+### 2024.10.27 -by Nyf - 发现源码bug
+- mavlink源码有bug，会导致发送频率自动除以2，见mavlink.c文件里的`mavlinkStreamTrigger`函数及我加的注释
+### 2024.10.27 -by Nyf
+- ros中有关realsense的启动文件rs_camera.launch有两个，一个在路径`/package/catkin_ws/src/realsense-ros/realsense2_camera/launch`下，也是cool pi使用的，另一个在`/opt/ros/noetic/share/realsense2_camera/launch`，这个是默认的安装位置。在使用时，需要修改其中的参数来设置相机发布的话题，比如左，右目的图像，深度图像等等
