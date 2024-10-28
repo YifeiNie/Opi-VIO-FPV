@@ -89,3 +89,13 @@
 - mavlink源码有bug，会导致发送频率自动除以2，见mavlink.c文件里的`mavlinkStreamTrigger`函数及我加的注释
 ### 2024.10.27 -by Nyf
 - ros中有关realsense的启动文件rs_camera.launch有两个，一个在路径`/package/catkin_ws/src/realsense-ros/realsense2_camera/launch`下，也是cool pi使用的，另一个在`/opt/ros/noetic/share/realsense2_camera/launch`，这个是默认的安装位置。在使用时，需要修改其中的参数来设置相机发布的话题，比如左，右目的图像，深度图像等等
+- 直接驱动realsense，没有任何问题，D435图像读取正常，但是启用vins时报错`/opt/ros/noetic/lib/nodelet/nodelet: symbol lookup error: /home/coolpi/Code/Fast-Drone-250-master/devel/lib//librealsense2_camera.so: undefined symbol: _ZN20ddynamic_reconfigure19DDynamicReconfigureC1ERKN3ros10NodeHandleE
+[camera/realsense2_camera_manager-2] process has died [pid 27915, exit code 127, cmd /opt/ros/noetic/lib/nodelet/nodelet manager __name:=realsense2_camera_manager __log:=/home/coolpi/.ros/log/09d5dc34-952f-11ef-9e4f-e0752666340d/camera-realsense2_camera_manager-2.log]`，注意到关键词ddynamic_reconfigure
+    - 经检查，除了apt默认的/ros/noetic/share路径下，在别的工作空间也安装了这个包，而新部署的planner在编译时，会引用原有的.bashrc中source的内容，并写入到其环境变量配置脚本devel/setup.bash中。而使用这个planner，必须要启动它的setup.bash，但由于它对.bashrc引用，会导致两个ddynamic_reconfigure相互冲突。因此也容易得到解决办法：
+        - 注释掉全部.bashrc中的source
+        - 使用source ~/.bashrc更新
+        - 重新编译planner，得到新的不含任何引用setup.bash
+        - 为了防止影响此电脑上的其他程序，取消注释
+        - 使用source ~/.bashrc更新，问题解决，可以启动vins了
+  
+  
