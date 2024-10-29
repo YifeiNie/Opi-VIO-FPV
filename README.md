@@ -102,4 +102,6 @@
 - 找了一个px4飞控来进行对比，需要注意要使用`rosservice call /mavros/set_stream_rate 0 10 1`来开启数据流，第一个参数'0'表示所有传感器，第二个参数'10'表示数据流的频率单位hz，第三个参数'1'表示开启数据流，参考[这里](https://blog.csdn.net/m0_73885374/article/details/140937715?spm=1001.2014.3001.5502)
 - BF固件中，可以在accgyro_mpu6500.c中看到这样的定义`int accel_range = INV_FSR_16G`，而在后面又有`busWriteRegister(dev, MPU_RA_ACCEL_CONFIG, accel_range << 3)`的程序，所以相当于量程设置为±16×2^3 G，而MPU6500的精度是16位，也即-32768到32767，所以假设读取的16位有符号整型的数据为1000，则说明真实的加速度是1000*128G/32768 G
 - px4固件中的很多相关mavlink的函数、变量都是通过.xml和.msg自动生成C++/Py代码，所以直接搜函数会发现在工程中没有定义
+- 通过查看mavros源码，终于发现问题所在：尽管各个数据已经完全一致，但是mavros源码`imu.cpp`的`handle_raw_imu`函数中有定义，不对非apm或px4飞控发送的imu_raw数据进行数据处理就直接发布，这样就导致量纲不对。虽然之前就可以直接通过强行修改和找规律得到争取的mavros消息，但是我不想这样。
+- 下一步计划在进一步修改bf源码，使其可以模拟px4发送mavlink数据
   
