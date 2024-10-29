@@ -87,7 +87,7 @@
 - 简单学习了Fusion360，计划给Pi和相机画一个架子
 ### 2024.10.27 -by Nyf - 发现源码bug
 - mavlink源码有bug，会导致发送频率自动除以2，见mavlink.c文件里的`mavlinkStreamTrigger`函数及我加的注释
-### 2024.10.27 -by Nyf
+### 2024.10.28 -by Nyf
 - ros中有关realsense的启动文件rs_camera.launch有两个，一个在路径`/package/catkin_ws/src/realsense-ros/realsense2_camera/launch`下，也是cool pi使用的，另一个在`/opt/ros/noetic/share/realsense2_camera/launch`，这个是默认的安装位置。在使用时，需要修改其中的参数来设置相机发布的话题，比如左，右目的图像，深度图像等等
 - 直接驱动realsense，没有任何问题，D435图像读取正常，但是启用vins时报错`/opt/ros/noetic/lib/nodelet/nodelet: symbol lookup error: /home/coolpi/Code/Fast-Drone-250-master/devel/lib//librealsense2_camera.so: undefined symbol: _ZN20ddynamic_reconfigure19DDynamicReconfigureC1ERKN3ros10NodeHandleE
 [camera/realsense2_camera_manager-2] process has died [pid 27915, exit code 127, cmd /opt/ros/noetic/lib/nodelet/nodelet manager __name:=realsense2_camera_manager __log:=/home/coolpi/.ros/log/09d5dc34-952f-11ef-9e4f-e0752666340d/camera-realsense2_camera_manager-2.log]`，注意到关键词ddynamic_reconfigure
@@ -98,5 +98,6 @@
         - 为了防止影响此电脑上的其他程序，取消注释
         - 使用`source ~/.bashrc`更新，该问题解决
 - 但vins还是启动不了，一直在等待imu数据，估计是数据格式发送仍然不对，需要进一步debug
-  
+### 2024.10.28 -by Nyf
+- 找了一个px4飞控来进行对比，需要注意要使用`rosservice call /mavros/set_stream_rate 0 10 1`来开启数据流，第一个参数'0'表示所有传感器，第二个参数'10'表示数据流的频率单位hz，第三个参数'1'表示开启数据流，参考[这里](https://blog.csdn.net/m0_73885374/article/details/140937715?spm=1001.2014.3001.5502)
   
