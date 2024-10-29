@@ -438,15 +438,18 @@ void mavlinkSendImuRawData(void)
     mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
         // time_boot_ms Timestamp (milliseconds since system boot)
             millis(),
-            (int16_t)((float)(acc.accADC[X])*1.953125*GRAVITY_EARTH),
-            (int16_t)((float)(acc.accADC[Y])*1.953125*GRAVITY_EARTH),
-            (int16_t)((float)(acc.accADC[Z])*1.953125*GRAVITY_EARTH),
+            (int16_t)((float)(acc.accADC[X])/2048*1000),
+            (int16_t)((float)(acc.accADC[Y])/2048*1000),
+            (int16_t)((float)(acc.accADC[Z])/2048*1000),
+            // (int16_t)(acc.accADC[X]),
+            // (int16_t)(acc.accADC[Y]),
+            // (int16_t)(acc.accADC[Z]),
             (int16_t)(gyro.gyroADCf[FD_ROLL] * 10.0f),
             (int16_t)(gyro.gyroADCf[FD_PITCH] * 10.0f),
             (int16_t)(gyro.gyroADCf[FD_YAW] * 10.0f),
-            0,
-            0,
-            0                                               
+            1,
+            2,
+            3                                               
         );
         
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
