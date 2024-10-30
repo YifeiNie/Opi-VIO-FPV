@@ -107,6 +107,8 @@
 ### 2024.10.30 -by Nyf -mavros有bug
 - mavros bug：
     - PX4固件使用mavlink发送的imu_raw中的线加速度单位是mG，mavros发布的（也是vins需要的）线加速度单位是m/s^2
-    - 按理说二者之间的转换应该是乘上系数9.80665/1000，但是mavros中对px4的转换仅仅有/1000，而对APM固件的处理才是正确的，对此他给的解释是`APM send SCALED_IMU data as RAW_IMU`，我不知道APM是如何，但是PX4发布imu_raw数据的话题抬头就是SCALED_IMU（见px4固件的头文件`SCALED_IMU.hpp`）
-    - 然而他判断飞控类型是三类，先if是否为APM固件，然后else if PX4固件，对其他的不做数据转换处理
-    - 目前市面上的PX4能够正常使用vins，其实是因为mavros会错误的将PX4判断为APM固件，然后就不进行后面的else判断了，进而负负得正，乘以了正确的系数
+    - 按理说二者之间的转换应该是乘上系数9.80665/1000，但是mavros中对px4的转换仅仅有/1000，而对APM固件的处理才是正确的，对此他给的解释是`APM send SCALED_IMU data as RAW_IMU`，我不知道ArduPilot是如何，但是PX4发布imu_raw数据的话题抬头就是SCALED_IMU（见px4固件的头文件`SCALED_IMU.hpp`）
+    - 然而他判断飞控类型是三类，先判断是否为ArduPilot固件，然后再else if PX4固件，对其他的不做数据转换处理
+    - 目前市面上的PX4能够正常使用vins，其实是因为mavros会错误的将PX4判断为ArduPilot固件，然后就不进行后面的else判断了，进而负负得正，乘以了正确的系数
+    - 最后的问题终于找到，mavros默认系统id是1，bf固件默认系统id的是0，所以可以修改固件中所有mavlink打包函数（例如mavlink_msg_heartbeat_pack()）中的uint8_t system_id为1，也可以修改px4.launch中的tgt_system值为0:&lt;arg name="tgt_system" default="0" /&gt;。至此，可以通过修改mavlink_msg_heartbeat_pack()函数中的参数uint8_t autopilot，来使得mavros将飞控解析为各种类型，但由于前面说的bug，故需要设置为MAV_AUTOPILOT_ARDUPILOTMEGA
+- planner运行起来了，但是大概率由于px4飞控的imu是倒着安装的，各个轴的对应目前还在调，有可能出现轴反向的情况，体现在测试中就是位置点原地就开始大幅漂移，程序运行一段时间后就会崩溃，报错信息显示内存越界，该报错相对符合前面的推论，有待进一步debug

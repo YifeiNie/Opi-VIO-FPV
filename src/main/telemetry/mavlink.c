@@ -438,15 +438,20 @@ void mavlinkSendImuRawData(void)
     mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
         // time_boot_ms Timestamp (milliseconds since system boot)
             millis(),
-            (int16_t)((float)(acc.accADC[X])/2048*1000),
-            (int16_t)((float)(acc.accADC[Y])/2048*1000),
-            (int16_t)((float)(acc.accADC[Z])/2048*1000),
+            (int16_t)((float)(acc.accADC[X])/2048.0f*1000),
+            (int16_t)((float)(-acc.accADC[Y])/2048.0f*1000),
+            (int16_t)((float)(-acc.accADC[Z])/2048.0f*1000),
+            DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL])*1000,
+            DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_PITCH])*1000,
+            DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_YAW])*1000,
+
+
             // (int16_t)(acc.accADC[X]),
             // (int16_t)(acc.accADC[Y]),
             // (int16_t)(acc.accADC[Z]),
-            (int16_t)(gyro.gyroADCf[FD_ROLL] * 10.0f),
-            (int16_t)(gyro.gyroADCf[FD_PITCH] * 10.0f),
-            (int16_t)(gyro.gyroADCf[FD_YAW] * 10.0f),
+            // (int16_t)(gyro.gyroADCf[FD_ROLL]),
+            // (int16_t)(gyro.gyroADCf[FD_PITCH]),
+            // (int16_t)(gyro.gyroADCf[FD_YAW]),
             1,
             2,
             3                                               
@@ -557,7 +562,86 @@ void mavlinkSendHUDAndHeartbeat(void)
         mavSystemType,
         // autopilot Autopilot type / class. defined in MAV_AUTOPILOT ENUM
         // 假装是px4
-        MAV_AUTOPILOT_PX4,
+        MAV_AUTOPILOT_ARDUPILOTMEGA,
+        // base_mode System mode bitfield, see MAV_MODE_FLAGS ENUM in mavlink/include/mavlink_types.h
+        mavModes,
+        // custom_mode A bitfield for use for autopilot-specific flags.
+        mavCustomMode,
+        // system_status System status flag, see MAV_STATE ENUM
+        mavSystemState);
+    msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
+    mavlinkSerialWrite(mavBuffer, msgLength);
+}
+
+void mavlinkSendHeartbeat(void)
+{
+    uint16_t msgLength;
+    uint8_t mavModes = MAV_MODE_FLAG_MANUAL_INPUT_ENABLED;
+    if (ARMING_FLAG(ARMED))
+        mavModes |= MAV_MODE_FLAG_SAFETY_ARMED;
+
+    uint8_t mavSystemType;
+    switch (mixerConfig()->mixerMode)
+    {
+        case MIXER_TRI:
+            mavSystemType = MAV_TYPE_TRICOPTER;
+            break;
+        case MIXER_QUADP:
+        case MIXER_QUADX:
+        case MIXER_Y4:
+        case MIXER_VTAIL4:
+            mavSystemType = MAV_TYPE_QUADROTOR;
+            break;
+        case MIXER_Y6:
+        case MIXER_HEX6:
+        case MIXER_HEX6X:
+            mavSystemType = MAV_TYPE_HEXAROTOR;
+            break;
+        case MIXER_OCTOX8:
+        case MIXER_OCTOFLATP:
+        case MIXER_OCTOFLATX:
+            mavSystemType = MAV_TYPE_OCTOROTOR;
+            break;
+        case MIXER_FLYING_WING:
+        case MIXER_AIRPLANE:
+        case MIXER_CUSTOM_AIRPLANE:
+            mavSystemType = MAV_TYPE_FIXED_WING;
+            break;
+        case MIXER_HELI_120_CCPM:
+        case MIXER_HELI_90_DEG:
+            mavSystemType = MAV_TYPE_HELICOPTER;
+            break;
+        default:
+            mavSystemType = MAV_TYPE_GENERIC;
+            break;
+    }
+
+    // Custom mode for compatibility with APM OSDs
+    uint8_t mavCustomMode = 1;  // Acro by default
+
+    if (FLIGHT_MODE(ANGLE_MODE) || FLIGHT_MODE(HORIZON_MODE)) {
+        mavCustomMode = 0;      //Stabilize
+        mavModes |= MAV_MODE_FLAG_STABILIZE_ENABLED;
+    }
+
+    uint8_t mavSystemState = 0;
+    if (ARMING_FLAG(ARMED)) {
+        if (failsafeIsActive()) {
+            mavSystemState = MAV_STATE_CRITICAL;
+        }
+        else {
+            mavSystemState = MAV_STATE_ACTIVE;
+        }
+    }
+    else {
+        mavSystemState = MAV_STATE_STANDBY;
+    }
+        mavlink_msg_heartbeat_pack(0, 1, &mavMsg,
+        // type Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
+        mavSystemType,
+        // autopilot Autopilot type / class. defined in MAV_AUTOPILOT ENUM
+        // 假装是px4，具体见README.md的2024.10.30日笔记
+        MAV_AUTOPILOT_ARDUPILOTMEGA,
         // base_mode System mode bitfield, see MAV_MODE_FLAGS ENUM in mavlink/include/mavlink_types.h
         mavModes,
         // custom_mode A bitfield for use for autopilot-specific flags.
@@ -585,7 +669,7 @@ void processMAVLinkTelemetry(void)
     }
 #endif
     if(mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
-        mavlinkSendHUDAndHeartbeat();
+        mavlinkSendHeartbeat();
     }
    
     if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTRA1)) {
