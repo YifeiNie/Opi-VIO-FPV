@@ -112,3 +112,6 @@
     - 目前市面上的PX4能够正常使用vins，其实是因为mavros会错误的将PX4判断为ArduPilot固件，然后就不进行后面的else判断了，进而负负得正，乘以了正确的系数
     - 最后的问题终于找到，mavros默认系统id是1，bf固件默认系统id的是0，所以可以修改固件中所有mavlink打包函数（例如mavlink_msg_heartbeat_pack()）中的uint8_t system_id为1，也可以修改px4.launch中的tgt_system值为0:&lt;arg name="tgt_system" default="0" /&gt;。至此，可以通过修改mavlink_msg_heartbeat_pack()函数中的参数uint8_t autopilot，来使得mavros将飞控解析为各种类型，但由于前面说的bug，故需要设置为MAV_AUTOPILOT_ARDUPILOTMEGA
 - planner运行起来了，但是大概率由于px4飞控的imu是倒着安装的，各个轴的对应目前还在调，有可能出现轴反向的情况，体现在测试中就是位置点原地就开始大幅漂移，程序运行一段时间后就会崩溃，报错信息显示内存越界，该报错相对符合前面的推论，有待进一步debug
+### 2024.10.30 -by Nyf
+- 本项目的视觉部分短暂搁置，计划优先对飞控的部分进行修改
+
