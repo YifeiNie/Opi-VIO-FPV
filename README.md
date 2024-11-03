@@ -115,5 +115,6 @@
 ### 2024.10.30 -by Nyf
 - 本项目的视觉部分短暂搁置，计划优先对飞控的部分进行修改
 ### 2024.11.03 -by Nyf
-- 飞控或者mavros源码中找不到的头文件或者声名，大概率出现在opt/ros/noetic/include里
+- 飞控或者mavros源码中找不到的头文件或者声名，大概率出现在`opt/ros/noetic/include`里
+- 关于两个话题mavros/imu/data和mavros/imu/data_raw的合并问题，对于ROS2，这个bug已经在最新的2.9.0版本改了（其中开头的'2'表示适配ROS2的版本），但是对ROS1最新的1.20.0版本还是没改，我去反映一下
 
