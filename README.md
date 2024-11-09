@@ -100,14 +100,14 @@
 - 但vins还是启动不了，一直在等待imu数据，估计是数据格式发送仍然不对，需要进一步debug
 ### 2024.10.29 -by Nyf
 - 找了一个px4飞控来进行对比，需要注意要使用`rosservice call /mavros/set_stream_rate 0 10 1`来开启数据流，第一个参数'0'表示所有传感器，第二个参数'10'表示数据流的频率单位hz，第三个参数'1'表示开启数据流，参考[这里](https://blog.csdn.net/m0_73885374/article/details/140937715?spm=1001.2014.3001.5502)
-- BF固件中，可以在accgyro_mpu6500.c中看到这样的定义`int accel_range = INV_FSR_16G`，而在后面又有`busWriteRegister(dev, MPU_RA_ACCEL_CONFIG, accel_range << 3)`的程序，所以相当于量程设置为±16×2^3 G，而MPU6500的精度是16位，也即-32768到32767，所以假设读取的16位有符号整型的数据为1000，则说明真实的加速度是1000*128G/32768 G
+- BF固件中，可以在accgyro_mpu6500.c中看到这样的定义`int accel_range = INV_FSR_16G`.注意在后面有`busWriteRegister(dev, MPU_RA_ACCEL_CONFIG, accel_range << 3)`的程序，这是因为寄存器写入需要位移，并不代表量程放大了2^3倍，而MPU6500的精度是16位，也即-32768到32767，所以假设读取的16位有符号整型的数据为1000，则说明真实的加速度是1000*16G/32768G，或者说是1000/2048G
 - px4固件中的很多相关mavlink的函数、变量都是通过.xml和.msg自动生成C++/Py代码，所以直接搜函数会发现在工程中没有定义
 - 通过查看mavros源码，终于发现问题所在：尽管各个数据已经完全一致，但是mavros源码`imu.cpp`的`handle_raw_imu`函数中有定义，不对非apm或px4飞控发送的imu_raw数据进行数据处理就直接发布，这样就导致量纲不对。虽然之前就可以直接通过强行修改和找规律得到争取的mavros消息，但是我不想这样。
 - 下一步计划在进一步修改bf源码，使其可以模拟px4发送mavlink数据
 ### 2024.10.30 -by Nyf -mavros有bug
 - mavros bug：
     - PX4固件使用mavlink发送的imu_raw中的线加速度单位是mG，mavros发布的（也是vins需要的）线加速度单位是m/s^2
-    - 按理说二者之间的转换应该是乘上系数9.80665/1000，但是mavros中对px4的转换仅仅有/1000，而对APM固件的处理才是正确的，对此他给的解释是`APM send SCALED_IMU data as RAW_IMU`，我不知道ArduPilot是如何，但是PX4发布imu_raw数据的话题抬头就是SCALED_IMU（见px4固件的头文件`SCALED_IMU.hpp`）
+    - 按理说二者之间的转换应该是乘上系数9.80665/1000，但是mavros中对px4的转换仅仅有/1000，而对APM固件的处理才是正确的，对此他给的解释是`APM send SCALED_IMU data as RAW_IMU`，我不知道ArduPilot是如何，但是PX4发布imu_raw数据的话题抬头就是SCALED_IMU（见px4固件的头文件`SCALED_IMU.hpp`），所以我认为APM固件和PX4固件都是一样的，mavlink不会往外发送float数据，因为数据量比uint16_t大得多
     - 然而他判断飞控类型是三类，先判断是否为ArduPilot固件，然后再else if PX4固件，对其他的不做数据转换处理
     - 目前市面上的PX4能够正常使用vins，其实是因为mavros会错误的将PX4判断为ArduPilot固件，然后就不进行后面的else判断了，进而负负得正，乘以了正确的系数
     - 最后的问题终于找到，mavros默认系统id是1，bf固件默认系统id的是0，所以可以修改固件中所有mavlink打包函数（例如mavlink_msg_heartbeat_pack()）中的uint8_t system_id为1，也可以修改px4.launch中的tgt_system值为0:&lt;arg name="tgt_system" default="0" /&gt;。至此，可以通过修改mavlink_msg_heartbeat_pack()函数中的参数uint8_t autopilot，来使得mavros将飞控解析为各种类型，但由于前面说的bug，故需要设置为MAV_AUTOPILOT_ARDUPILOTMEGA
@@ -120,4 +120,4 @@
 ### 2024.11.08 -by Nyf
 - 按照前几次笔记的方法，成功适配ROS2 noble，说明还真不是bug的问题，但是这仍然是一个好消息
 - 这两天在调雷达时由于新买的nuc的cpu版本太新，进入设置-关于，里面的显卡显示为llvmpipe (LLVM 12.0.0, 256 bits)，也即纯软件渲染无显卡，说明核显不在工作，这也导致跑FAST-LIO2并运行Rviz实时查看点云时及其卡顿。
-- 经检查发现是内核版本过低，而如果要升级内核，ubuntu20.04又不再支持了，故以后又全部转为ubuntu20.04和ROS2，且不再改变了，人不能总是留在过去，必须向前看。
+- 经检查发现是内核版本过低，而如果要升级内核，ubuntu20.04又不再支持了，故以后又全部转为ubuntu24.04和ROS2 jazzy，且不再改变了，人不能总是留在过去，必须向前看。

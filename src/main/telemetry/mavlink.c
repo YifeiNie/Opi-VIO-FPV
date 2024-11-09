@@ -78,7 +78,6 @@
 #include "common/axis.h"
 #include "flight/imu.h"
 #define GRAVITY_EARTH (9.80665f)
-void mavlinkSendImuData(void);
 /*以上是我添加的部分*/
 
 
@@ -438,23 +437,19 @@ void mavlinkSendImuRawData(void)
     mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
         // time_boot_ms Timestamp (milliseconds since system boot)
             millis(),
+            // 下面三个是线加速度，单位是 G/1000，也即'毫重力加速度'
+            // 为什么/2048.0f*1000？请看README的2024.10.29日
             (int16_t)((float)(acc.accADC[X])/2048.0f*1000),
             (int16_t)((float)(-acc.accADC[Y])/2048.0f*1000),
             (int16_t)((float)(-acc.accADC[Z])/2048.0f*1000),
+            // 下面三个单位是毫弧度/秒，即millirad/s
             DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL])*1000,
             DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_PITCH])*1000,
             DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_YAW])*1000,
-
-
-            // (int16_t)(acc.accADC[X]),
-            // (int16_t)(acc.accADC[Y]),
-            // (int16_t)(acc.accADC[Z]),
-            // (int16_t)(gyro.gyroADCf[FD_ROLL]),
-            // (int16_t)(gyro.gyroADCf[FD_PITCH]),
-            // (int16_t)(gyro.gyroADCf[FD_YAW]),
-            1,
-            2,
-            3                                               
+            // MPU6500没有磁力计，所以为0
+            0,
+            0,
+            0                                               
         );
         
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
