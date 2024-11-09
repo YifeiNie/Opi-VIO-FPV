@@ -438,7 +438,7 @@ void mavlinkSendImuRawData(void)
         // time_boot_ms Timestamp (milliseconds since system boot)
             millis(),
             // 下面三个是线加速度，单位是 G/1000，也即'毫重力加速度'
-            // 为什么/2048.0f*1000？请看README的2024.10.29日
+            // 为什么/2048.0f*1000？请看README的2024.10.29日的笔记
             (int16_t)((float)(acc.accADC[X])/2048.0f*1000),
             (int16_t)((float)(-acc.accADC[Y])/2048.0f*1000),
             (int16_t)((float)(-acc.accADC[Z])/2048.0f*1000),
