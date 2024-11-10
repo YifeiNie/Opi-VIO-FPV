@@ -441,11 +441,15 @@ STATIC_UNIT_TESTED FAST_CODE_NOINLINE float pidLevel(int axis, const pidProfile_
     const float levelAngleLimit = pidProfile->levelAngleLimit;
     // calculate error angle and limit the angle to the max inclination
     // rcDeflection is in range [-1.0, 1.0]
+    // 最大角度乘以遥控器的输入值（被标准化为-1到+1），就是当前遥控器输入的角度
     float angle = levelAngleLimit * getLevelModeRcDeflection(axis);
 #ifdef USE_GPS_RESCUE
+    // 如果开启了GPS救援模式，飞机将会在遥控器要求的角度之上在叠加GPS救援的角度以实现在遥控器信号丢失时自动返回
     angle += gpsRescueAngle[axis] / 100; // ANGLE IS IN CENTIDEGREES
 #endif
+    // 限幅
     angle = constrainf(angle, -levelAngleLimit, levelAngleLimit);
+    // errorAngle就是遥控器的姿态设定值减去修正过后的当前姿态值得到的误差
     const float errorAngle = angle - ((attitude.raw[axis] - angleTrim->raw[axis]) / 10.0f);
     if (FLIGHT_MODE(ANGLE_MODE) || FLIGHT_MODE(GPS_RESCUE_MODE)) {
         // ANGLE mode - control is angle based
@@ -937,9 +941,10 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
 
     // ----------PID controller----------
     for (int axis = FD_ROLL; axis <= FD_YAW; ++axis) {
-
+        // 下面是命名错误，其实没有Rate，获取的就是遥控器的通道值
         float currentPidSetpoint = getSetpointRate(axis);
         if (pidRuntime.maxVelocity[axis]) {
+            // 限制遥控器通道值的变化速率
             currentPidSetpoint = accelerationLimit(axis, currentPidSetpoint);
         }
         // Yaw control is GYRO based, direct sticks control is applied to rate PID
@@ -991,6 +996,7 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
         const float uncorrectedSetpoint = currentPidSetpoint;
 #endif
 
+// 动态调整积分项
 #if defined(USE_ITERM_RELAX)
         if (!launchControlActive && !pidRuntime.inCrashRecoveryMode) {
             applyItermRelax(axis, previousIterm, gyroRate, &itermErrorRate, &currentPidSetpoint);
