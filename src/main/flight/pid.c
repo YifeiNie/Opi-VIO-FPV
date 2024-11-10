@@ -832,6 +832,16 @@ static FAST_CODE_NOINLINE float applyLaunchControl(int axis, const rollAndPitchT
 
 // Betaflight pid controller, which will be maintained in the future with additional features specialised for current (mini) multirotor usage.
 // Based on 2DOF reference design (matlab)
+// 这里的PID控制器并不是串级的，而是单级的，只有一个角速度环
+/*
+当飞行模式处于角度模式或GPS救援模式时，控制对象是角度，此时角速度环的期望值是遥控器通道值-当前角度
+    - 但是通常理解应该是期望值就是遥控器的通道值，如果减去当前角度不就变成误差了吗？
+    - 实际上这里可以理解为变成了外环角度环，内环角速度环的串级控制器，只是角度环的期望角度值是0（这两个模式下要自动保持水平），Kp=1，Ki和Kd=0
+    - 众所周知外环的输出是内环的期望值，而对于这种情况，外环的输出是：Kp*(遥控器通道值-0)+Ki*∫(遥控器通道值-0)+Kd*d(遥控器通道值-0)/dt
+    - 而Ki和Kd都是0，所以角度环的输出就变成1*(遥控器通道值-0)=遥控器通道值，并输入了角速度环
+    - 而在这两个模式下，期望的角速度是0.所以内环的输出是Kp*(遥控器通道值-0)+Ki*∫(遥控器通道值-0)+Kd*d(遥控器通道值-0)/dt
+当飞行模式处于HORIZON模式时，控制对象是角度，此时角速度环的期望值是遥控器通道值-当前角度
+*/
 void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTimeUs)
 {
     static float previousGyroRateDterm[XYZ_AXIS_COUNT];
@@ -950,6 +960,7 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
         // Yaw control is GYRO based, direct sticks control is applied to rate PID
         // When Race Mode is active PITCH control is also GYRO based in level or horizon mode
 #if defined(USE_ACC)
+        // 计算设定值  --step
         if ((levelMode == LEVEL_MODE_R && axis == FD_ROLL)
             || (levelMode == LEVEL_MODE_RP && (axis == FD_ROLL || axis ==  FD_PITCH)) ) {
             currentPidSetpoint = pidLevel(axis, pidProfile, angleTrim, currentPidSetpoint, horizonLevelStrength);
@@ -982,6 +993,7 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
 #endif // USE_YAW_SPIN_RECOVERY
 
         // -----calculate error rate
+        // 根据期望值-当前值来计算误差项 --step
         const float gyroRate = gyro.gyroADCf[axis]; // Process variable from gyro output in deg/sec
         float errorRate = currentPidSetpoint - gyroRate; // r - y
 #if defined(USE_ACC)
@@ -1170,6 +1182,7 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
         }
 
         // calculating the PID sum
+        // 计算PID控制器输出 --step
         const float pidSum = pidData[axis].P + pidData[axis].I + pidData[axis].D + pidData[axis].F;
 #ifdef USE_INTEGRATED_YAW_CONTROL
         if (axis == FD_YAW && pidRuntime.useIntegratedYaw) {
