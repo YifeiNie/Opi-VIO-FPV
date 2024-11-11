@@ -29,7 +29,7 @@ bool hasCustomDefaults(void);
 struct serialPort_s;
 void cliEnter(struct serialPort_s *serialPort);
 bool resetConfigToCustomDefaults(void);
-
+#define USE_CLI_DEBUG_PRINT
 #ifdef USE_CLI_DEBUG_PRINT
 void cliPrint(const char *str);
 void cliPrintLinefeed(void);

@@ -99,6 +99,129 @@ static const serialPortConfig_t *portConfig;
 
 static bool mavlinkTelemetryEnabled =  false;
 static portSharing_e mavlinkPortSharing;
+/*
+// 串口接收回调，详细见serial.h第62行
+// 参数 uint16_t c是串口接收到的数据，其实应该是8bit就够了，不知道为什么用16位的，而且后面也变成8位的
+//      void* data是一个不关心的参数（按经验应该是数据的大小），所以后面用UNUSED修饰
+static void mavlinkReceive(uint16_t c, void* data) {
+
+    UNUSED(data);
+    mavlink_message_t msg;
+    mavlink_status_t status;
+    // 下面这个函数用于判断当前我们指定的数据的接收状态，包含三个状态：1.数据帧接收完成，2.校验失败接收错误， 3.正在接收，还未结束
+    // 只有接收完成，才会进入if的条件判断
+    // 参数 MAVLINK_COMM_0是通道，默认0即可
+    // (uint8_t)c是当前串口中断收到的数据，这里可见其实串口就是8位的
+    // &msg是一个完整的mavlink数据包，定义如下：
+    //  typedef struct __mavlink_message {
+    // 	uint16_t checksum;      ///< sent at end of packet
+    // 	uint8_t magic;          ///< protocol magic marker
+    // 	uint8_t len;            ///< Length of payload
+    // 	uint8_t incompat_flags; ///< flags that must be understood
+    // 	uint8_t compat_flags;   ///< flags that can be ignored if not understood
+    // 	uint8_t seq;            ///< Sequence of packet
+    // 	uint8_t sysid;          ///< ID of message sender system/aircraft
+    // 	uint8_t compid;         ///< ID of the message sender component
+    // 	uint32_t msgid:24;      ///< ID of message in payload
+    // 	uint64_t payload64[(MAVLINK_MAX_PAYLOAD_LEN+MAVLINK_NUM_CHECKSUM_BYTES+7)/8];
+    // 	uint8_t ck[2];          ///< incoming checksum bytes
+    // 	uint8_t signature[MAVLINK_SIGNATURE_BLOCK_LEN];
+    // }) mavlink_message_t;
+
+
+    // &status用于获取是三种状态的哪一种，只有是接收完成，即status为1是才会执行后续操作
+    if (mavlink_parse_char(MAVLINK_COMM_0, (uint8_t)c, &msg, &status)) {
+        switch(msg.msgid) {
+            // receive heartbeat
+            // case 0: {
+            //     mavlink_heartbeat_t command;
+            //     mavlink_msg_heartbeat_decode(&msg,&command);
+            //     mav_custommode = command.custom_mode;
+            //     mav_type = command.type;
+            //     mav_autopilot = command.autopilot;
+            //     mav_basemode = command.base_mode;
+            //     mav_systemstatus = command.custom_mode;
+            //     mav_version = command.mavlink_version;
+            //     // mavlinkSendHeartbeat();
+            //     // mavlinkSendHUD();
+            //     // mavlinkSendAttitude();
+            //     break;
+            // }
+            // setpoint command
+            // case 81: {void &command);
+            //     attitude_controller.altitude_thrust = -command.thrust * 100;
+            //     attitude_controller.roll = command.roll;   //maybe need normalization but this should be done in the JeVois
+            //     attitude_controller.pitch = -command.pitch;
+            //     attitude_controller.yaw = command.yaw;
+
+            case 82:{
+                mavlink_set_attitude_target_t command;
+                mavlink_msg_set_attitude_target_decode(&msg,&command);
+                // get_offboard.q[0] = command.q[0];  //w
+                // get_offboard.q[1] = command.q[1];  //x
+                // get_offboard.q[2] = command.q[2];  //y
+                // get_offboard.q[3] = command.q[3];  //z
+                if(command.type_mask == 7) //attitude
+                {
+                    get_offboard.roll_angle = command.body_roll_rate;
+                    get_offboard.pitch_angle =  -command.body_pitch_rate;
+                    get_offboard.yaw_angle = -command.body_yaw_rate;
+                }else
+                {
+                    get_offboard.roll_rate = command.body_roll_rate;
+                    get_offboard.pitch_rate = -command.body_pitch_rate;
+                    get_offboard.yaw_rate = -command.body_yaw_rate;
+                }
+                
+                attitude_controller.sum++;
+                // if(attitude_controller.sum == 180)
+                // {
+                //     attitude_controller.sum = 0;
+                // }
+                // if(get_offboard.thrust != command.thrust)
+                // {
+                //     attitude_controller.sum++;
+                // }
+                get_offboard.thrust = command.thrust;
+                get_offboard.type_mask = command.type_mask;
+                get_offboard.mavros_state = true;
+                // cm4_receive = 1;
+                break;
+            }
+
+            case 84: {
+                mavlink_set_position_target_local_ned_t command;
+                mavlink_msg_set_position_target_local_ned_decode(&msg,&command);
+                attitude_controller.r_y = command.x;
+                attitude_controller.r_x = command.y;
+                attitude_controller.r_z = -command.z;
+                attitude_controller.r_Yaw_OptiTrack = -command.yaw_rate * RAD_TO_DEGREES;
+                attitude_controller.sum++;
+                // if(attitude_controller.sum == 180)
+                // {
+                //     attitude_controller.sum = 0;
+                // }
+                attitude_controller.mavlink_state = true;
+                break;
+            }
+            // case 102:{
+            //     mavlink_vision_position_estimate_t commandvoid 
+            //     attitude_controller.r_x = command.y;
+            //     attitude_controller.r_z = -command.z;
+            //     attitude_controller.sum2++;
+            //     if(attitude_controller.sum2 == 180)
+            //     {
+            //         attitude_controller.sum2 = 0;
+            //     }
+            //     break;
+            // }
+            default:
+                // attitude_controller.sum = 0;
+                break;
+        }
+    }
+}
+*/
 
 /* MAVLink datastream rates in Hz */
 // 在这里设置mavlink的发送速率，其中姿态为EXTRA1

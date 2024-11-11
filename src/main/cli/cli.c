@@ -156,6 +156,7 @@ bool cliMode = false;
 
 #include "rx/rx_bind.h"
 #include "rx/rx_spi.h"
+#include "rx/rx.h"
 
 #include "scheduler/scheduler.h"
 
@@ -175,7 +176,7 @@ bool cliMode = false;
 #include "cli.h"
 
 static serialPort_t *cliPort = NULL;
-
+extern float rcData[MAX_SUPPORTED_RC_CHANNEL_COUNT]; 
 // Space required to set array parameters
 #define CLI_IN_BUFFER_SIZE 256
 #define CLI_OUT_BUFFER_SIZE 64
@@ -4973,6 +4974,8 @@ static void printVersion(const char *cmdName, bool printBoardInfo)
 #if defined(USE_BOARD_INFO)
     if (printBoardInfo && strlen(getManufacturerId()) && strlen(getBoardName())) {
         cliPrintLinef("# board: manufacturer_id: %s, board_name: %s", getManufacturerId(), getBoardName());
+        // Example：打印第五通道遥控器的数据（cli不支持打印浮点数，所以转为int打印）
+        // cliPrintLinef("AUX4 is: %d", (int)rcData[1]);
     }
 #endif
 }
