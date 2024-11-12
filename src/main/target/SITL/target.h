@@ -132,6 +132,9 @@
 #undef USE_SERIAL_4WAY_BLHELI_BOOTLOADER
 #undef USE_SERIAL_4WAY_SK_BOOTLOADER
 
+// User mode macro
+#define USE_OFFBOARD_MODE
+
 #undef USE_I2C
 #undef USE_SPI
 

@@ -1,15 +1,15 @@
 ﻿## Betaflight4.4.0固件的二次开发指南 -- Nyf
 Remark: 这里只对我相对于源码做出的改动予以说明，详细的修改原因和修改后的效果等请查看主文件夹下的README.md文件
 ### Mavlink消息
-- **在文件mavlink.c中**，`mavlink_msg_xxxxx_pack`函数定义了各种不同类型的mavlink消息，这些消息会被上位机的mavros转化为各种ROS topic以供订阅
-- **在文件mavlink.c中**，修改了`mavlinkStreamTrigger`函数，修复了源码中mavlink数据发送频率自动减半的bug
-- **在文件mavlink.c中**，添加了`mavlinkSendImuRawData`函数，用于发送IMU的角速度和线加速度
-- **在文件mavlink.c中**，添加了`mavlink_msg_heartbeat_pack`函数，使得mavros可以将Betaflight飞控认为是Ardupilot的autopilot，避免被认为是Generic的autopilot
-- **在文件mavlink.c中**，修改了`processMAVLinkTelemetry`函数，使得上面我定义的mavlink消息能和默认的消息一样被发送
-- **在文件task.c中**，修改了文件里的[TASK_TELEMETRY]任务的参数，使得mavlink数据的发送频率进一步提高
+- <u>**在文件mavlink.c中**</u>，`mavlink_msg_xxxxx_pack`函数定义了各种不同类型的mavlink消息，这些消息会被上位机的mavros转化为各种ROS topic以供订阅
+- <u>**在文件mavlink.c中**</u>，修改了`mavlinkStreamTrigger`函数，修复了源码中mavlink数据发送频率自动减半的bug
+- <u>**在文件mavlink.c中**</u>，添加了`mavlinkSendImuRawData`函数，用于发送IMU的角速度和线加速度
+- <u>**在文件mavlink.c中**</u>，添加了`mavlink_msg_heartbeat_pack`函数，使得mavros可以将Betaflight飞控认为是Ardupilot的autopilot，避免被认为是Generic的autopilot
+- <u>**在文件mavlink.c中**</u>，修改了`processMAVLinkTelemetry`函数，使得上面我定义的mavlink消息能和默认的消息一样被发送
+- <u>**在文件task.c中**</u>，修改了文件里的[TASK_TELEMETRY]任务的参数，使得mavlink数据的发送频率进一步提高
 
 ### IMU数据
-- **在文件mavlink.c中**，添加的函数`mavlinkSendImuRawData`中涉及一些看起来"莫名其妙"缩放因数，这是因为我测试的飞控使用的IMU是MPU6500，其意义如下
+- <u>**在文件mavlink.c中**</u>，添加的函数`mavlinkSendImuRawData`中涉及一些看起来"莫名其妙"缩放因数，这是因为我测试的飞控使用的IMU是MPU6500，其意义如下
     - BF固件中，可以在accgyro_mpu6500.c中看到这样的定义`int accel_range = INV_FSR_16G`.注意在后面有`busWriteRegister(dev, MPU_RA_ACCEL_CONFIG, accel_range << 3)`的程序，这是因为寄存器写入需要位移，并不代表量程放大了2^3倍，而MPU6500的精度是16位，也即-32768到32767，所以假设读取的16位有符号整型的数据为1000，则说明真实的加速度是1000 \* 16G/32768G，或者说是1000/2048G
 - 针对不同的飞控，需要根据其IMU型号来修改这些参数，但是一定要保证：
     - mavlink发送出去的加速度的单位G/1000，也即'毫重力加速度'
@@ -29,7 +29,7 @@ Remark: 这里只对我相对于源码做出的改动予以说明，详细的修
     - 角速度期望值和外环的输出作加权和，作为角速度环的输入，使得飞机具备前面所说的控制性能
 
 ### Debug
-- **在文件cli_debug_print.h和rx.h中**，都加上`#define USE_CLI_DEBUG_PRIN`，解锁cli打印debug的功能
+- <u>**在文件cli_debug_print.h和rx.h中**</u>，都加上`#define USE_CLI_DEBUG_PRIN`，解锁cli打印debug的功能
 - 在cli.c文件里可以进行打印debug，建议在`#if defined(USE_BOARD_INFO)`后的条件编译作用域内进行，我在那里有一个example
 - cli不支持浮点数打印，所以如果进行debug，可以转为int类型
 - *也可以在引用头文件后在程序的其他地方打印，或者直接在task.c里新建一个打印任务，但不建议这么做
@@ -53,10 +53,15 @@ Remark: 这里只对我相对于源码做出的改动予以说明，详细的修
     - modeLogic_e modeLogic，该模式与关联模式之间的关系，只能是and或者or
     - 其关系通过and掩码和or掩码管理，管理逻辑在rc_mode.c的`updateMasksForMac`函数中体现，不在具体解释
 - 模式的定义与管理非常复杂，简而言之就是通过一个宏定义，这个宏定义了元素为上述数据结构的数组的同时，也定义了一些访问该数组的函数，这些函数有的只读（modeActivationConditions），有的可读可写（modeActivationConditionsMutable）
-- Betaflight提供了四个用户模式（BOXUSERx），其作用对象是飞控的IO焊盘，叫做PINIO，可以通过cli命令行配置使其能被AUX通道触发。二次开发时可以利用这个基本用不到的功能，借用其触发方式来使能我们自定义的模式，虽然同时也会对飞控的IO口进行一些操作，但是反正我们也不外接什么，所以无所谓
+- Betaflight提供了四个用户模式（BOXUSERx），可以通过在msp_box.c文件的`initActiveBoxIds`函数里调用宏宏`BME(BOXUSER1)`来启用，然后打开Betaflight地面站，就可以在"模式"一栏中找到USER1模式，同样的，也可以如此设置USER2~USER4模式
 
 ### offboard模式
-- **在文件runtime_config.h中**
+- <u>**在文件runtime_config.h中**</u>，枚举变量flightModeFlags_e中添加了OFFBOARD_MODE
+- <u>**在target文件夹下F405和H743的target.h中**</u>，都添加宏定义`#define USE_OFFBOARD_MODE`
+- <u>**在文件core.c中**</u>，添加`#ifdef USE_OFFBOARD_MODE...`，使得BOXUSER1可以控制offboard模式的开启与关闭
+- <u>**在文件msp_box.c中**</u>，添加`#ifdef USE_OFFBOARD_MODE...`，使得可以通过地面站设置控制offboard模式的通道和范围等参数
+
+
 
 ENABLE_FLIGHT_MODE
 

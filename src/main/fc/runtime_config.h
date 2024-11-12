@@ -90,7 +90,7 @@ typedef enum {
 //    RANGEFINDER_MODE= (1 << 9),
     FAILSAFE_MODE   = (1 << 10),
     GPS_RESCUE_MODE = (1 << 11),
-    OFFBOARE_MODE   = (1 << 12)
+    OFFBOARD_MODE   = (1 << 12)
 } flightModeFlags_e;
 
 extern uint16_t flightModeFlags;

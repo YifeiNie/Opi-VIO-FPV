@@ -232,6 +232,10 @@ void initActiveBoxIds(void)
     }
 #endif
 
+#ifdef USE_OFFBOARD_MODE
+    BME(BOXUSER1);
+#endif
+
     BME(BOXFAILSAFE);
 
     if (mixerConfig()->mixerMode == MIXER_FLYING_WING || mixerConfig()->mixerMode == MIXER_AIRPLANE || mixerConfig()->mixerMode == MIXER_CUSTOM_AIRPLANE) {

@@ -99,6 +99,8 @@ static const serialPortConfig_t *portConfig;
 
 static bool mavlinkTelemetryEnabled =  false;
 static portSharing_e mavlinkPortSharing;
+
+static MAV_AUTOPILOT autopilot_name = MAV_AUTOPILOT_GENERIC;
 /*
 // 串口接收回调，详细见serial.h第62行
 // 参数 uint16_t c是串口接收到的数据，其实应该是8bit就够了，不知道为什么用16位的，而且后面也变成8位的
@@ -229,7 +231,7 @@ static const uint16_t mavRates[] = {
     [MAV_DATA_STREAM_EXTENDED_STATUS] = 2, //2Hz
     [MAV_DATA_STREAM_RC_CHANNELS] = 5, //5Hz
     [MAV_DATA_STREAM_POSITION] = 2, //2Hz
-    [MAV_DATA_STREAM_EXTRA1] = 300, //201Hz
+    [MAV_DATA_STREAM_EXTRA1] = 300, //自定义
     [MAV_DATA_STREAM_EXTRA2] = 10 //2Hz
 };
 
@@ -759,7 +761,7 @@ void mavlinkSendHeartbeat(void)
         mavSystemType,
         // autopilot Autopilot type / class. defined in MAV_AUTOPILOT ENUM
         // 假装是px4，具体见README.md的2024.10.30日笔记
-        MAV_AUTOPILOT_ARDUPILOTMEGA,
+        autopilot_name,
         // base_mode System mode bitfield, see MAV_MODE_FLAGS ENUM in mavlink/include/mavlink_types.h
         mavModes,
         // custom_mode A bitfield for use for autopilot-specific flags.
@@ -786,10 +788,17 @@ void processMAVLinkTelemetry(void)
         mavlinkSendPosition();
     }
 #endif
+    // 借用一下GPS的计数器，以2Hz的频率发送心跳信息
     if(mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
+        if(FLIGHT_MODE(OFFBOARD_MODE)) {
+            autopilot_name = MAV_AUTOPILOT_ARDUPILOTMEGA;
+        }
+        else {
+            autopilot_name = MAV_AUTOPILOT_GENERIC;
+        }
         mavlinkSendHeartbeat();
     }
-   
+    
     if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTRA1)) {
             mavlinkSendAttitude();
             mavlinkSendImuRawData();

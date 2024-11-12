@@ -77,3 +77,5 @@
 
 #define USE_CUSTOM_DEFAULTS
 
+// User mode macro
+#define USE_OFFBOARD_MODE
