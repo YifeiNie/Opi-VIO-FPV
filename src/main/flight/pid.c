@@ -443,6 +443,10 @@ STATIC_UNIT_TESTED FAST_CODE_NOINLINE float pidLevel(int axis, const pidProfile_
     // rcDeflection is in range [-1.0, 1.0]
     // getLevelModeRcDeflection(axis)的作用：最大角度乘以遥控器的输入值（被标准化为-1到+1），得到期望角度值
     float angle = levelAngleLimit * getLevelModeRcDeflection(axis);
+    // if (FLIGHT_MODE(OFFBOARD_MODE)){
+    //     angle = levelAngleLimit * (getLevelModeRcDeflection(axis)+0.2);
+    // }
+    
 #ifdef USE_GPS_RESCUE
     // 如果开启了GPS救援模式，飞机将会在遥控器要求的角度之上在叠加GPS救援的角度以实现在遥控器信号丢失时自动返回
     angle += gpsRescueAngle[axis] / 100; // ANGLE IS IN CENTIDEGREES
