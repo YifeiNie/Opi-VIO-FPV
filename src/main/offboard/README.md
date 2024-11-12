@@ -36,6 +36,24 @@ Remark: 这里只对我相对于源码做出的改动予以说明，详细的修
 
 ### 接收机与遥控器
 
+### MSP
+- MSP就是连接飞控和电脑的那根线用的协议，电脑上的地面站配置飞控就基于该协议
+
+### 模式
+- Betaflight的所谓模式，就是遥控器上各个按键位于特定位置时表达的特定含义，也可以理解为允许某些状态共存的状态机，每个状态只有处于或不处于两种情况。这些模式在re_modes.h的枚举变量`boxId_e`中列出，分为以下三类
+    - 1.起飞模式：只有一种，顾名思义
+    - 2.飞行模式：说明飞机的运动控制情况，比如BOXANGLE即前面说的角度模式，再比如BOXGPSRESCUE即前面说的GPS救援模式
+    - 3.RC模式：将某些键位或通道设置控制某些外设比如舵机，黑盒子等
+- 模式唯一的设置方法是在`case MSP_SET_MODE_RANGE:`中，也即通过MSP，不过二次开发时也可以在这里编程以增加自定义的模式比如offboard模式
+- 一个模式由一个特殊的数据结构管理————结构体modeActivationCondition_t，在re_modes.h里定义，其包含的成员
+    - boxId_e modeId，模式名称
+    - uint8_t auxChannelIndex，控制该模式的遥控器通道
+    - channelRange_t range，在通道的哪些范围内时该模式生效（或者说处于该模式）
+    - boxId_e linkedTo，与该模式关联的其他模式
+    - modeLogic_e modeLogic，该模式与关联模式之间的关系，只能是and或者or
+    - 其关系通过and掩码和or掩码管理，管理逻辑在rc_mode.c的`updateMasksForMac`函数中体现，不在具体解释
+- 模式的定义与管理非常复杂，简而言之就是通过一个宏定义，这个宏定义了元素为上述数据结构的数组的同时，也定义了一些访问该数组的函数，这些函数有的只读（modeActivationConditions），有的可读可写（modeActivationConditionsMutable）
+- Betaflight提供了四个用户模式（BOXUSERx），其作用对象是飞控的IO焊盘，叫做PINIO，可以通过cli命令行配置使其能被AUX通道触发。二次开发时可以利用这个基本用不到的功能，借用其触发方式来使能我们自定义的模式，虽然同时也会对飞控的IO口进行一些操作，但是反正我们也不外接什么，所以无所谓
 
 ### offboard模式
 
