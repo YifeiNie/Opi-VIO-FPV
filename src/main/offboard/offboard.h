@@ -16,3 +16,5 @@ typedef struct offboard
 
 
 }offboard_t;
+
+offboard_t offboard;

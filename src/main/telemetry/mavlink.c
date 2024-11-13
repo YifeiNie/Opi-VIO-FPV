@@ -77,6 +77,7 @@
 #include "sensors/gyro.h"
 #include "common/axis.h"
 #include "flight/imu.h"
+#include "offboard/offboard.h"
 #define GRAVITY_EARTH (9.80665f)
 /*以上是我添加的部分*/
 
@@ -114,6 +115,29 @@ static void mavlinkReceive(uint16_t c, void* data) {
     // &status用于获取是三种状态的哪一种，只有是接收完成，即status为1时才会执行后续操作
     if (mavlink_parse_char(MAVLINK_COMM_0, (uint8_t)c, &msg, &status)) {
         // user code
+        switch(msg.msgid) {
+            case 82:{
+                mavlink_set_attitude_target_t command;
+                mavlink_msg_set_attitude_target_decode(&msg,&command);
+                // 这里的mask仅仅作为标记，而Mavlink不会置零被mask忽略的字段
+                // 只有在自带autopilot的飞控比如PX4中，飞控固件在后续的控制中会忽略相应数据
+                if(command.type_mask == 7) { 
+                    // type_mask == 7时忽略了角加速度
+                    // 机载电脑在编程时不会发送四元数，当mask=7时，原来应该是角速度的数据现在就算角度，这是由机载电脑编程的结果
+                    // 本来该结构体提供了四元数作为角度输入，但是四元数处理麻烦且不直观，故采用这种办法"偷懒"
+                    offboard.roll_angle = command.body_roll_rate;
+                    offboard.pitch_angle = command.body_pitch_rate;
+                    offboard.yaw_angle = command.body_yaw_rate;
+                }
+                else {
+                    offboard.roll_angle_rate = command.body_roll_rate;
+                    offboard.pitch_angle_rate = command.body_pitch_rate;
+                    offboard.yaw_angle_rate = command.body_yaw_rate;
+                }
+            }
+
+                // to be continued...
+        }
     }
         
 }
@@ -206,7 +230,7 @@ void configureMAVLinkTelemetryPort(void)
         baudRateIndex = BAUD_2000000;
     }
 
-    mavlinkPort = openSerialPort(portConfig->identifier, FUNCTION_TELEMETRY_MAVLINK, NULL, NULL, baudRates[baudRateIndex], TELEMETRY_MAVLINK_INITIAL_PORT_MODE, telemetryConfig()->telemetry_inverted ? SERIAL_INVERTED : SERIAL_NOT_INVERTED);
+    mavlinkPort = openSerialPort(portConfig->identifier, FUNCTION_TELEMETRY_MAVLINK, mavlinkReceive, NULL, baudRates[baudRateIndex], TELEMETRY_MAVLINK_INITIAL_PORT_MODE, telemetryConfig()->telemetry_inverted ? SERIAL_INVERTED : SERIAL_NOT_INVERTED);
 
     if (!mavlinkPort) {
         return;
