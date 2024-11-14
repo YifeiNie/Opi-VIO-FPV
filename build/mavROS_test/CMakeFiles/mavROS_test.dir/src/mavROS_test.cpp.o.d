@@ -726,4 +726,9 @@ CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o: \
  /opt/ros/jazzy/include/std_msgs/std_msgs/msg/detail/char__builder.hpp \
  /opt/ros/jazzy/include/std_msgs/std_msgs/msg/detail/char__traits.hpp \
  /opt/ros/jazzy/include/std_msgs/std_msgs/msg/detail/char__type_support.hpp \
- /opt/ros/jazzy/include/std_msgs/std_msgs/msg/rosidl_generator_cpp__visibility_control.hpp
+ /opt/ros/jazzy/include/std_msgs/std_msgs/msg/rosidl_generator_cpp__visibility_control.hpp \
+ /home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test/include/mavROS_test.hpp \
+ /opt/ros/jazzy/include/geometry_msgs/geometry_msgs/msg/vector3.hpp \
+ /opt/ros/jazzy/include/geometry_msgs/geometry_msgs/msg/detail/vector3__builder.hpp \
+ /opt/ros/jazzy/include/geometry_msgs/geometry_msgs/msg/detail/vector3__type_support.hpp \
+ /opt/ros/jazzy/include/geometry_msgs/geometry_msgs/msg/rosidl_generator_cpp__visibility_control.hpp
