@@ -63,6 +63,10 @@
 
 #include "pid.h"
 
+//我添加的部分
+#include "offboard/offboard.h"
+//我添加的部分
+
 typedef enum {
     LEVEL_MODE_OFF = 0,
     LEVEL_MODE_R,
@@ -443,9 +447,19 @@ STATIC_UNIT_TESTED FAST_CODE_NOINLINE float pidLevel(int axis, const pidProfile_
     // rcDeflection is in range [-1.0, 1.0]
     // getLevelModeRcDeflection(axis)的作用：最大角度乘以遥控器的输入值（被标准化为-1到+1），得到期望角度值
     float angle = levelAngleLimit * getLevelModeRcDeflection(axis);
-    // if (FLIGHT_MODE(OFFBOARD_MODE)){
-    //     angle = levelAngleLimit * (getLevelModeRcDeflection(axis)+0.2);
-    // }
+    if (FLIGHT_MODE(OFFBOARD_MODE)){
+        switch (offboard.data_type) {
+            case angle_command:
+                // 单位：度
+                angle = angle + offboard.angle[axis];
+                break;
+            case angle_rate_command:
+                // 单位：度每秒
+                currentPidSetpoint = currentPidSetpoint + offboard.angle_rate[axis];
+                break;
+        }
+
+    }
     
 #ifdef USE_GPS_RESCUE
     // 如果开启了GPS救援模式，飞机将会在遥控器要求的角度之上在叠加GPS救援的角度以实现在遥控器信号丢失时自动返回
@@ -462,7 +476,7 @@ STATIC_UNIT_TESTED FAST_CODE_NOINLINE float pidLevel(int axis, const pidProfile_
     } else {
         // HORIZON mode - mix of ANGLE and ACRO modes
         // mix in errorAngle to currentPidSetpoint to add a little auto-level feel
-        // 角度控制（errorAngle）和角速度控制currentPidSetpoint加权和作为设定值，具体见
+        // 角度控制（errorAngle）和角速度控制currentPidSetpoint加权和作为设定值
         const float setpointCorrection = errorAngle * pidRuntime.horizonGain * horizonLevelStrength;
         currentPidSetpoint += pt3FilterApply(&pidRuntime.attitudeFilter[axis], setpointCorrection);
     }

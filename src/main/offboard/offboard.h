@@ -1,20 +1,15 @@
 ﻿
+#pragma once
 
 
-typedef struct offboard
-{
-    // 单位是度（°）
-    float yaw_angle;
-    float pitch_angle;
-    float roll_angle;
+#define angle_command 1
+#define angle_rate_command 0
 
-    // 单位是度每秒*（°/s）
-    float yaw_angle_rate;
-    float pitch_angle_rate;
-    float roll_angle_rate;
-
-
-
+// 数组的顺序是ROLL,PITCH,YAW
+typedef struct offboard {
+    uint8_t data_type;
+    float angle[3];   // 单位是度（°）
+    float angle_rate[3];  // 单位是度每秒*（°/s）
 }offboard_t;
 
-offboard_t offboard;
+extern offboard_t offboard;

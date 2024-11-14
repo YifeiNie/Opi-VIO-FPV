@@ -124,5 +124,7 @@
 ### 2024.11.13
 - 尝试规划控制一体的算法IPC，中间报错缺少rosfmt，使用`sudo apt insatll ros-noetic-rosfmt`安装即可
 - 在Cool Pi上尝试make的时候，报错`Invoking "make -j8 -l8" failed`，但没有详细报错信息，原因是多线程编译会确实报错信息，使用`catkin_make -j1`重新编译，报错`make[2]: *** No rule to make target '/usr/lib/x86_64-linux-gnu/libglfw.so', needed by '/home/coolpi/MARSIM/marsim_ws/devel/lib/local_sensing_node/opengl_render_node'.  Stop.`，然后检查对应的包libglfw3-dev已经安装并位于路径`/usr/lib/aarch64-linux-gnu/libglfw.so`，说明错误不在这里。捕捉到关键词**x86**和**opengl_render_nod**，故在找到包含文件`opengl_render_nod.cpp`的文件夹内的CMakeLists文件，找到其中的的路径，修改x86路径为上述路径，然后重新编译，问题解决。
-### 2024.11.14
+### 2024.11.14 --by nyf
 - 使用ROS2 jazzy成功在mavros端订阅到/mavros/imu/data_raw。初次订阅时报错`xxxxxx .... offering incompatible QoS`，这是因为在mavros的传感器类别数据中的Imu类别里，其发布的服务质量（Qos）是BEST_EFFORT，但在使用crate_subscirption函数创建订阅者时，默认的订阅质量是RELIABLE，故需要在该函数的第二个参数使用`rclcpp::QoS(10).best_effort()`作为参数传递，问题解决，成功进入回调
+- 如果要给betaflight添加新的c文件，则需要在make/source.mk里添加新的c文件的相对路径，这样再make才会通过，否则虽然编译会通过，但当新的c文件与源码的c文件有交互时会出现链接错误，出现一些类似变量未定义之类的错误
+### 2024.11.15 --by nyf

@@ -19,7 +19,6 @@
  */
 
 #pragma once
-
 void initMAVLinkTelemetry(void);
 void handleMAVLinkTelemetry(void);
 void checkMAVLinkTelemetryState(void);

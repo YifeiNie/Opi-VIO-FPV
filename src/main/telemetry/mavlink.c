@@ -79,6 +79,7 @@
 #include "flight/imu.h"
 #include "offboard/offboard.h"
 #define GRAVITY_EARTH (9.80665f)
+
 /*以上是我添加的部分*/
 
 
@@ -122,18 +123,21 @@ static void mavlinkReceive(uint16_t c, void* data) {
                 // 这里的mask仅仅作为标记，而Mavlink不会置零被mask忽略的字段
                 // 只有在自带autopilot的飞控比如PX4中，飞控固件在后续的控制中会忽略相应数据
                 if(command.type_mask == 7) { 
+                    offboard.data_type = angle_command;
                     // type_mask == 7时忽略了角加速度
-                    // 机载电脑在编程时不会发送四元数，当mask=7时，原来应该是角速度的数据现在就算角度，这是由机载电脑编程的结果
+                    // 机载电脑在编程时不会发送四元数，当mask=7时，原来应该是角速度的数据现在就是角度，这是由机载电脑编程的结果
                     // 本来该结构体提供了四元数作为角度输入，但是四元数处理麻烦且不直观，故采用这种办法"偷懒"
-                    offboard.roll_angle = command.body_roll_rate;
-                    offboard.pitch_angle = command.body_pitch_rate;
-                    offboard.yaw_angle = command.body_yaw_rate;
+                    offboard.angle[FD_ROLL] = command.body_roll_rate; // 单位是度
+                    offboard.angle[FD_PITCH] = command.body_pitch_rate;
+                    offboard.angle[FD_YAW] = command.body_yaw_rate;
                 }
                 else {
-                    offboard.roll_angle_rate = command.body_roll_rate;
-                    offboard.pitch_angle_rate = command.body_pitch_rate;
-                    offboard.yaw_angle_rate = command.body_yaw_rate;
+                    offboard.data_type = angle_rate_command;
+                    offboard.angle_rate[FD_ROLL] = command.body_roll_rate; // 单位是度每秒（与原结构体定义不符，但是由于消息是我机载电脑你自定义发的，所以怎么方便怎么来）
+                    offboard.angle_rate[FD_PITCH] = command.body_pitch_rate;
+                    offboard.angle_rate[FD_YAW] = command.body_yaw_rate;
                 }
+                break;
             }
 
                 // to be continued...
@@ -142,9 +146,8 @@ static void mavlinkReceive(uint16_t c, void* data) {
         
 }
 
-
 /* MAVLink datastream rates in Hz */
-// 在这里设置mavlink的发送速率，其中姿态为EXTRA1
+// 在这里设置mavlink的发送速率，其中姿态为MAV_DATA_STREAM_EXTRA1
 static const uint16_t mavRates[] = {
     [MAV_DATA_STREAM_EXTENDED_STATUS] = 2, //2Hz
     [MAV_DATA_STREAM_RC_CHANNELS] = 5, //5Hz
@@ -161,7 +164,7 @@ static uint8_t mavBuffer[MAVLINK_MAX_PACKET_LEN];
 static uint32_t lastMavlinkMessage = 0;
 
 
-// 检测当前streamNum对应的消息是否需要发送，发送函数返回1，否则返回0
+// 检测当前streamNum对应的消息是否需要发送，若发送，函数返回1，否则返回0
 // streamN由自动飞行算法设计者自己定义，官方的程序也给了一些他们的定义以供参考，见common.h中的MAV_DATA_STREAM变量
 static int mavlinkStreamTrigger(enum MAV_DATA_STREAM streamNum)
 {
