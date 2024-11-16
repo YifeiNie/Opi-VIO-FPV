@@ -65,6 +65,7 @@
 - 发现我的mavros版本是2.8.0,但是最新版是2.9.0,且根据github中的issue中提到2.8.0有诸多bug在刚刚发布的2.9.0中被修复，然而其release显示ustable，见[这里](https://github.com/mavlink/mavros/issues?q=is%3Aissue+is%3Aopen)
 - 尝试更新到2.9.0,发现apt的最新版本是2.8.0，尝试源码更新，出错，折腾一天，失败，见[这里](https://github.com/mavlink/mavros/issues/2003)
 - 后面的计划是：使用px4仿真环境再尝试mavros通信，如果成功，继续查找问题；如果失败，则放弃ROS2和mavros 2.8.0直到2.9.0正式在源中发布再做尝试，并暂时先使用Ubuntu 20.04和ROS1
+- 2024.11.17 补：mavros 2.9.0已经发布，可以用apt安装了，但问题也不是版本，而是一些别的问题导致，参见"2024.10.30 -by Nyf -mavros有bug"
 ### 2024.10.17 by Nyf 
 - 折腾一天，给新笔记本装了Unbuntu 20.04
     - 其中网卡驱动非常折磨，后发现问题是我安装的系统Linux内核版本太老，且网络配置文件`sudo gedit /etc/NetworkManager/NetworkManager.conf`有一行要改为'true'，具体见[这里](https://blog.csdn.net/taoxicun/article/details/133200526)
