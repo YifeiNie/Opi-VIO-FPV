@@ -129,9 +129,9 @@
 - 如果要给betaflight添加新的c文件，则需要在make/source.mk里添加新的c文件的相对路径，这样再make才会通过，否则虽然编译会通过，但当新的c文件与源码的c文件有交互时会出现链接错误，出现一些类似变量未定义之类的错误
 ### 2024.11.17 --by nyf 整了两天ubuntu24.04以及ROS2对香橙派的适配
 - 为便于测试offboard模式，选择先实现用键盘控制无人机的运动，对此选用香橙派
-- 编程和浏览网页时发现有些卡顿，经检查，发现香橙派的GPU没有启动，处于纯软件渲染模式
+- 编程和浏览网页时发现有些卡顿，经检查，发现香橙派的GPU没有启动，处于纯软件渲染模式，这个问题之前一直没注意到，直到最近卡顿加剧
 - 尝试如opencl，vulkan，panfork各种硬件加速库，失败，还是老样子，典中典llvmpipe
-- 重装系统，镜像是经过修复的非官方24.04版本镜像见[这里](https://github.com/Joshua-Riek/ubuntu-rockchip)（官方的没有24.04，且其他版本硬件支持很差），发现GPU恢复正常了，但装完ROS2又寄了，怀疑是相关库的问题
+- 尝试重装重装系统后，镜像是经过修复的非官方24.04版本镜像见[这里](https://github.com/Joshua-Riek/ubuntu-rockchip)（官方的没有24.04，且其他版本硬件支持很差），发现GPU恢复正常了，但装完ROS2又寄了，怀疑是相关库的问题
 - 经调查非官方镜像里发现那些与GPU相关的库来自第三方源（通过查看`etc/apt/sources.list.d`路径里的list文件可以证明这一点），并经过了适配香橙派的修改。因此这些与GPU相关的库的版本号与官方源不同，导致在安装或者更新软件包时这些三方库会被官方库覆盖，导致GPU寄掉
 - 对此解决办法是安装完系统后，先找出这些与gpu相关的三方库：`dpkg -l | grep -iE "libgbm|mesa|nvidia|gpu|panfork"`，然后使用`sudo apt-mark hold PACKAGE`来将这些三方库其标记为不可更新，具体的我的是：`sudo apt-mark hold libdrm-amdgpu1:arm64 libegl-mesa0:arm64 libgbm1:arm64 libgl1-mesa-dri:arm64 libglapi-mesa:arm64 libglu1-mesa:arm64 libglx-mesa0:arm64 libplacebo338:arm64 libvulkan1:arm64 mesa-va-drivers:arm64 mesa-vdpau-drivers:arm64 mesa-vulkan-drivers:arm64 switcheroo-control xserver-xorg-video-amdgpu`
 - 然后配置好科学上网，并先后使用`sudo apt install curl gnupg2`和`sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg`下载 ROS 的 GPG Key
