@@ -1,0 +1,53 @@
+-- Found ament_cmake: 2.5.2 (/opt/ros/jazzy/share/ament_cmake/cmake)
+-- Found rclcpp: 28.1.5 (/opt/ros/jazzy/share/rclcpp/cmake)
+-- Found rosidl_generator_c: 4.6.4 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+-- Found rosidl_generator_cpp: 4.6.4 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 7.3.1 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 8.4.1 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Found mavros_msgs: 2.9.0 (/opt/ros/jazzy/share/mavros_msgs/cmake)
+-- Found ament_lint_auto: 0.17.1 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+WARNING: Package name "mavROS_test" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+-- Added test 'cppcheck' to perform static code analysis on C / C++ code
+-- Configured cppcheck include dirs: $<BUILD_INTERFACE:/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/include>
+-- Configured cppcheck exclude dirs and/or files: 
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'uncrustify' to check C / C++ code style
+-- Configured uncrustify additional arguments: 
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done (1.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test
+[ 33%] [32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/key_input.cpp.o[0m
+[01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:16:48:[m[K [01;31m[Kerror: [m[Kexpected unqualified-id before ‘[01m[K{[m[K’ token
+   16 |     KeyboardReader() : Node("keyboard_reader");[01;31m[K{[m[K
+      |                                                [01;31m[K^[m[K
+[01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:[m[K In constructor ‘[01m[KKeyboardReader::[01;32m[KKeyboardReader[m[K()[m[K’:
+[01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:16:47:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K{[m[K’ at end of input
+   16 |     KeyboardReader() : Node("keyboard_reader")[01;31m[K;[m[K{
+      |                                               [01;31m[K^[m[K
+[01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:[m[K In destructor ‘[01m[Kvirtual KeyboardReader::[01;32m[K~KeyboardReader[m[K()[m[K’:
+[01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:33:43:[m[K [01;31m[Kerror: [m[K‘[01m[Kold_tio_[m[K’ was not declared in this scope
+   33 |         tcsetattr(STDIN_FILENO, TCSANOW, &[01;31m[Kold_tio_[m[K);
+      |                                           [01;31m[K^~~~~~~~[m[K
+[01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:[m[K In member function ‘[01m[KKeyInput KeyboardReader::[01;32m[Kget_last_key_input[m[K() const[m[K’:
+[01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:38:16:[m[K [01;31m[Kerror: [m[K‘[01m[Klast_key_input_[m[K’ was not declared in this scope; did you mean ‘[01m[Kget_last_key_input[m[K’?
+   38 |         return [01;31m[Klast_key_input_[m[K;
+      |                [01;31m[K^~~~~~~~~~~~~~~[m[K
+      |                [32m[Kget_last_key_input[m[K
+[01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:[m[K In member function ‘[01m[Kvoid KeyboardReader::[01;32m[Ktimer_callback[m[K()[m[K’:
+[01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:45:13:[m[K [01;31m[Kerror: [m[K‘[01m[Klast_key_input_[m[K’ was not declared in this scope; did you mean ‘[01m[Kget_last_key_input[m[K’?
+   45 |             [01;31m[Klast_key_input_[m[K.key = key;
+      |             [01;31m[K^~~~~~~~~~~~~~~[m[K
+      |             [32m[Kget_last_key_input[m[K
+[01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:52:24:[m[K [01;35m[Kwarning: [m[Kunused variable ‘[01m[Kold_tio_[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-variable-Wunused-variable]8;;[m[K]
+   52 |         struct termios [01;35m[Kold_tio_[m[K, new_tio_;
+      |                        [01;35m[K^~~~~~~~[m[K
+[01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:52:34:[m[K [01;35m[Kwarning: [m[Kunused variable ‘[01m[Knew_tio_[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-variable-Wunused-variable]8;;[m[K]
+   52 |         struct termios old_tio_, [01;35m[Knew_tio_[m[K;
+      |                                  [01;35m[K^~~~~~~~[m[K
+gmake[2]: *** [CMakeFiles/mavROS_test.dir/build.make:76：CMakeFiles/mavROS_test.dir/src/key_input.cpp.o] 错误 1
+gmake[1]: *** [CMakeFiles/Makefile2:137：CMakeFiles/mavROS_test.dir/all] 错误 2
+gmake: *** [Makefile:146：all] 错误 2

@@ -1,8 +1,0 @@
-[ 50%] [32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o[0m
-[01m[K/home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test/src/mavROS_test.cpp:2:10:[m[K [01;31m[Kfatal error: [m[Ksensor_msgs/msg/imu.hpp: No such file or directory
-    2 | #include [01;31m[K"sensor_msgs/msg/imu.hpp"[m[K
-      |          [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~[m[K
-compilation terminated.
-gmake[2]: *** [CMakeFiles/mavROS_test.dir/build.make:76: CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o] Error 1
-gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/mavROS_test.dir/all] Error 2
-gmake: *** [Makefile:146: all] Error 2

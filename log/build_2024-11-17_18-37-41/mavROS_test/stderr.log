@@ -1,0 +1,7 @@
+/usr/bin/ld: /usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/Scrt1.o: in function `_start':
+(.text+0x1c): undefined reference to `main'
+/usr/bin/ld: (.text+0x20): undefined reference to `main'
+collect2: error: ld returned 1 exit status
+gmake[2]: *** [CMakeFiles/mavROS_test.dir/build.make:208：mavROS_test] 错误 1
+gmake[1]: *** [CMakeFiles/Makefile2:137：CMakeFiles/mavROS_test.dir/all] 错误 2
+gmake: *** [Makefile:146：all] 错误 2

@@ -12,8 +12,9 @@ find_package(mavros_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
+file(GLOB SRC_FILES "src/*cpp")
 
-add_executable(mavROS_test src/mavROS_test.cpp)
+add_executable(mavROS_test ${SRC_FILES})
 target_include_directories(mavROS_test PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)

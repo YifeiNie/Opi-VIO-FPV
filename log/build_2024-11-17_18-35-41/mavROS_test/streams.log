@@ -1,0 +1,11 @@
+[0.019s] Invoking command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test -- -j8 -l8
+[0.207s] [ 50%] [32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o[0m
+[9.294s] [100%] [32m[1mLinking CXX executable mavROS_test[0m
+[10.874s] /usr/bin/ld: /usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/Scrt1.o: in function `_start':
+[10.875s] (.text+0x1c): undefined reference to `main'
+[10.875s] /usr/bin/ld: (.text+0x20): undefined reference to `main'
+[10.897s] collect2: error: ld returned 1 exit status
+[10.900s] gmake[2]: *** [CMakeFiles/mavROS_test.dir/build.make:208：mavROS_test] 错误 1
+[10.900s] gmake[1]: *** [CMakeFiles/Makefile2:137：CMakeFiles/mavROS_test.dir/all] 错误 2
+[10.901s] gmake: *** [Makefile:146：all] 错误 2
+[10.904s] Invoked command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test -- -j8 -l8

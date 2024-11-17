@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test
+CMAKE_SOURCE_DIR = /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test
+CMAKE_BINARY_DIR = /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -142,9 +142,9 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/CMakeFiles /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -210,6 +210,30 @@ mavROS_test/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mavROS_test.dir/build.make CMakeFiles/mavROS_test.dir/build
 .PHONY : mavROS_test/fast
 
+src/key_input.o: src/key_input.cpp.o
+.PHONY : src/key_input.o
+
+# target to build an object file
+src/key_input.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mavROS_test.dir/build.make CMakeFiles/mavROS_test.dir/src/key_input.cpp.o
+.PHONY : src/key_input.cpp.o
+
+src/key_input.i: src/key_input.cpp.i
+.PHONY : src/key_input.i
+
+# target to preprocess a source file
+src/key_input.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mavROS_test.dir/build.make CMakeFiles/mavROS_test.dir/src/key_input.cpp.i
+.PHONY : src/key_input.cpp.i
+
+src/key_input.s: src/key_input.cpp.s
+.PHONY : src/key_input.s
+
+# target to generate assembly for a file
+src/key_input.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mavROS_test.dir/build.make CMakeFiles/mavROS_test.dir/src/key_input.cpp.s
+.PHONY : src/key_input.cpp.s
+
 src/mavROS_test.o: src/mavROS_test.cpp.o
 .PHONY : src/mavROS_test.o
 
@@ -250,6 +274,9 @@ help:
 	@echo "... mavROS_test_uninstall"
 	@echo "... uninstall"
 	@echo "... mavROS_test"
+	@echo "... src/key_input.o"
+	@echo "... src/key_input.i"
+	@echo "... src/key_input.s"
 	@echo "... src/mavROS_test.o"
 	@echo "... src/mavROS_test.i"
 	@echo "... src/mavROS_test.s"

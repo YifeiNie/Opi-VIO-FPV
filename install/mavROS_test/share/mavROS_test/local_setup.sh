@@ -2,7 +2,7 @@
 
 # since this file is sourced use either the provided AMENT_CURRENT_PREFIX
 # or fall back to the destination set at configure time
-: ${AMENT_CURRENT_PREFIX:="/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test"}
+: ${AMENT_CURRENT_PREFIX:="/home/nyf/Code/Opi-VIO-FPV/install/mavROS_test"}
 if [ ! -d "$AMENT_CURRENT_PREFIX" ]; then
   if [ -z "$COLCON_CURRENT_PREFIX" ]; then
     echo "The compile time prefix path '$AMENT_CURRENT_PREFIX' doesn't " \

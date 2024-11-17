@@ -1,0 +1,25 @@
+[0.019s] Invoking command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test -- -j8 -l8
+[0.251s] [ 33%] [32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o[0m
+[10.761s] [ 66%] [32m[1mLinking CXX executable mavROS_test[0m
+[11.207s] [100%] Built target mavROS_test
+[11.229s] Invoked command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test -- -j8 -l8
+[11.331s] Invoking command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test
+[11.358s] -- Install configuration: ""
+[11.358s] -- Installing: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/lib/mavROS_test/mavROS_test
+[11.363s] -- Set non-toolchain portion of runtime path of "/home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/lib/mavROS_test/mavROS_test" to ""
+[11.363s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/ament_index/resource_index/package_run_dependencies/mavROS_test
+[11.364s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/ament_index/resource_index/parent_prefix_path/mavROS_test
+[11.364s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/environment/ament_prefix_path.sh
+[11.364s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/environment/ament_prefix_path.dsv
+[11.364s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/environment/path.sh
+[11.364s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/environment/path.dsv
+[11.364s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/local_setup.bash
+[11.364s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/local_setup.sh
+[11.364s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/local_setup.zsh
+[11.364s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/local_setup.dsv
+[11.365s] -- Installing: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/package.dsv
+[11.365s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/ament_index/resource_index/packages/mavROS_test
+[11.365s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/cmake/mavROS_testConfig.cmake
+[11.365s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/cmake/mavROS_testConfig-version.cmake
+[11.365s] -- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/package.xml
+[11.369s] Invoked command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test

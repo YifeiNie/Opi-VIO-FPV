@@ -1,8 +1,8 @@
-# Install script for directory: /home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test
+# Install script for directory: /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test")
+  set(CMAKE_INSTALL_PREFIX "/home/nyf/Code/Opi-VIO-FPV/install/mavROS_test")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -49,7 +49,7 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/mavROS_test/mavROS_test"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/mavROS_test" TYPE EXECUTABLE FILES "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/mavROS_test")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/mavROS_test" TYPE EXECUTABLE FILES "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/mavROS_test")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/mavROS_test/mavROS_test" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/mavROS_test/mavROS_test")
     file(RPATH_CHANGE
@@ -63,15 +63,15 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  include("/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles/mavROS_test.dir/install-cxx-module-bmi-noconfig.cmake" OPTIONAL)
+  include("/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/CMakeFiles/mavROS_test.dir/install-cxx-module-bmi-noconfig.cmake" OPTIONAL)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/package_run_dependencies" TYPE FILE FILES "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/mavROS_test")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/package_run_dependencies" TYPE FILE FILES "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/mavROS_test")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/parent_prefix_path" TYPE FILE FILES "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/mavROS_test")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/parent_prefix_path" TYPE FILE FILES "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/mavROS_test")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -79,7 +79,7 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test/environment" TYPE FILE FILES "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_environment_hooks/ament_prefix_path.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test/environment" TYPE FILE FILES "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_environment_hooks/ament_prefix_path.dsv")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -87,42 +87,42 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test/environment" TYPE FILE FILES "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_environment_hooks/path.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test/environment" TYPE FILE FILES "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_environment_hooks/path.dsv")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test" TYPE FILE FILES "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_environment_hooks/local_setup.bash")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test" TYPE FILE FILES "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_environment_hooks/local_setup.bash")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test" TYPE FILE FILES "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_environment_hooks/local_setup.sh")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test" TYPE FILE FILES "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_environment_hooks/local_setup.sh")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test" TYPE FILE FILES "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_environment_hooks/local_setup.zsh")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test" TYPE FILE FILES "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_environment_hooks/local_setup.zsh")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test" TYPE FILE FILES "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_environment_hooks/local_setup.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test" TYPE FILE FILES "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_environment_hooks/local_setup.dsv")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test" TYPE FILE FILES "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_environment_hooks/package.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test" TYPE FILE FILES "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_environment_hooks/package.dsv")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/packages" TYPE FILE FILES "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_index/share/ament_index/resource_index/packages/mavROS_test")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/packages" TYPE FILE FILES "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_index/share/ament_index/resource_index/packages/mavROS_test")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test/cmake" TYPE FILE FILES
-    "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_core/mavROS_testConfig.cmake"
-    "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_core/mavROS_testConfig-version.cmake"
+    "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_core/mavROS_testConfig.cmake"
+    "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_core/mavROS_testConfig-version.cmake"
     )
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test" TYPE FILE FILES "/home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mavROS_test" TYPE FILE FILES "/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/package.xml")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -133,5 +133,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -2,7 +2,7 @@
 # ament_cmake_core/cmake/uninstall_target/ament_cmake_uninstall_target.cmake.in
 
 function(ament_cmake_uninstall_target_remove_empty_directories path)
-  set(install_space "/home/nyf/code/ROS2_workspace/mavROS_test/install/mavROS_test")
+  set(install_space "/home/nyf/Code/Opi-VIO-FPV/install/mavROS_test")
   if(install_space STREQUAL "")
     message(FATAL_ERROR "The CMAKE_INSTALL_PREFIX variable must not be empty")
   endif()
@@ -29,7 +29,7 @@ function(ament_cmake_uninstall_target_remove_empty_directories path)
 endfunction()
 
 # uninstall files installed using the standard install() function
-set(install_manifest "/home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/install_manifest.txt")
+set(install_manifest "/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/install_manifest.txt")
 if(NOT EXISTS "${install_manifest}")
   message(FATAL_ERROR "Cannot find install manifest: ${install_manifest}")
 endif()

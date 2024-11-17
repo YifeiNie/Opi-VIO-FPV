@@ -1,0 +1,37 @@
+[0.022s] Invoking command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test -- -j8 -l8
+[0.223s] [ 33%] [32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/key_input.cpp.o[0m
+[4.333s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:[m[K In constructor ‘[01m[KKeyboardReader::[01;32m[KKeyboardReader[m[K()[m[K’:
+[4.334s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:19:34:[m[K [01;31m[Kerror: [m[K‘[01m[Kold_tio_[m[K’ was not declared in this scope
+[4.334s]    19 |         tcgetattr(STDIN_FILENO, &[01;31m[Kold_tio_[m[K);
+[4.335s]       |                                  [01;31m[K^~~~~~~~[m[K
+[4.346s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:20:9:[m[K [01;31m[Kerror: [m[K‘[01m[Knew_tio_[m[K’ was not declared in this scope
+[4.346s]    20 |         [01;31m[Knew_tio_[m[K = old_tio_;
+[4.347s]       |         [01;31m[K^~~~~~~~[m[K
+[4.356s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:25:9:[m[K [01;31m[Kerror: [m[K‘[01m[Ktimer_[m[K’ was not declared in this scope; did you mean ‘[01m[Ktimer_t[m[K’?
+[4.357s]    25 |         [01;31m[Ktimer_[m[K = this->create_wall_timer(
+[4.357s]       |         [01;31m[K^~~~~~[m[K
+[4.358s]       |         [32m[Ktimer_t[m[K
+[4.389s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:[m[K In destructor ‘[01m[Kvirtual KeyboardReader::[01;32m[K~KeyboardReader[m[K()[m[K’:
+[4.390s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:33:43:[m[K [01;31m[Kerror: [m[K‘[01m[Kold_tio_[m[K’ was not declared in this scope
+[4.390s]    33 |         tcsetattr(STDIN_FILENO, TCSANOW, &[01;31m[Kold_tio_[m[K);
+[4.391s]       |                                           [01;31m[K^~~~~~~~[m[K
+[4.404s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:[m[K In member function ‘[01m[KKeyInput KeyboardReader::[01;32m[Kget_last_key_input[m[K() const[m[K’:
+[4.405s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:38:16:[m[K [01;31m[Kerror: [m[K‘[01m[Klast_key_input_[m[K’ was not declared in this scope; did you mean ‘[01m[Kget_last_key_input[m[K’?
+[4.405s]    38 |         return [01;31m[Klast_key_input_[m[K;
+[4.406s]       |                [01;31m[K^~~~~~~~~~~~~~~[m[K
+[4.406s]       |                [32m[Kget_last_key_input[m[K
+[4.419s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:[m[K In member function ‘[01m[Kvoid KeyboardReader::[01;32m[Ktimer_callback[m[K()[m[K’:
+[4.419s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:45:13:[m[K [01;31m[Kerror: [m[K‘[01m[Klast_key_input_[m[K’ was not declared in this scope; did you mean ‘[01m[Kget_last_key_input[m[K’?
+[4.420s]    45 |             [01;31m[Klast_key_input_[m[K.key = key;
+[4.420s]       |             [01;31m[K^~~~~~~~~~~~~~~[m[K
+[4.420s]       |             [32m[Kget_last_key_input[m[K
+[4.421s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:52:24:[m[K [01;35m[Kwarning: [m[Kunused variable ‘[01m[Kold_tio_[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-variable-Wunused-variable]8;;[m[K]
+[4.421s]    52 |         struct termios [01;35m[Kold_tio_[m[K, new_tio_;
+[4.421s]       |                        [01;35m[K^~~~~~~~[m[K
+[4.421s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:52:34:[m[K [01;35m[Kwarning: [m[Kunused variable ‘[01m[Knew_tio_[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-variable-Wunused-variable]8;;[m[K]
+[4.421s]    52 |         struct termios old_tio_, [01;35m[Knew_tio_[m[K;
+[4.421s]       |                                  [01;35m[K^~~~~~~~[m[K
+[5.685s] gmake[2]: *** [CMakeFiles/mavROS_test.dir/build.make:76：CMakeFiles/mavROS_test.dir/src/key_input.cpp.o] 错误 1
+[5.686s] gmake[1]: *** [CMakeFiles/Makefile2:137：CMakeFiles/mavROS_test.dir/all] 错误 2
+[5.687s] gmake: *** [Makefile:146：all] 错误 2
+[5.691s] Invoked command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test -- -j8 -l8

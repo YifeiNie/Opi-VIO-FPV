@@ -1,0 +1,38 @@
+[0.022s] Invoking command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test -- -j8 -l8
+[0.081s] -- Found ament_cmake: 2.5.2 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.529s] -- Found rclcpp: 28.1.5 (/opt/ros/jazzy/share/rclcpp/cmake)
+[0.571s] -- Found rosidl_generator_c: 4.6.4 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.586s] -- Found rosidl_generator_cpp: 4.6.4 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.604s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.626s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.720s] -- Found rmw_implementation_cmake: 7.3.1 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[0.722s] -- Found rmw_fastrtps_cpp: 8.4.1 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[0.843s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.945s] -- Found mavros_msgs: 2.9.0 (/opt/ros/jazzy/share/mavros_msgs/cmake)
+[1.219s] -- Found ament_lint_auto: 0.17.1 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[1.368s] WARNING: Package name "mavROS_test" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+[1.441s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[1.442s] -- Configured cppcheck include dirs: $<BUILD_INTERFACE:/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/include>
+[1.442s] -- Configured cppcheck exclude dirs and/or files: 
+[1.442s] -- Added test 'lint_cmake' to check CMake code style
+[1.444s] -- Added test 'uncrustify' to check C / C++ code style
+[1.445s] -- Configured uncrustify additional arguments: 
+[1.445s] -- Added test 'xmllint' to check XML markup files
+[1.446s] -- Configuring done (1.4s)
+[1.454s] [31mCMake Error at CMakeLists.txt:16 (add_executable):
+[1.454s]   Cannot find source file:
+[1.454s] 
+[1.454s]     src/*.cpp
+[1.454s] 
+[1.454s]   Tried extensions .c .C .c++ .cc .cpp .cxx .cu .mpp .m .M .mm .ixx .cppm
+[1.454s]   .ccm .cxxm .c++m .h .hh .h++ .hm .hpp .hxx .in .txx .f .F .for .f77 .f90
+[1.455s]   .f95 .f03 .hip .ispc
+[1.455s] 
+[1.455s] [0m
+[1.461s] [31mCMake Error at CMakeLists.txt:16 (add_executable):
+[1.461s]   No SOURCES given to target: mavROS_test
+[1.462s] 
+[1.462s] [0m
+[1.463s] [0mCMake Generate step failed.  Build files cannot be regenerated correctly.[0m
+[1.482s] gmake: *** [Makefile:267：cmake_check_build_system] 错误 1
+[1.485s] Invoked command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test -- -j8 -l8

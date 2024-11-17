@@ -46,8 +46,8 @@ private:
    
     void Offboard_publisher_timer_callback(){   // 回调函数用于发送offboard消息
         msg.thrust = 0.5;
-        msg.type_mask = 7;
-        msg.body_rate.x = 0;  // 这里的body_rate表示角速度还是角度，取决于type_mask的值，如果为7表示角度
+        msg.type_mask = 7;      // 这里的body_rate表示角速度还是角度，取决于type_mask的值，如果为7表示角度
+        msg.body_rate.x = 0;    // 单位度每秒或度
         msg.body_rate.y = 8;
         msg.body_rate.z = 0;
 
@@ -57,7 +57,7 @@ private:
 public:
     // 先调用父类的构造函数，然后再执行大括号内的自定义的构造函数
     Offboard_publisher():Node("Offboard_publisher"){
-        publisher = this->create_publisher<mavros_msgs::msg::AttitudeTarget>("offboard/attitede_target",10);
+        publisher = this->create_publisher<mavros_msgs::msg::AttitudeTarget>("/mavros/setpoint_raw/attitude",10);
         timer = this->create_wall_timer(100ms, std::bind(&Offboard_publisher::Offboard_publisher_timer_callback, this)); // 定时器
     }
     

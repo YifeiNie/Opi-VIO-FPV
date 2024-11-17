@@ -1,0 +1,156 @@
+[0.000000] (-) TimerEvent: {}
+[0.000928] (mavROS_test) JobQueued: {'identifier': 'mavROS_test', 'dependencies': OrderedDict()}
+[0.001020] (mavROS_test) JobStarted: {'identifier': 'mavROS_test'}
+[0.019153] (mavROS_test) JobProgress: {'identifier': 'mavROS_test', 'progress': 'cmake'}
+[0.021223] (mavROS_test) JobProgress: {'identifier': 'mavROS_test', 'progress': 'build'}
+[0.021514] (mavROS_test) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test', '--', '-j8', '-l8'], 'cwd': '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test', 'env': OrderedDict({'GJS_DEBUG_TOPICS': 'JS ERROR;JS LOG', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'LANGUAGE': 'zh_CN:en', 'USER': 'nyf', 'LC_TIME': 'zh_CN.UTF-8', 'XDG_SESSION_TYPE': 'wayland', 'GIT_ASKPASS': '/usr/share/code/resources/app/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/nyf', 'CHROME_DESKTOP': 'code.desktop', 'TERM_PROGRAM_VERSION': '1.95.3', 'DESKTOP_SESSION': 'ubuntu', 'GIO_LAUNCHED_DESKTOP_FILE': '/usr/share/applications/code.desktop', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'VSCODE_GIT_ASKPASS_MAIN': '/usr/share/code/resources/app/extensions/git/dist/askpass-main.js', 'LC_MONETARY': 'zh_CN.UTF-8', 'VSCODE_GIT_ASKPASS_NODE': '/usr/share/code/code', 'MANAGERPID': '1058', 'SYSTEMD_EXEC_PID': '1243', 'IM_CONFIG_CHECK_ENV': '1', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'GIO_LAUNCHED_DESKTOP_FILE_PID': '3071', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/nyf/Code/Opi-VIO-FPV/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'nyf', 'JOURNAL_STREAM': '8:33487', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@wayland.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'nyf', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/nyf-OPi:@/tmp/.ICE-unix/1203,unix/nyf-OPi:/tmp/.ICE-unix/1203', 'INVOCATION_ID': '5eece8d0019e4e0cab4846df9634c10c', 'PAPERSIZE': 'a4', 'XDG_MENU_PREFIX': 'gnome-', 'LC_ADDRESS': 'zh_CN.UTF-8', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'GDK_BACKEND': 'x11', 'DISPLAY': ':0', 'LANG': 'zh_CN.UTF-8', 'XDG_CURRENT_DESKTOP': 'Unity', 'LC_TELEPHONE': 'zh_CN.UTF-8', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.DJ8EX2', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-13e7d0786c.sock', 'TERM_PROGRAM': 'vscode', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/nyf/Code/Opi-VIO-FPV/install/mavROS_test:/opt/ros/jazzy', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'SHELL': '/bin/bash', 'LC_NAME': 'zh_CN.UTF-8', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'LC_MEASUREMENT': 'zh_CN.UTF-8', 'GJS_DEBUG_OUTPUT': 'stderr', 'LC_IDENTIFICATION': 'zh_CN.UTF-8', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/opt/ros/jazzy/lib/python3.12/site-packages', 'LC_NUMERIC': 'zh_CN.UTF-8', 'LC_PAPER': 'zh_CN.UTF-8', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'CMAKE_PREFIX_PATH': '/home/nyf/Code/Opi-VIO-FPV/install/mavROS_test:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy'}), 'shell': False}
+[0.098910] (-) TimerEvent: {}
+[0.199384] (-) TimerEvent: {}
+[0.287819] (mavROS_test) StdoutLine: {'line': b'[ 33%] \x1b[32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o\x1b[0m\n'}
+[0.299498] (-) TimerEvent: {}
+[0.399863] (-) TimerEvent: {}
+[0.500443] (-) TimerEvent: {}
+[0.601162] (-) TimerEvent: {}
+[0.701517] (-) TimerEvent: {}
+[0.802001] (-) TimerEvent: {}
+[0.902677] (-) TimerEvent: {}
+[1.003494] (-) TimerEvent: {}
+[1.104451] (-) TimerEvent: {}
+[1.206066] (-) TimerEvent: {}
+[1.307760] (-) TimerEvent: {}
+[1.408927] (-) TimerEvent: {}
+[1.509998] (-) TimerEvent: {}
+[1.610710] (-) TimerEvent: {}
+[1.711388] (-) TimerEvent: {}
+[1.811928] (-) TimerEvent: {}
+[1.912696] (-) TimerEvent: {}
+[2.013372] (-) TimerEvent: {}
+[2.113810] (-) TimerEvent: {}
+[2.214266] (-) TimerEvent: {}
+[2.315019] (-) TimerEvent: {}
+[2.415663] (-) TimerEvent: {}
+[2.516037] (-) TimerEvent: {}
+[2.616416] (-) TimerEvent: {}
+[2.716838] (-) TimerEvent: {}
+[2.817284] (-) TimerEvent: {}
+[2.917665] (-) TimerEvent: {}
+[3.018029] (-) TimerEvent: {}
+[3.118407] (-) TimerEvent: {}
+[3.218791] (-) TimerEvent: {}
+[3.319355] (-) TimerEvent: {}
+[3.419727] (-) TimerEvent: {}
+[3.520101] (-) TimerEvent: {}
+[3.620477] (-) TimerEvent: {}
+[3.720834] (-) TimerEvent: {}
+[3.821280] (-) TimerEvent: {}
+[3.922006] (-) TimerEvent: {}
+[4.022712] (-) TimerEvent: {}
+[4.123522] (-) TimerEvent: {}
+[4.225072] (-) TimerEvent: {}
+[4.325653] (-) TimerEvent: {}
+[4.426354] (-) TimerEvent: {}
+[4.526728] (-) TimerEvent: {}
+[4.627238] (-) TimerEvent: {}
+[4.728061] (-) TimerEvent: {}
+[4.828992] (-) TimerEvent: {}
+[4.929750] (-) TimerEvent: {}
+[5.030532] (-) TimerEvent: {}
+[5.131238] (-) TimerEvent: {}
+[5.231652] (-) TimerEvent: {}
+[5.332091] (-) TimerEvent: {}
+[5.432467] (-) TimerEvent: {}
+[5.532920] (-) TimerEvent: {}
+[5.633323] (-) TimerEvent: {}
+[5.733675] (-) TimerEvent: {}
+[5.834057] (-) TimerEvent: {}
+[5.934495] (-) TimerEvent: {}
+[6.034876] (-) TimerEvent: {}
+[6.135263] (-) TimerEvent: {}
+[6.235636] (-) TimerEvent: {}
+[6.336059] (-) TimerEvent: {}
+[6.436438] (-) TimerEvent: {}
+[6.536821] (-) TimerEvent: {}
+[6.637492] (-) TimerEvent: {}
+[6.737874] (-) TimerEvent: {}
+[6.838243] (-) TimerEvent: {}
+[6.938598] (-) TimerEvent: {}
+[7.038977] (-) TimerEvent: {}
+[7.139358] (-) TimerEvent: {}
+[7.239733] (-) TimerEvent: {}
+[7.340155] (-) TimerEvent: {}
+[7.440638] (-) TimerEvent: {}
+[7.541364] (-) TimerEvent: {}
+[7.642127] (-) TimerEvent: {}
+[7.742885] (-) TimerEvent: {}
+[7.843654] (-) TimerEvent: {}
+[7.944469] (-) TimerEvent: {}
+[8.045277] (-) TimerEvent: {}
+[8.145868] (-) TimerEvent: {}
+[8.246564] (-) TimerEvent: {}
+[8.347298] (-) TimerEvent: {}
+[8.447991] (-) TimerEvent: {}
+[8.548678] (-) TimerEvent: {}
+[8.649424] (-) TimerEvent: {}
+[8.750161] (-) TimerEvent: {}
+[8.850552] (-) TimerEvent: {}
+[8.950920] (-) TimerEvent: {}
+[9.051305] (-) TimerEvent: {}
+[9.151667] (-) TimerEvent: {}
+[9.252027] (-) TimerEvent: {}
+[9.352510] (-) TimerEvent: {}
+[9.453251] (-) TimerEvent: {}
+[9.554861] (-) TimerEvent: {}
+[9.655542] (-) TimerEvent: {}
+[9.756324] (-) TimerEvent: {}
+[9.857043] (-) TimerEvent: {}
+[9.957848] (-) TimerEvent: {}
+[10.058620] (-) TimerEvent: {}
+[10.159340] (-) TimerEvent: {}
+[10.260044] (-) TimerEvent: {}
+[10.360759] (-) TimerEvent: {}
+[10.461415] (-) TimerEvent: {}
+[10.562114] (-) TimerEvent: {}
+[10.662774] (-) TimerEvent: {}
+[10.763453] (-) TimerEvent: {}
+[10.864347] (-) TimerEvent: {}
+[10.965076] (-) TimerEvent: {}
+[11.065770] (-) TimerEvent: {}
+[11.166420] (-) TimerEvent: {}
+[11.267095] (-) TimerEvent: {}
+[11.367752] (-) TimerEvent: {}
+[11.468476] (-) TimerEvent: {}
+[11.569182] (-) TimerEvent: {}
+[11.669953] (-) TimerEvent: {}
+[11.681213] (mavROS_test) StdoutLine: {'line': b'[ 66%] \x1b[32m\x1b[1mLinking CXX executable mavROS_test\x1b[0m\n'}
+[11.770059] (-) TimerEvent: {}
+[11.870596] (-) TimerEvent: {}
+[11.971555] (-) TimerEvent: {}
+[12.072293] (-) TimerEvent: {}
+[12.172960] (-) TimerEvent: {}
+[12.203676] (mavROS_test) StdoutLine: {'line': b'[100%] Built target mavROS_test\n'}
+[12.243449] (mavROS_test) CommandEnded: {'returncode': 0}
+[12.273147] (-) TimerEvent: {}
+[12.305967] (mavROS_test) JobProgress: {'identifier': 'mavROS_test', 'progress': 'install'}
+[12.339500] (mavROS_test) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test'], 'cwd': '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test', 'env': OrderedDict({'GJS_DEBUG_TOPICS': 'JS ERROR;JS LOG', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'LANGUAGE': 'zh_CN:en', 'USER': 'nyf', 'LC_TIME': 'zh_CN.UTF-8', 'XDG_SESSION_TYPE': 'wayland', 'GIT_ASKPASS': '/usr/share/code/resources/app/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/nyf', 'CHROME_DESKTOP': 'code.desktop', 'TERM_PROGRAM_VERSION': '1.95.3', 'DESKTOP_SESSION': 'ubuntu', 'GIO_LAUNCHED_DESKTOP_FILE': '/usr/share/applications/code.desktop', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'VSCODE_GIT_ASKPASS_MAIN': '/usr/share/code/resources/app/extensions/git/dist/askpass-main.js', 'LC_MONETARY': 'zh_CN.UTF-8', 'VSCODE_GIT_ASKPASS_NODE': '/usr/share/code/code', 'MANAGERPID': '1058', 'SYSTEMD_EXEC_PID': '1243', 'IM_CONFIG_CHECK_ENV': '1', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'GIO_LAUNCHED_DESKTOP_FILE_PID': '3071', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/nyf/Code/Opi-VIO-FPV/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'nyf', 'JOURNAL_STREAM': '8:33487', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@wayland.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'nyf', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/nyf-OPi:@/tmp/.ICE-unix/1203,unix/nyf-OPi:/tmp/.ICE-unix/1203', 'INVOCATION_ID': '5eece8d0019e4e0cab4846df9634c10c', 'PAPERSIZE': 'a4', 'XDG_MENU_PREFIX': 'gnome-', 'LC_ADDRESS': 'zh_CN.UTF-8', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'GDK_BACKEND': 'x11', 'DISPLAY': ':0', 'LANG': 'zh_CN.UTF-8', 'XDG_CURRENT_DESKTOP': 'Unity', 'LC_TELEPHONE': 'zh_CN.UTF-8', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.DJ8EX2', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-13e7d0786c.sock', 'TERM_PROGRAM': 'vscode', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/nyf/Code/Opi-VIO-FPV/install/mavROS_test:/opt/ros/jazzy', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'SHELL': '/bin/bash', 'LC_NAME': 'zh_CN.UTF-8', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'LC_MEASUREMENT': 'zh_CN.UTF-8', 'GJS_DEBUG_OUTPUT': 'stderr', 'LC_IDENTIFICATION': 'zh_CN.UTF-8', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/opt/ros/jazzy/lib/python3.12/site-packages', 'LC_NUMERIC': 'zh_CN.UTF-8', 'LC_PAPER': 'zh_CN.UTF-8', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'CMAKE_PREFIX_PATH': '/home/nyf/Code/Opi-VIO-FPV/install/mavROS_test:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy'}), 'shell': False}
+[12.354188] (mavROS_test) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[12.355018] (mavROS_test) StdoutLine: {'line': b'-- Installing: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/lib/mavROS_test/mavROS_test\n'}
+[12.358508] (mavROS_test) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/lib/mavROS_test/mavROS_test" to ""\n'}
+[12.359182] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/ament_index/resource_index/package_run_dependencies/mavROS_test\n'}
+[12.359487] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/ament_index/resource_index/parent_prefix_path/mavROS_test\n'}
+[12.359624] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/environment/ament_prefix_path.sh\n'}
+[12.359738] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/environment/ament_prefix_path.dsv\n'}
+[12.359846] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/environment/path.sh\n'}
+[12.359953] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/environment/path.dsv\n'}
+[12.360059] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/local_setup.bash\n'}
+[12.360212] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/local_setup.sh\n'}
+[12.360425] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/local_setup.zsh\n'}
+[12.360543] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/local_setup.dsv\n'}
+[12.360644] (mavROS_test) StdoutLine: {'line': b'-- Installing: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/package.dsv\n'}
+[12.360744] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/ament_index/resource_index/packages/mavROS_test\n'}
+[12.360843] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/cmake/mavROS_testConfig.cmake\n'}
+[12.360944] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/cmake/mavROS_testConfig-version.cmake\n'}
+[12.361045] (mavROS_test) StdoutLine: {'line': b'-- Up-to-date: /home/nyf/Code/Opi-VIO-FPV/install/mavROS_test/share/mavROS_test/package.xml\n'}
+[12.364027] (mavROS_test) CommandEnded: {'returncode': 0}
+[12.376452] (-) TimerEvent: {}
+[12.475027] (mavROS_test) JobEnded: {'identifier': 'mavROS_test', 'rc': 0}
+[12.476460] (-) EventReactorShutdown: {}

@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test
+CMAKE_SOURCE_DIR = /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test
+CMAKE_BINARY_DIR = /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test
 
 # Utility rule file for mavROS_test_uninstall.
 
@@ -67,7 +67,7 @@ include CMakeFiles/mavROS_test_uninstall.dir/compiler_depend.make
 include CMakeFiles/mavROS_test_uninstall.dir/progress.make
 
 CMakeFiles/mavROS_test_uninstall:
-	/usr/bin/cmake -P /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/ament_cmake_uninstall_target/ament_cmake_uninstall_target.cmake
+	/usr/bin/cmake -P /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/ament_cmake_uninstall_target/ament_cmake_uninstall_target.cmake
 
 mavROS_test_uninstall: CMakeFiles/mavROS_test_uninstall
 mavROS_test_uninstall: CMakeFiles/mavROS_test_uninstall.dir/build.make
@@ -82,6 +82,6 @@ CMakeFiles/mavROS_test_uninstall.dir/clean:
 .PHONY : CMakeFiles/mavROS_test_uninstall.dir/clean
 
 CMakeFiles/mavROS_test_uninstall.dir/depend:
-	cd /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test /home/nyf/code/ROS2_workspace/mavROS_test/src/mavROS_test /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test /home/nyf/code/ROS2_workspace/mavROS_test/build/mavROS_test/CMakeFiles/mavROS_test_uninstall.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/CMakeFiles/mavROS_test_uninstall.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/mavROS_test_uninstall.dir/depend
 
