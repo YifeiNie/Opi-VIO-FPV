@@ -173,6 +173,9 @@ bool cliMode = false;
 #include "telemetry/frsky_hub.h"
 #include "telemetry/telemetry.h"
 
+// 我添加的部分
+#include "offboard/offboard.h"
+// 我添加的部分
 #include "cli.h"
 
 static serialPort_t *cliPort = NULL;
@@ -4975,7 +4978,9 @@ static void printVersion(const char *cmdName, bool printBoardInfo)
     if (printBoardInfo && strlen(getManufacturerId()) && strlen(getBoardName())) {
         cliPrintLinef("# board: manufacturer_id: %s, board_name: %s", getManufacturerId(), getBoardName());
         // Example：打印第五通道遥控器的数据（cli不支持打印浮点数，所以转为int打印）
-        // cliPrintLinef("AUX4 is: %d", (int)rcData[1]);
+        cliPrintLinef("Offboard_roll is: %d", (int)offboard.angle[FD_ROLL]);
+        cliPrintLinef("Offboard_pitch is: %d", (int)offboard.angle[FD_PITCH]);
+        cliPrintLinef("Offboard_yaw is: %d", (int)offboard.angle[FD_YAW]);
     }
 #endif
 }

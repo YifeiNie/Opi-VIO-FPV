@@ -8,7 +8,10 @@ Remark: 这里只对我相对于源码做出的改动予以说明，详细的修
 - <u>**在文件mavlink.c中**</u>，修改了`processMAVLinkTelemetry`函数，使得上面我定义的mavlink消息能和默认的消息一样被发送
 - <u>**在文件task.c中**</u>，修改了文件里的[TASK_TELEMETRY]任务的参数，使得mavlink数据的发送频率进一步提高
 - <u>**在文件mavlink.c中**</u>，添加了mavlinkReceive函数，用于接收机载电脑的消息
-
+- <u>**在文件mavlink.c中**</u>（重要！），修改宏定义`TELEMETRY_MAVLINK_INITIAL_PORT_MODE`为`MODE_RXTX`
+- <u>**在文件mavlink.c中**</u>，修改了mavlinkSendImuRawData函数中的磁偏角发送规则，改为不发送磁偏角，而是发送一个检测是否处于offboard模式的一个标志位
+- <u>**在文件mavlink.c中**</u>，修改了初始化函数openSerialPort
+- 具体的串口初始化过程层层封装，最后落在文件`serial_uart_stm32xxxxxx.c`的`serialUART函数`，其中stm32xxx是你飞控中单片机的型号
 ### IMU数据
 - <u>**在文件mavlink.c中**</u>，添加的函数`mavlinkSendImuRawData`中涉及一些看起来"莫名其妙"缩放因数，这是因为我测试的飞控使用的IMU是MPU6500，其意义如下
     - BF固件中，可以在accgyro_mpu6500.c中看到这样的定义`int accel_range = INV_FSR_16G`.注意在后面有`busWriteRegister(dev, MPU_RA_ACCEL_CONFIG, accel_range << 3)`的程序，这是因为寄存器写入需要位移，并不代表量程放大了2^3倍，而MPU6500的精度是16位，也即-32768到32767，所以假设读取的16位有符号整型的数据为1000，则说明真实的加速度是1000 \* 16G/32768G，或者说是1000/2048G

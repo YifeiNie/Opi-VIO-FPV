@@ -90,7 +90,7 @@
 #include "common/mavlink.h"
 #pragma GCC diagnostic pop
 
-#define TELEMETRY_MAVLINK_INITIAL_PORT_MODE MODE_TX
+#define TELEMETRY_MAVLINK_INITIAL_PORT_MODE MODE_RXTX
 #define TELEMETRY_MAVLINK_MAXRATE 300
 #define TELEMETRY_MAVLINK_DELAY ((1000 * 1000) / TELEMETRY_MAVLINK_MAXRATE)
 
@@ -102,13 +102,20 @@ static const serialPortConfig_t *portConfig;
 static bool mavlinkTelemetryEnabled =  false;
 static portSharing_e mavlinkPortSharing;
 
-static MAV_AUTOPILOT autopilot_name = MAV_AUTOPILOT_GENERIC;
+static MAV_AUTOPILOT autopilot_name = MAV_AUTOPILOT_ARDUPILOTMEGA;
 
+int interrupt_flag = 1;
 // 串口接收回调，详细见serial.h第62行
 // 参数 uint16_t c是串口接收到的数据，其实应该是8bit就够了，不知道为什么用16位的，而且后面也变成8位的
 //      void* data是一个不关心的参数（按经验应该是数据的大小），所以后面用UNUSED修饰
 static void mavlinkReceive(uint16_t c, void* data) {
 
+    if(interrupt_flag == 0){
+        interrupt_flag = 1;
+    }
+    else {
+        interrupt_flag = 0;
+    }
     UNUSED(data);
     mavlink_message_t msg;
     mavlink_status_t status;
@@ -233,7 +240,8 @@ void configureMAVLinkTelemetryPort(void)
         baudRateIndex = BAUD_2000000;
     }
 
-    mavlinkPort = openSerialPort(portConfig->identifier, FUNCTION_TELEMETRY_MAVLINK, mavlinkReceive, NULL, baudRates[baudRateIndex], TELEMETRY_MAVLINK_INITIAL_PORT_MODE, telemetryConfig()->telemetry_inverted ? SERIAL_INVERTED : SERIAL_NOT_INVERTED);
+    // 源码的最后一个参数是telemetryConfig()->telemetry_inverted ? SERIAL_INVERTED : SERIAL_NOT_INVERTED
+    mavlinkPort = openSerialPort(portConfig->identifier, FUNCTION_TELEMETRY_MAVLINK, mavlinkReceive, NULL, baudRates[baudRateIndex], TELEMETRY_MAVLINK_INITIAL_PORT_MODE, SERIAL_STOPBITS_1);
 
     if (!mavlinkPort) {
         return;
@@ -493,9 +501,11 @@ void mavlinkSendImuRawData(void)
             DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_PITCH])*1000,
             DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_YAW])*1000,
             // MPU6500没有磁力计，所以为0
-            0,
-            0,
-            0                                               
+            // 将第一个改为一个检测是否处于offboard模式的一个标志位
+            // 第二个改为检测offboard信号是否被接收到
+            interrupt_flag,
+            offboard.angle[FD_PITCH],
+            offboard.angle_rate[FD_PITCH]                                               
         );
         
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
@@ -711,19 +721,12 @@ void processMAVLinkTelemetry(void)
 #endif
     // 借用一下GPS的计数器，以2Hz的频率发送心跳信息
     if(mavlinkStreamTrigger(MAV_DATA_STREAM_POSITION)) {
-        if(FLIGHT_MODE(OFFBOARD_MODE)) {
-            autopilot_name = MAV_AUTOPILOT_ARDUPILOTMEGA;
-        }
-        else {
-            autopilot_name = MAV_AUTOPILOT_GENERIC;
-        }
         mavlinkSendHeartbeat();
     }
     
     if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTRA1)) {
-            mavlinkSendAttitude();
-            mavlinkSendImuRawData();
-
+        mavlinkSendAttitude();
+        mavlinkSendImuRawData();
     }
 
 }

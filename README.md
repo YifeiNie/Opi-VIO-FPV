@@ -141,3 +141,9 @@
 - 然后使用`sudo apt install ros-jazzy-desktop`安装桌面版ROS2 jazzy
 - 安装完成后在~/.bashrc里添加环境变量：`source opt/ros/jazzy/setup.bash`，终于完成安装，同时GPU应该也在工作
 - remark：不要随意使用什么一键安装！！
+### 2024.11.18 -- by nyf
+- 尝试实现用键盘控制飞机，实现了键盘数据的读取和控制信号的发布，可以在mavros话题中找到我发送的那个控制姿态的offboard话题
+- 但是发现在从mavros转到mavlink的过程中遇到困难，经研究发现可以使用ROS2的话题`/uas1/mavlink_sink`（mavros到飞控）和`/uas1/mavlink_source`（飞控到mavros）来观测mavlink消息，还可以使用`grep | "msgid:82"`来抓取感兴趣的信息，这些消息id在[这里](https://mavlink.io/en/messages/common.html#SET_ATTITUDE_TARGET)查
+- 使用px4官方的offboard示例`ros2 topic pub /mavros/setpoint_position/local geometry_msgs/PoseStamped "{header: {stamp: now, frame_id: 'map'}, pose: {position: {x: 0.0, y: 0.0, z: 10.0}, orientation: {w: 1.0}}}"`可以发送offboard信息，使用上一步的方法测试发现mavlink消息存在，而我自己编的程不存在
+- 发现发布的话题必须是mavros开头的话题，我自己之前的话题名是自己起的，所以就没有对应的mavlink消息，修改为/mavros/setpoint_raw/attitude后就能在mavlink消息里看到了
+- 好消息：进中断了；坏消息：没读到数据。初步怀疑是参数`MAVLINK_COMM_0`，等白天在确认一下
