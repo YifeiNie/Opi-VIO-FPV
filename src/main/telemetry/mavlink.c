@@ -106,13 +106,14 @@ static MAV_AUTOPILOT autopilot_name = MAV_AUTOPILOT_ARDUPILOTMEGA;
 
 int interrupt_flag = 1;
 mavlink_status_t status;
+mavlink_message_t msg;
 uint16_t received_data;
 // 串口接收回调，详细见serial.h第62行
 // 参数 uint16_t c是串口接收到的数据，其实应该是8bit就够了，不知道为什么用16位的，而且后面也变成8位的
 //      void* data是一个不关心的参数（按经验应该是数据的大小），所以后面用UNUSED修饰
 static void mavlinkReceive(uint16_t c, void* data) {
     UNUSED(data);
-    mavlink_message_t msg;
+    // mavlink_message_t msg;
     // mavlink_status_t status;
     
     // =========================================================================
@@ -519,14 +520,14 @@ void mavlinkSendImuRawData(void)
             // DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_YAW])*1000,
             (received_data != (rxmsg->checksum >> 8))/(9.80665 / 1000.0),  // 1 
             -(status.parse_error)/(9.80665 / 1000.0),                      // 0
-            0,                                                             // 0
+            -offboard.angle[FD_PITCH]/(9.80665 / 1000.0),                                                             // 0
             status.parse_state*1000,                            // 1
             -status.msg_received*1000,                          // 0
             -(received_data != (rxmsg->checksum & 0xFF))*1000,  // 1
             // MPU6500没有磁力计，所以为0
-            (int16_t)status.parse_state,
-            interrupt_flag,
-            0                                             
+            (int16_t)status.packet_rx_drop_count,
+            -(int16_t)interrupt_flag,
+            -(int16_t)msg.msgid                                             
         );
         
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
