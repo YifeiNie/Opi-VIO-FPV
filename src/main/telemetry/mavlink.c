@@ -105,21 +105,28 @@ static portSharing_e mavlinkPortSharing;
 static MAV_AUTOPILOT autopilot_name = MAV_AUTOPILOT_ARDUPILOTMEGA;
 
 int interrupt_flag = 1;
+mavlink_status_t status;
+uint16_t received_data;
 // 串口接收回调，详细见serial.h第62行
 // 参数 uint16_t c是串口接收到的数据，其实应该是8bit就够了，不知道为什么用16位的，而且后面也变成8位的
 //      void* data是一个不关心的参数（按经验应该是数据的大小），所以后面用UNUSED修饰
 static void mavlinkReceive(uint16_t c, void* data) {
-
-    if(interrupt_flag == 0){
-        interrupt_flag = 1;
-    }
-    else {
-        interrupt_flag = 0;
-    }
     UNUSED(data);
     mavlink_message_t msg;
-    mavlink_status_t status;
+    // mavlink_status_t status;
     
+    // =========================================================================
+    // =========================================================================
+    // if(interrupt_flag == 0){
+    //     interrupt_flag = 1000;
+    // }
+    // else {
+    //     interrupt_flag = 0;
+    // }
+    // received_data = c;
+    // =========================================================================
+    // =========================================================================
+
     // &status用于获取是三种状态的哪一种，只有是接收完成，即status为1时才会执行后续操作
     if (mavlink_parse_char(MAVLINK_COMM_0, (uint8_t)c, &msg, &status)) {
         // user code
@@ -146,8 +153,17 @@ static void mavlinkReceive(uint16_t c, void* data) {
                 }
                 break;
             }
-
-                // to be continued...
+            case 111:{
+                if (interrupt_flag == 0){
+                    interrupt_flag = 1;
+                }
+                else {
+                    interrupt_flag = 0;
+                }
+                break;
+            }
+            default :
+                break;
         }
     }
         
@@ -159,7 +175,7 @@ static const uint16_t mavRates[] = {
     [MAV_DATA_STREAM_EXTENDED_STATUS] = 2, //2Hz
     [MAV_DATA_STREAM_RC_CHANNELS] = 5, //5Hz
     [MAV_DATA_STREAM_POSITION] = 2, //2Hz
-    [MAV_DATA_STREAM_EXTRA1] = 300, //自定义
+    [MAV_DATA_STREAM_EXTRA1] = 100, //自定义
     [MAV_DATA_STREAM_EXTRA2] = 10 //2Hz
 };
 
@@ -487,25 +503,30 @@ void mavlinkSendAttitude(void)
 
 void mavlinkSendImuRawData(void)
 {
+    mavlink_message_t* rxmsg = mavlink_get_channel_buffer(MAVLINK_COMM_0);
     uint16_t msgLength;
     mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
         // time_boot_ms Timestamp (milliseconds since system boot)
             millis(),
             // 下面三个是线加速度，单位是 G/1000，也即'毫重力加速度'
             // 为什么/2048.0f*1000？请看README的2024.10.29日的笔记
-            (int16_t)((float)(acc.accADC[X])/2048.0f*1000),
-            (int16_t)((float)(-acc.accADC[Y])/2048.0f*1000),
-            (int16_t)((float)(-acc.accADC[Z])/2048.0f*1000),
+            // (int16_t)((float)(acc.accADC[X])/2048.0f*1000),
+            // (int16_t)((float)(-acc.accADC[Y])/2048.0f*1000),
+            // (int16_t)((float)(-acc.accADC[Z])/2048.0f*1000),
             // 下面三个单位是毫弧度/秒，即millirad/s
-            DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL])*1000,
-            DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_PITCH])*1000,
-            DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_YAW])*1000,
+            // DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL])*1000,
+            // DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_PITCH])*1000,
+            // DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_YAW])*1000,
+            (received_data != (rxmsg->checksum >> 8))/(9.80665 / 1000.0),  // 1 
+            -(status.parse_error)/(9.80665 / 1000.0),                      // 0
+            0,                                                             // 0
+            status.parse_state*1000,                            // 1
+            -status.msg_received*1000,                          // 0
+            -(received_data != (rxmsg->checksum & 0xFF))*1000,  // 1
             // MPU6500没有磁力计，所以为0
-            // 将第一个改为一个检测是否处于offboard模式的一个标志位
-            // 第二个改为检测offboard信号是否被接收到
+            (int16_t)status.parse_state,
             interrupt_flag,
-            offboard.angle[FD_PITCH],
-            offboard.angle_rate[FD_PITCH]                                               
+            0                                             
         );
         
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
@@ -725,7 +746,7 @@ void processMAVLinkTelemetry(void)
     }
     
     if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTRA1)) {
-        mavlinkSendAttitude();
+        // mavlinkSendAttitude();
         mavlinkSendImuRawData();
     }
 

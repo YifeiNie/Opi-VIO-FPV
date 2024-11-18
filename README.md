@@ -147,3 +147,6 @@
 - 使用px4官方的offboard示例`ros2 topic pub /mavros/setpoint_position/local geometry_msgs/PoseStamped "{header: {stamp: now, frame_id: 'map'}, pose: {position: {x: 0.0, y: 0.0, z: 10.0}, orientation: {w: 1.0}}}"`可以发送offboard信息，使用上一步的方法测试发现mavlink消息存在，而我自己编的程不存在
 - 发现发布的话题必须是mavros开头的话题，我自己之前的话题名是自己起的，所以就没有对应的mavlink消息，修改为/mavros/setpoint_raw/attitude后就能在mavlink消息里看到了
 - 好消息：进中断了；坏消息：没读到数据。初步怀疑是参数`MAVLINK_COMM_0`，等白天在确认一下
+### 2024.11.18 -- by nyf 买了个新飞控
+- 折腾一天，无果，但发现是校验不通过导致没读到数据，不知道是什么原因
+- 想尝试调试一下，发现bf固件是通过串口烧录固件的，无法断点调试，而目前我手上的两种飞控均未引出swd接口，飞线也飞不上去，故买了个引出swd接口的新飞控，计划使用vscode+openocd进行断点调试
