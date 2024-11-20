@@ -511,23 +511,17 @@ void mavlinkSendImuRawData(void)
             millis(),
             // 下面三个是线加速度，单位是 G/1000，也即'毫重力加速度'
             // 为什么/2048.0f*1000？请看README的2024.10.29日的笔记
-            // (int16_t)((float)(acc.accADC[X])/2048.0f*1000),
-            // (int16_t)((float)(-acc.accADC[Y])/2048.0f*1000),
-            // (int16_t)((float)(-acc.accADC[Z])/2048.0f*1000),
+            (int16_t)((float)(acc.accADC[X])/2048.0f*1000),
+            (int16_t)((float)(-acc.accADC[Y])/2048.0f*1000),
+            (int16_t)((float)(-acc.accADC[Z])/2048.0f*1000),
             // 下面三个单位是毫弧度/秒，即millirad/s
-            // DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL])*1000,
-            // DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_PITCH])*1000,
-            // DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_YAW])*1000,
-            (received_data != (rxmsg->checksum >> 8))/(9.80665 / 1000.0),  // 1 
-            -(status.parse_error)/(9.80665 / 1000.0),                      // 0
-            -offboard.angle[FD_PITCH]/(9.80665 / 1000.0),                                                             // 0
-            status.parse_state*1000,                            // 1
-            -status.msg_received*1000,                          // 0
-            -(received_data != (rxmsg->checksum & 0xFF))*1000,  // 1
+            DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL])*1000,
+            DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_PITCH])*1000,
+            DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_YAW])*1000,
             // MPU6500没有磁力计，所以为0
-            (int16_t)status.packet_rx_drop_count,
-            -(int16_t)interrupt_flag,
-            -(int16_t)msg.msgid                                             
+            offboard.angle[FD_ROLL],  
+            offboard.angle[FD_PITCH],                     
+            offboard.angle[FD_YAW],                                            
         );
         
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
