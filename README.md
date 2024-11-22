@@ -170,11 +170,15 @@
         - `sudo apt install python3.11`这里是你需要的版本
     - 此时系统里有多个版本的py，使用`sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1`最后一位数字表示优先级，1是最高，将最新版本的py设置为默认
 - 安装这个包`sudo apt-get install python3.11-distutils`
+- 此时你会发现终端以及terminator都大不开了，此时需要分别在`/usr/bin/gnome-terminal`和`/usr/bin/terminator`里把第一个语句`#!/usr/bin/python3`改为`#!/usr/bin/python3.8`，然后就可以了，不过这种更改需要sudo，如果之前没有保留一个空白终端，vscode的sudo命令也不能使用，则可以进入tty terminal修改
+- 同时与python相关的比如apt，cmake等使用时也报错`ModuleNotFoundError: No module named 'apt_pkg'`,解决方法如下，参考[这里](https://blog.csdn.net/a18838956649/article/details/117612374)
+    - `sudo apt-get install python3-apt --reinstall`
+    - `cd /usr/lib/python3/dist-packages`
+    - `cp apt_pkg.cpython-35m-x86_64-linux-gnu.so apt_pkg.so`，注意此处apt_pkg.cpython-3x，最好利用tab自动补全一下
 - 升级pip
     - `curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11`
     - 将`/usr/bin/pip3`和`/usr/bin/pip`里的"pip==xxxx"改为使用`python3 -m pip --version`命令看到的版本
 - 重新执行pytorch的安装，然后使用`pip cache purge`删除缓存
 - 以上参考了[这里](https://blog.csdn.net/DEVELOPERAA/article/details/133743389)和[这里](https://blog.csdn.net/chdlr/article/details/136989643)
-- 此时你会发现终端以及terminator都大不开了，此时需要分别在`/usr/bin/gnome-terminal`和`/usr/bin/terminator`里把第一个语句`#!/usr/bin/python3`改为`#!/usr/bin/python3.8`，然后就可以了，不过这种更改需要sudo，如果之前没有保留一个空白终端，vscode的sudo命令也不能使用，则可以进入tty terminal修改
 - 运行python程序时报错`/usr/bin/env: ‘python’: No such file or directory报错`，使用`sudo ln -s /usr/bin/python3 /usr/bin/python`创建符号连接就能解决
 
