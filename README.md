@@ -154,3 +154,25 @@
 ### 2024.11.20 -- by nyf 祝我生日快乐
 - 成功使用vscode + cmake + gdb实现c++的调试
 - 成功捕获到键盘数据，没有使用ros2，直接使用libevdev库，实现了同时捕获键盘wasd和前后左右方向键的单击，按住和松开三个状态
+### 2024.11.22 -- by nyf 安装pytorch
+- 首先使用nvidia-smi查看显卡是否在工作，如果发现显卡占用一直为0，说明显卡没在工作，对此安装驱动如下步骤
+    - 查询电脑最适合的显卡驱动版本`ubuntu-drivers devices`，找到后面跟着`recommended`的对应驱动
+    - `sudo add-apt-repository ppa:graphics-drivers/ppa`
+    - `sudo apt-get update`
+    - `sudo apt-get install nvidia-driver-525`，此处数字要对应上面查询到的recommended版本号
+    - 重启
+- 使用`nvidia-smi`检查cuda版本，根据版本进入[pytorch官网](https://pytorch.org/)选择对应版本下载，如果出现问题，参考下面执行操作
+- 更新py:如果报错`ERROR: Package 'networkx' requires a different Python: 3.8.10 not in '>=3.9'`，说明python版本过低，需要更新python
+    - 注意！！！从这里开始，务必保持一个空的终端在后台开启，因为终端是基于python的，更新版本后终端将打不开，而处理这种情况又需要打开终端，所以建议保留，如果实在忘记，也可以通过vscode的终端操作，前提是vscode已经解锁了sudo命令
+    - 使用如下命令更新：
+        - `sudo add-apt-repository ppa:deadsnakes/ppa`
+        - `sudo apt update`
+        - `sudo apt install python3.11`这里是你需要的版本
+    - 此时系统里有多个版本的py，使用`sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1`最后一位数字表示优先级，1是最高，将最新版本的py设置为默认
+- 安装这个包`sudo apt-get install python3.11-distutils`
+- 升级pip
+    - `curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11`
+    - 将`/usr/bin/pip3`和`/usr/bin/pip`里的"pip==xxxx"改为使用`python3 -m pip --version`命令看到的版本
+- 重新执行pytorch的安装，然后使用`pip cache purge`删除缓存
+- 此时你会发现终端以及terminator都大不开了，此时需要分别在`/usr/bin/gnome-terminal`和`/usr/bin/terminator`里把第一个语句`#!/usr/bin/python3`改为`#!/usr/bin/python3.8`，然后就可以了，不过这种更改需要sudo，如果之前没有保留一个空白终端，vscode的sudo命令也不能使用，则可以进入tty terminal修改
+
