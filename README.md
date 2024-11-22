@@ -176,4 +176,5 @@
 - 重新执行pytorch的安装，然后使用`pip cache purge`删除缓存
 - 以上参考了[这里](https://blog.csdn.net/DEVELOPERAA/article/details/133743389)和[这里](https://blog.csdn.net/chdlr/article/details/136989643)
 - 此时你会发现终端以及terminator都大不开了，此时需要分别在`/usr/bin/gnome-terminal`和`/usr/bin/terminator`里把第一个语句`#!/usr/bin/python3`改为`#!/usr/bin/python3.8`，然后就可以了，不过这种更改需要sudo，如果之前没有保留一个空白终端，vscode的sudo命令也不能使用，则可以进入tty terminal修改
+- 运行python程序时报错`/usr/bin/env: ‘python’: No such file or directory报错`，使用`sudo ln -s /usr/bin/python3 /usr/bin/python`创建符号连接就能解决
 
