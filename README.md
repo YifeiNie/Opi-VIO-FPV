@@ -174,5 +174,6 @@
     - `curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11`
     - 将`/usr/bin/pip3`和`/usr/bin/pip`里的"pip==xxxx"改为使用`python3 -m pip --version`命令看到的版本
 - 重新执行pytorch的安装，然后使用`pip cache purge`删除缓存
+- 以上参考了[这里](https://blog.csdn.net/DEVELOPERAA/article/details/133743389)和[这里](https://blog.csdn.net/chdlr/article/details/136989643)
 - 此时你会发现终端以及terminator都大不开了，此时需要分别在`/usr/bin/gnome-terminal`和`/usr/bin/terminator`里把第一个语句`#!/usr/bin/python3`改为`#!/usr/bin/python3.8`，然后就可以了，不过这种更改需要sudo，如果之前没有保留一个空白终端，vscode的sudo命令也不能使用，则可以进入tty terminal修改
 
