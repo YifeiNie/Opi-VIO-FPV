@@ -168,7 +168,7 @@
         - `sudo add-apt-repository ppa:deadsnakes/ppa`
         - `sudo apt update`
         - `sudo apt install python3.11`这里是你需要的版本
-    - 此时系统里有多个版本的py，使用`sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1`最后一位数字表示优先级，1是最高，将最新版本的py设置为默认
+    - 此时系统里有多个版本的py，使用`sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1`最后一位数字表示优先级，1是最高，将最新版本的py设置为默认，同时**一定要把老版本也按顺序排列第二第三等的，否则会导致冲突，所有与系统环境下python相关的应用全部失效报错！！！**
 - 安装这个包`sudo apt-get install python3.11-distutils`
 - 此时你会发现终端以及terminator都大不开了，此时需要分别在`/usr/bin/gnome-terminal`和`/usr/bin/terminator`里把第一个语句`#!/usr/bin/python3`改为`#!/usr/bin/python3.8`，然后就可以了，不过这种更改需要sudo，如果之前没有保留一个空白终端，vscode的sudo命令也不能使用，则可以进入tty terminal修改
 - 同时与python相关的比如apt，cmake等使用时也报错`ModuleNotFoundError: No module named 'apt_pkg'`,解决方法如下，参考[这里](https://blog.csdn.net/a18838956649/article/details/117612374)
