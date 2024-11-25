@@ -3,72 +3,85 @@
 #include <unistd.h>
 #include <iostream>
 #include <chrono>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <libevdev/libevdev.h>
 
-// 结构体用于存储键盘输入
-struct KeyInput {
-    char key;
-    std::chrono::time_point<std::chrono::steady_clock> timestamp;
-};
+#include "key_input.hpp"
 
-// 创建一个类，用于读取键盘输入并保存到结构体中
-class KeyboardReader : public rclcpp::Node{
-public:
-    KeyboardReader() : Node("keyboard_reader"){
-        RCLCPP_INFO(this->get_logger(), "Keyboard reader node has been started.");
-        // 配置终端，使其能够读取单个字符而无需按 Enter
-        tcgetattr(STDIN_FILENO, &old_tio_);
-        new_tio_ = old_tio_;
-        new_tio_.c_lflag &= ~(ICANON | ECHO);
-        tcsetattr(STDIN_FILENO, TCSANOW, &new_tio_);
+struct libevdev* dev = nullptr;
 
-        // 启动一个定时器，每隔100毫秒读取键盘输入
-        timer_ = this->create_wall_timer(
-        std::chrono::milliseconds(100),
-        std::bind(&KeyboardReader::timer_callback, this));
+// 简单的打印
+void printKeyStatus(bool* key_status) {
+    std::cout << "W: " << (key_status[W] ? "Pressed" : "Released") << ", ";
+    std::cout << "A: " << (key_status[A] ? "Pressed" : "Released") << ", ";
+    std::cout << "S: " << (key_status[S] ? "Pressed" : "Released") << ", ";
+    std::cout << "D: " << (key_status[D] ? "Pressed" : "Released") << ", ";
+    std::cout << "Up: " << (key_status[UP] ? "Pressed" : "Released") << ", ";
+    std::cout << "Down: " << (key_status[DOWN] ? "Pressed" : "Released") << ", ";
+    std::cout << "Left: " << (key_status[LEFT] ? "Pressed" : "Released") << ", ";
+    std::cout << "Right: " << (key_status[RIGHT] ? "Pressed" : "Released") << std::endl;
+    usleep(1000);
+}
+
+// 节点类的构造函数
+KeyboardReader::KeyboardReader() : Node("keyboard_reader"){
+    RCLCPP_INFO(this->get_logger(), "Keyboard reader node has been started.");
+    timer_ = this->create_wall_timer(
+    std::chrono::milliseconds(10),
+    std::bind(&KeyboardReader::timer_callback, this));
+}
+
+// 更新键盘输入状态
+void KeyboardReader::update_key_status(uint8_t key_index){
+    if (ev.value == 1) {         // 按下
+        key_status[key_index] = true;
+    } else if (ev.value == 0) {  // 松开
+        key_status[key_index]= false;
+    } else if (ev.value == 2) {  // 按住
+        // 持续按住时不需要改变状态
     }
+}
 
+// get函数
+bool* KeyboardReader::get_key_input(){
+    return key_status;
+}
 
-    ~KeyboardReader(){
-        // 恢复终端的原始设置
-        tcsetattr(STDIN_FILENO, TCSANOW, &old_tio_);
-    }
-
-// 获取最新的键盘输入
-    KeyInput get_last_key_input() const {
-        return last_key_input_;
-    }
-private:
-    void timer_callback(){
-        char key;
-        if (read(STDIN_FILENO, &key, 1) > 0){
-            // 更新结构体中的键盘输入信息
-            last_key_input_.key = key;
-            last_key_input_.timestamp = std::chrono::steady_clock::now();
-
-            RCLCPP_INFO(this->get_logger(), "Key pressed: '%d'", key);
+// 检查按键事件，并更新相应的标志位
+void KeyboardReader::timer_callback(){
+    if (libevdev_next_event(dev, LIBEVDEV_READ_FLAG_BLOCKING, &ev) == 0) {
+        if (ev.type == EV_KEY) {
+            switch (ev.code) {
+                case KEY_W:
+                    update_key_status(W);
+                    break;
+                case KEY_A:
+                    update_key_status(A);
+                    break;
+                case KEY_S:
+                    update_key_status(S);
+                    break;
+                case KEY_D:
+                    update_key_status(D);
+                    break;
+                case KEY_UP:
+                    update_key_status(UP);
+                    break;
+                case KEY_DOWN:
+                    update_key_status(DOWN);
+                    break;
+                case KEY_LEFT:
+                    update_key_status(LEFT);
+                    break;
+                case KEY_RIGHT:
+                    update_key_status(RIGHT);
+                    break;
+                default:
+                    break;
+            }
         }
+        printKeyStatus(key_status);
     }
-    KeyInput last_key_input_; // 保存最近一次的键盘输入
-    rclcpp::TimerBase::SharedPtr timer_;
-    struct termios old_tio_, new_tio_;
-};
-
-// int main(int argc, char *argv[]){
-//     rclcpp::init(argc, argv);
-//     auto node = std::make_shared<KeyboardReader>();
-
-//     // 示例：在主循环中获取并使用结构体中的键盘输入
-//     while (rclcpp::ok()) {
-//         rclcpp::spin_some(node);
-
-//         // 获取最近一次的键盘输入
-//         KeyInput input = node->get_last_key_input();
-//         std::cout << "Last key pressed: " << input.key << std::endl;
-
-//         // 添加延迟，避免打印太快
-//         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-//     }
-//     rclcpp::shutdown();
-//     return 0; 
-// }
+}

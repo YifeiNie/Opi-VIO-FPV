@@ -1,0 +1,18 @@
+[0.022s] Invoking command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test -- -j8 -l8
+[0.199s] [ 33%] [32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o[0m
+[0.211s] [ 66%] [32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/key_input.cpp.o[0m
+[4.485s] In file included from [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:11[m[K:
+[4.486s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/include/key_input.hpp:13:25:[m[K [01;35m[Kwarning: [m[K‘[01m[Kdev[m[K’ initialized and declared ‘[01m[Kextern[m[K’
+[4.486s]    13 | extern struct libevdev* [01;35m[Kdev[m[K = nullptr;
+[4.487s]       |                         [01;35m[K^~~[m[K
+[4.692s] In file included from [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/mavros_offboard.cpp:9[m[K:
+[4.692s] [01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/include/key_input.hpp:13:25:[m[K [01;35m[Kwarning: [m[K‘[01m[Kdev[m[K’ initialized and declared ‘[01m[Kextern[m[K’
+[4.693s]    13 | extern struct libevdev* [01;35m[Kdev[m[K = nullptr;
+[4.693s]       |                         [01;35m[K^~~[m[K
+[16.893s] [100%] [32m[1mLinking CXX executable mavROS_test[0m
+[17.019s] /usr/bin/ld: CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o:(.bss+0x0): multiple definition of `dev'; CMakeFiles/mavROS_test.dir/src/key_input.cpp.o:(.bss+0x0): first defined here
+[17.822s] collect2: error: ld returned 1 exit status
+[17.826s] gmake[2]: *** [CMakeFiles/mavROS_test.dir/build.make:224：mavROS_test] 错误 1
+[17.826s] gmake[1]: *** [CMakeFiles/Makefile2:137：CMakeFiles/mavROS_test.dir/all] 错误 2
+[17.826s] gmake: *** [Makefile:146：all] 错误 2
+[17.830s] Invoked command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test -- -j8 -l8

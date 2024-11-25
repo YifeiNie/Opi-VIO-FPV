@@ -1,0 +1,6 @@
+WARNING: Package name "mavROS_test" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+/usr/bin/ld: CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o:(.bss+0x0): multiple definition of `dev'; CMakeFiles/mavROS_test.dir/src/key_input.cpp.o:(.bss+0x0): first defined here
+collect2: error: ld returned 1 exit status
+gmake[2]: *** [CMakeFiles/mavROS_test.dir/build.make:224：mavROS_test] 错误 1
+gmake[1]: *** [CMakeFiles/Makefile2:137：CMakeFiles/mavROS_test.dir/all] 错误 2
+gmake: *** [Makefile:146：all] 错误 2

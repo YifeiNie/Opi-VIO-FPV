@@ -1,0 +1,52 @@
+[0.019s] Invoking command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test -DCMAKE_INSTALL_PREFIX=/home/nyf/Code/Opi-VIO-FPV/install/mavROS_test
+[0.336s] -- The C compiler identification is GNU 13.2.0
+[0.480s] -- The CXX compiler identification is GNU 13.2.0
+[0.522s] -- Detecting C compiler ABI info
+[0.738s] -- Detecting C compiler ABI info - done
+[0.754s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.755s] -- Detecting C compile features
+[0.756s] -- Detecting C compile features - done
+[0.776s] -- Detecting CXX compiler ABI info
+[1.057s] -- Detecting CXX compiler ABI info - done
+[1.073s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[1.074s] -- Detecting CXX compile features
+[1.075s] -- Detecting CXX compile features - done
+[1.128s] -- Found ament_cmake: 2.5.2 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[1.425s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[1.614s] -- Found rclcpp: 28.1.5 (/opt/ros/jazzy/share/rclcpp/cmake)
+[1.695s] -- Found rosidl_generator_c: 4.6.4 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[1.718s] -- Found rosidl_generator_cpp: 4.6.4 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[1.759s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.789s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.916s] -- Found rmw_implementation_cmake: 7.3.1 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[1.920s] -- Found rmw_fastrtps_cpp: 8.4.1 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[2.128s] -- Found OpenSSL: /usr/lib/aarch64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[2.163s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[2.207s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[2.326s] -- Found mavros_msgs: 2.9.0 (/opt/ros/jazzy/share/mavros_msgs/cmake)
+[2.627s] -- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1") 
+[2.628s] -- Checking for module 'libevdev'
+[2.666s] --   Found libevdev, version 1.13.1
+[2.755s] -- Found ament_lint_auto: 0.17.1 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[2.886s] WARNING: Package name "mavROS_test" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+[2.955s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[2.956s] -- Configured cppcheck include dirs: $<BUILD_INTERFACE:/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/include>
+[2.956s] -- Configured cppcheck exclude dirs and/or files: 
+[2.957s] -- Added test 'lint_cmake' to check CMake code style
+[2.961s] -- Added test 'uncrustify' to check C / C++ code style
+[2.961s] -- Configured uncrustify additional arguments: 
+[2.962s] -- Added test 'xmllint' to check XML markup files
+[2.964s] -- Configuring done (2.9s)
+[2.991s] -- Generating done (0.0s)
+[2.995s] -- Build files have been written to: /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test
+[3.025s] Invoked command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test -DCMAKE_INSTALL_PREFIX=/home/nyf/Code/Opi-VIO-FPV/install/mavROS_test
+[3.027s] Invoking command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test -- -j8 -l8
+[3.184s] [ 66%] [32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/key_input.cpp.o[0m
+[3.184s] [ 66%] [32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o[0m
+[20.123s] [100%] [32m[1mLinking CXX executable mavROS_test[0m
+[20.232s] /usr/bin/ld: CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o:(.bss+0x0): multiple definition of `dev'; CMakeFiles/mavROS_test.dir/src/key_input.cpp.o:(.bss+0x0): first defined here
+[21.001s] collect2: error: ld returned 1 exit status
+[21.005s] gmake[2]: *** [CMakeFiles/mavROS_test.dir/build.make:224：mavROS_test] 错误 1
+[21.005s] gmake[1]: *** [CMakeFiles/Makefile2:137：CMakeFiles/mavROS_test.dir/all] 错误 2
+[21.006s] gmake: *** [Makefile:146：all] 错误 2
+[21.008s] Invoked command in '/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nyf/Code/Opi-VIO-FPV/build/mavROS_test -- -j8 -l8

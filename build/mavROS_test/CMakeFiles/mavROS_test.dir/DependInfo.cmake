@@ -9,7 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp" "CMakeFiles/mavROS_test.dir/src/key_input.cpp.o" "gcc" "CMakeFiles/mavROS_test.dir/src/key_input.cpp.o.d"
-  "/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/mavROS_test.cpp" "CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o" "gcc" "CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o.d"
+  "/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/mavros_offboard.cpp" "CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o" "gcc" "CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

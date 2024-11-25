@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(mavROS_test)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
+add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 # find dependencies
@@ -12,13 +12,24 @@ find_package(mavros_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
+# 添加 pkg-config 支持以查找 libevdev 
+find_package(PkgConfig REQUIRED) 
+pkg_check_modules(LIBEVDEV REQUIRED libevdev) 
+include_directories(${LIBEVDEV_INCLUDE_DIRS})
+
 file(GLOB SRC_FILES "src/*cpp")
 
 add_executable(mavROS_test ${SRC_FILES})
+
 target_include_directories(mavROS_test PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
-target_compile_features(mavROS_test PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+  ${LIBEVDEV_INCLUDE_DIRS})
+
+target_compile_features(mavROS_test PUBLIC c_std_99 cxx_std_17) # Require C99 and C++17
+
+target_link_libraries(mavROS_test ${LIBEVDEV_LIBRARIES})
+
 ament_target_dependencies(
   mavROS_test
   "rclcpp"
@@ -28,7 +39,7 @@ ament_target_dependencies(
 )
 
 install(TARGETS mavROS_test
-  DESTINATION lib/${PROJECT_NAME})
+DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

@@ -83,30 +83,30 @@ CMakeFiles/mavROS_test.dir/src/key_input.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mavROS_test.dir/src/key_input.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp -o CMakeFiles/mavROS_test.dir/src/key_input.cpp.s
 
-CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o: CMakeFiles/mavROS_test.dir/flags.make
-CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o: /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/mavROS_test.cpp
-CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o: CMakeFiles/mavROS_test.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o -MF CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o.d -o CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o -c /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/mavROS_test.cpp
+CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o: CMakeFiles/mavROS_test.dir/flags.make
+CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o: /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/mavros_offboard.cpp
+CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o: CMakeFiles/mavROS_test.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/nyf/Code/Opi-VIO-FPV/build/mavROS_test/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o -MF CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o.d -o CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o -c /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/mavros_offboard.cpp
 
-CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/mavROS_test.cpp > CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.i
+CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/mavros_offboard.cpp > CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.i
 
-CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/mavROS_test.cpp -o CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.s
+CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/mavros_offboard.cpp -o CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.s
 
 # Object files for target mavROS_test
 mavROS_test_OBJECTS = \
 "CMakeFiles/mavROS_test.dir/src/key_input.cpp.o" \
-"CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o"
+"CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o"
 
 # External object files for target mavROS_test
 mavROS_test_EXTERNAL_OBJECTS =
 
 mavROS_test: CMakeFiles/mavROS_test.dir/src/key_input.cpp.o
-mavROS_test: CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o
+mavROS_test: CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o
 mavROS_test: CMakeFiles/mavROS_test.dir/build.make
 mavROS_test: /opt/ros/jazzy/lib/librclcpp.so
 mavROS_test: /opt/ros/jazzy/lib/libmavros_msgs__rosidl_typesupport_fastrtps_c.so

@@ -1,0 +1,3 @@
+[ 33%] [32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o[0m
+[ 66%] [32mBuilding CXX object CMakeFiles/mavROS_test.dir/src/key_input.cpp.o[0m
+[100%] [32m[1mLinking CXX executable mavROS_test[0m

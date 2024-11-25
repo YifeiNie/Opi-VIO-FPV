@@ -1,0 +1,8 @@
+[01m[K/home/nyf/Code/Opi-VIO-FPV/src/mavROS_test/src/key_input.cpp:13:1:[m[K [01;31m[Kerror: [m[K‘[01m[Kdev[m[K’ does not name a type; did you mean ‘[01m[Kdev_t[m[K’?
+   13 | [01;31m[Kdev[m[K = nullptr;
+      | [01;31m[K^~~[m[K
+      | [32m[Kdev_t[m[K
+gmake[2]: *** [CMakeFiles/mavROS_test.dir/build.make:76：CMakeFiles/mavROS_test.dir/src/key_input.cpp.o] 错误 1
+gmake[2]: *** 正在等待未完成的任务....
+gmake[1]: *** [CMakeFiles/Makefile2:137：CMakeFiles/mavROS_test.dir/all] 错误 2
+gmake: *** [Makefile:146：all] 错误 2

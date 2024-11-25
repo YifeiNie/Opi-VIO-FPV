@@ -234,29 +234,29 @@ src/key_input.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mavROS_test.dir/build.make CMakeFiles/mavROS_test.dir/src/key_input.cpp.s
 .PHONY : src/key_input.cpp.s
 
-src/mavROS_test.o: src/mavROS_test.cpp.o
-.PHONY : src/mavROS_test.o
+src/mavros_offboard.o: src/mavros_offboard.cpp.o
+.PHONY : src/mavros_offboard.o
 
 # target to build an object file
-src/mavROS_test.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mavROS_test.dir/build.make CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.o
-.PHONY : src/mavROS_test.cpp.o
+src/mavros_offboard.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mavROS_test.dir/build.make CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.o
+.PHONY : src/mavros_offboard.cpp.o
 
-src/mavROS_test.i: src/mavROS_test.cpp.i
-.PHONY : src/mavROS_test.i
+src/mavros_offboard.i: src/mavros_offboard.cpp.i
+.PHONY : src/mavros_offboard.i
 
 # target to preprocess a source file
-src/mavROS_test.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mavROS_test.dir/build.make CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.i
-.PHONY : src/mavROS_test.cpp.i
+src/mavros_offboard.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mavROS_test.dir/build.make CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.i
+.PHONY : src/mavros_offboard.cpp.i
 
-src/mavROS_test.s: src/mavROS_test.cpp.s
-.PHONY : src/mavROS_test.s
+src/mavros_offboard.s: src/mavros_offboard.cpp.s
+.PHONY : src/mavros_offboard.s
 
 # target to generate assembly for a file
-src/mavROS_test.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mavROS_test.dir/build.make CMakeFiles/mavROS_test.dir/src/mavROS_test.cpp.s
-.PHONY : src/mavROS_test.cpp.s
+src/mavros_offboard.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mavROS_test.dir/build.make CMakeFiles/mavROS_test.dir/src/mavros_offboard.cpp.s
+.PHONY : src/mavros_offboard.cpp.s
 
 # Help Target
 help:
@@ -277,9 +277,9 @@ help:
 	@echo "... src/key_input.o"
 	@echo "... src/key_input.i"
 	@echo "... src/key_input.s"
-	@echo "... src/mavROS_test.o"
-	@echo "... src/mavROS_test.i"
-	@echo "... src/mavROS_test.s"
+	@echo "... src/mavros_offboard.o"
+	@echo "... src/mavros_offboard.i"
+	@echo "... src/mavros_offboard.s"
 .PHONY : help
 
 
