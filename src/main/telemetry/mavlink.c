@@ -501,10 +501,20 @@ void mavlinkSendAttitude(void)
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);
 }
-
+float mag_x;
+float mag_y;
+float mag_z;
 void mavlinkSendImuRawData(void)
-{
-    mavlink_message_t* rxmsg = mavlink_get_channel_buffer(MAVLINK_COMM_0);
+{   if (FLIGHT_MODE(OFFBOARD_MODE)){
+        mag_x = offboard.angle[FD_ROLL]; 
+        mag_y = offboard.angle[FD_PITCH];                     
+        mag_z = offboard.angle[FD_YAW];
+    }
+    else{
+        mag_x = 0; 
+        mag_y = 0;                     
+        mag_z = 0; 
+    }
     uint16_t msgLength;
     mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
         // time_boot_ms Timestamp (milliseconds since system boot)
@@ -518,10 +528,10 @@ void mavlinkSendImuRawData(void)
             DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL])*1000,
             DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_PITCH])*1000,
             DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_YAW])*1000,
-            // MPU6500没有磁力计，所以为0
-            offboard.angle[FD_ROLL],  
-            offboard.angle[FD_PITCH],                     
-            offboard.angle[FD_YAW],                                            
+            // MPU6500没有磁力计，所以这里吧offboard数据打印出来
+            mag_x,
+            mag_y,   
+            mag_z                     
         );
         
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
