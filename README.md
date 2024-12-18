@@ -27,7 +27,7 @@
 - 在使用apt进行安装时，如果出现报错：没有可用的软件包...，在排除源和网络问题后仍不能解决，说明该版本Ubuntu不支持这个包了，上网找当前版本下的解决方法
 - git操作时出现permission denied，使用sudo才能解决，是因为初次clone时使用了root，导致权限出现问题，可以使用`sudo chown -R "$USER" -- /path/to/your/local/repo/folder`，详见[这里](https://stackoverflow.com/questions/73580646/why-cant-i-use-git-without-sudo)
 - 源码编译时记得在Opi-VIO-FPV/make/tools.mk里修改符合你安装工具链的版本号
-- 发现bf地面站不支持arm64的Ubuntu，所以后面计划在OPi上编程和烧录，参考[这里](https://www.carliatronics.eu/stm32-development-and-debug-with-vscode-on-ubuntu-2404/)
+- 发现bf地面站不支持arm64的Ubuntu，所以后面计划在Windows上编程，然后使用[STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)烧录，参考[这里](https://www.carliatronics.eu/stm32-development-and-debug-with-vscode-on-ubuntu-2404/)
 ### 2024.10.07 by Nyf --尝试通过mavlink和mavROS打通飞控与电脑的通信
 - 给我自己买的Inav固件的F405飞控改刷了BF固件。需要用到zagig工具配置飞控的bootloader，然后按住boot键给飞控上电先刷固件，再进入bf地面站的CLI命令从文件加载MPU6500的配置文件即可，操作步骤见[bf文档](https://betaflight.com/docs/wiki/guides/current/installing-betaflight)，操作视频见[这里](https://www.bilibili.com/video/BV1824y1v7JB/?spm_id_from=333.788.top_right_bar_window_history.content.click&vd_source=3a6242b3cb9435a95f7d4a98159f0607)，配置文件见[这里](https://github.com/YifeiNie/F405Firmware-IMU-configFile)
 - 简单了解了ROS2
@@ -154,5 +154,7 @@
 ### 2024.11.20 -- by nyf 祝我生日快乐
 - 成功使用vscode + cmake + gdb实现c++的调试
 - 成功捕获到键盘数据，没有使用ros2，直接使用libevdev库，实现了同时捕获键盘wasd和前后左右方向键的单击，按住和松开三个状态
+### 2024.12.18
+- 很久没更新了，做项目去了，今天使用新飞控，主控是STM32H743，编译后在链接过程中出现问题报错USBD相关库中的函数找不到，对此需要保证make\tools.mk的第一行为`ARM_SDK_DIR ?= $(TOOLS_DIR)/gcc-arm-none-eabi-10.3-2021.10`，我报错的原因是之前修改了版本
 
 
