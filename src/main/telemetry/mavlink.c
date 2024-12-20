@@ -154,15 +154,6 @@ static void mavlinkReceive(uint16_t c, void* data) {
                 }
                 break;
             }
-            case 111:{
-                if (interrupt_flag == 0){
-                    interrupt_flag = 1;
-                }
-                else {
-                    interrupt_flag = 0;
-                }
-                break;
-            }
             default :
                 break;
         }
@@ -511,9 +502,9 @@ void mavlinkSendImuRawData(void)
         mag_z = offboard.angle[FD_YAW];
     }
     else{
-        mag_x = 0; 
-        mag_y = 0;                     
-        mag_z = 0; 
+        mag_x = 1; 
+        mag_y = 1;                     
+        mag_z = 1; 
     }
     uint16_t msgLength;
     mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
