@@ -418,7 +418,7 @@ task_attribute_t task_attributes[TASK_COUNT] = {
 
 // 以微秒为单位
 #ifdef USE_TELEMETRY
-    [TASK_TELEMETRY] = DEFINE_TASK("TELEMETRY", NULL, NULL, taskTelemetry, TASK_PERIOD_HZ(100), TASK_PRIORITY_LOW),
+    [TASK_TELEMETRY] = DEFINE_TASK("TELEMETRY", NULL, NULL, taskTelemetry, TASK_PERIOD_HZ(300), TASK_PRIORITY_LOW),
 #endif
 
 #ifdef USE_LED_STRIP

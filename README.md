@@ -156,5 +156,10 @@
 - 成功捕获到键盘数据，没有使用ros2，直接使用libevdev库，实现了同时捕获键盘wasd和前后左右方向键的单击，按住和松开三个状态
 ### 2024.12.18
 - 很久没更新了，做项目去了，今天使用新飞控，主控是STM32H743，编译后在链接过程中出现问题报错USBD相关库中的函数找不到，对此需要保证make\tools.mk的第一行为`ARM_SDK_DIR ?= $(TOOLS_DIR)/gcc-arm-none-eabi-10.3-2021.10`，我报错的原因是之前修改了版本
-
+### 2024.12.30
+- task.c中修改mavros频率好像在STM32H743飞控上不起作用，控制mavros发送的频率需要通过调整`TELEMETRY_MAVLINK_MAXRATE`，`TELEMETRY_MAVLINK_DELAY`和其对应的函数，同时需要注意要保证机载电脑能够收到心跳信号并推断出autopilot的类型，否则mavros将转发出的imu信息单位是错误的且会丢失大量精度
+- orin nx的如果使用达妙的载板，会有一路串口无法使用，即THS1，而THS0是可以使用的，使用端子线连接时可以两个4pin接口都试一下看看哪个可以，肯定时有一个可以的，实在不行就用usb转ttl模块连typec
+- Egoplanner运行vins时有报错，大多数都是因为ros会自动安装一版opencv，机载电脑内部也会自带一版，两个版本的库冲突时opencv的ros接口cv-bridge会调用错误的库函数导致各种问题，以下是我遇到的与之相关的问题（我是用的是jetson orin nx 8G）
+  - `undefined symbol: _ZN2cv3MatC1EiiiRKNS_7Scalar_IdEE`，主要问题是egoplanner工作空间下的realsense-ros/realsense2_camera文件夹里的cmakelists没有调用opencv，解决办法[这里github](https://github.com/IntelRealSense/realsense-ros/issues/2326)和[这里csdn](https://blog.csdn.net/weixin_50578602/article/details/127648597)
+  - 解决完上述问题后重新编译运行，报错，`cv::Exception`或`OutOfMemoryError`如[这里](https://github.com/HKUST-Aerial-Robotics/VINS-Fusion/issues/221)，这就是因为opencv到ros的接口cv-bridge中opencv版本不一致的问题，对此直接删除ros自动安装的cvbridge:`sudo apt remove ros-noetic-cv-bridge`，然后在[网站](https://github.com/ros-perception/vision_opencv/tree/noetic)下载cv-bridge通过源码安装，在安装之前修改修改文件夹cv_bridge中的cmakelists.txt中的`find_package(OpenCV 3.4.10 REQUIRED)`，其中的数字是电脑自带opencv的版本（注意不是安装ros时自动安装的版本），然后`cmake.. && make`并`sudo make install`，最后在egoplanner中所有调用cv-bridge的cmakelists的find_package前添加`set(cv_bridge_DIR /usr/local/share/cv_bridge/cmake)`，最后重新编译，问题解决，参考[这里](https://zhuanlan.zhihu.com/p/392939687)
 
