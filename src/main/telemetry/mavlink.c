@@ -743,7 +743,7 @@ void processMAVLinkTelemetry(void)
     
     if (mavlinkStreamTrigger(MAV_DATA_STREAM_EXTRA1)) {
        mavlinkSendImuRawData();
-        // mavlinkSendAttitude();   
+       mavlinkSendAttitude();   
     }
 
 }
