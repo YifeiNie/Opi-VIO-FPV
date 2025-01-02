@@ -34,7 +34,7 @@ CUSTOM_DEFAULTS_EXTENDED ?= no
 # Debugger optons:
 #   empty - ordinary build with all optimizations enabled
 #   INFO - ordinary build with debug symbols and all optimizations enabled
-#   GDB - debug build with minimum number of optimizations
+#   GDB - debug build with minimum number of optimizations 
 DEBUG     ?= INFO
 
 # Insert the debugging hardfault debugger
