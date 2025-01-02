@@ -107,7 +107,9 @@ static MAV_AUTOPILOT autopilot_name = MAV_AUTOPILOT_ARDUPILOTMEGA;
 int interrupt_flag = 1;
 mavlink_status_t status;
 mavlink_message_t msg;
-uint16_t received_data;
+quaternion received_quat = QUATERNION_INITIALIZE;
+quaternionProducts quat_products;
+
 // 串口接收回调，详细见serial.h第62行
 // 参数 uint16_t c是串口接收到的数据，其实应该是8bit就够了，不知道为什么用16位的，而且后面也变成8位的
 //      void* data是一个不关心的参数（按经验应该是数据的大小），所以后面用UNUSED修饰
@@ -138,16 +140,22 @@ static void mavlinkReceive(uint16_t c, void* data) {
                 // 这里的mask仅仅作为标记，而Mavlink不会置零被mask忽略的字段
                 // 只有在自带autopilot的飞控比如PX4中，飞控固件在后续的控制中会忽略相应数据
                 if(command.type_mask == 7) { 
-                    offboard.data_type = angle_command;
                     // type_mask == 7时忽略了角加速度
-                    // 机载电脑在编程时不会发送四元数，当mask=7时，原来应该是角速度的数据现在就是角度，这是由机载电脑编程的结果
-                    // 本来该结构体提供了四元数作为角度输入，但是四元数处理麻烦且不直观，故采用这种办法"偷懒"
-                    offboard.angle[FD_ROLL] = command.body_roll_rate; // 单位是度
+                    offboard.data_type = ANGLE_COMMAND;
+
+                    received_quat.w = command.q[0];
+                    received_quat.x = command.q[1];
+                    received_quat.y = command.q[2];
+                    received_quat.z = command.q[3];
+                    
+                    // imuQuaternionComputeProducts(&received_quat, &quat_products);
+                    // 根据四元数计算
+                    offboard.angle[FD_ROLL] = command.body_roll_rate;
                     offboard.angle[FD_PITCH] = command.body_pitch_rate;
                     offboard.angle[FD_YAW] = command.body_yaw_rate;
                 }
                 else {
-                    offboard.data_type = angle_rate_command;
+                    offboard.data_type = ANGLE_RATE_COMMAND;
                     offboard.angle_rate[FD_ROLL] = command.body_roll_rate; // 单位是度每秒（与原结构体定义不符，但是由于消息是我机载电脑你自定义发的，所以怎么方便怎么来）
                     offboard.angle_rate[FD_PITCH] = command.body_pitch_rate;
                     offboard.angle_rate[FD_YAW] = command.body_yaw_rate;
@@ -484,11 +492,14 @@ void mavlinkSendAttitude(void)
         // yaw Yaw angle (rad)
         DECIDEGREES_TO_RADIANS(attitude.values.yaw),
         //rollspeed Roll angular speed (rad/s)
-        DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL]),
+        //DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL]),
+        received_quat.x,
         // pitchspeed Pitch angular speed (rad/s)
-        DEGREES_TO_RADIANS(gyro.gyroADCf[FD_PITCH]),
+        //DEGREES_TO_RADIANS(gyro.gyroADCf[FD_PITCH]),
+        received_quat.y,
         // yawspeed Yaw angular speed (rad/s)
-        DEGREES_TO_RADIANS(gyro.gyroADCf[FD_YAW]));
+        //DEGREES_TO_RADIANS(gyro.gyroADCf[FD_YAW]));
+        received_quat.w);
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);
     mavlinkSerialWrite(mavBuffer, msgLength);
 }
@@ -496,15 +507,21 @@ float mag_x;
 float mag_y;
 float mag_z;
 void mavlinkSendImuRawData(void)
-{   if (FLIGHT_MODE(OFFBOARD_MODE)){
+{   
+    if (FLIGHT_MODE(OFFBOARD_MODE) && offboard.data_type == ANGLE_COMMAND){
         mag_x = offboard.angle[FD_ROLL]; 
         mag_y = offboard.angle[FD_PITCH];                     
         mag_z = offboard.angle[FD_YAW];
     }
-    else{
-        mag_x = 1; 
-        mag_y = 1;                     
-        mag_z = 1; 
+    else if (FLIGHT_MODE(OFFBOARD_MODE) && offboard.data_type == ANGLE_RATE_COMMAND) {
+        mag_x = offboard.angle_rate[FD_ROLL]; 
+        mag_y = offboard.angle_rate[FD_PITCH];                      
+        mag_z = offboard.angle_rate[FD_YAW]; 
+    }
+    else {
+        mag_x = 0; 
+        mag_y = 0;                      
+        mag_z = 0; 
     }
     uint16_t msgLength;
     mavlink_msg_raw_imu_pack(0, 200, &mavMsg,
@@ -518,11 +535,11 @@ void mavlinkSendImuRawData(void)
             // 下面三个单位是毫弧度/秒，即millirad/s
             DEGREES_TO_RADIANS(gyro.gyroADCf[FD_ROLL])*1000,
             DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_PITCH])*1000,
-            DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_YAW])*1000,
+            DEGREES_TO_RADIANS(-gyro.gyroADCf[FD_YAW])*1000,        
             // MPU6500没有磁力计，所以这里吧offboard数据打印出来
             mag_x,
             mag_y,   
-            mag_z                     
+            mag_z                
         );
         
     msgLength = mavlink_msg_to_send_buffer(mavBuffer, &mavMsg);

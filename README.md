@@ -163,3 +163,14 @@
   - `undefined symbol: _ZN2cv3MatC1EiiiRKNS_7Scalar_IdEE`，主要问题是egoplanner工作空间下的realsense-ros/realsense2_camera文件夹里的cmakelists没有调用opencv，解决办法[这里github](https://github.com/IntelRealSense/realsense-ros/issues/2326)和[这里csdn](https://blog.csdn.net/weixin_50578602/article/details/127648597)
   - 解决完上述问题后重新编译运行，报错，`cv::Exception`或`OutOfMemoryError`如[这里](https://github.com/HKUST-Aerial-Robotics/VINS-Fusion/issues/221)，这就是因为opencv到ros的接口cv-bridge中opencv版本不一致的问题，对此直接删除ros自动安装的cvbridge:`sudo apt remove ros-noetic-cv-bridge`，然后在[网站](https://github.com/ros-perception/vision_opencv/tree/noetic)下载cv-bridge通过源码安装，在安装之前修改修改文件夹cv_bridge中的cmakelists.txt中的`find_package(OpenCV 3.4.10 REQUIRED)`，其中的数字是电脑自带opencv的版本（注意不是安装ros时自动安装的版本），然后`cmake.. && make`并`sudo make install`，最后在egoplanner中所有调用cv-bridge的cmakelists的find_package前添加`set(cv_bridge_DIR /usr/local/share/cv_bridge/cmake)`，最后重新编译，问题解决，参考[这里](https://zhuanlan.zhihu.com/p/392939687)
 
+### 2025.1.2 - 新年快乐，使用ST-Link调试Kakute H7 mini
+- 使用ubuntu+vscode+vscode中cortex debug插件+gcc-arm-none-eabi+STLink对KakuteH7 mini V1.3飞控进行调试，部分参考[这里](https://blog.csdn.net/qq_39765790/article/details/133470373)
+  - KakuteH7 mini V1.3上有swd和clk的圆形焊盘，但是由于出厂封胶给盖住了丝印，需要查看[这个图上的丝印](https://holybro.com/products/kakute-h7-mini?srsltid=AfmBOopQRw1KIN5Lnj4rQ2e0Kef_wdhfmZTv2MfyrsoiOgx2q2P49brE)确定哪个是对应的焊盘
+  - 安装vscode上的cortex debug插件
+  - 安装[stlink驱动](https://github.com/stlink-org/stlink/releases/tag/v1.8.0)
+  - 安装[gcc-arm-none-eabi交叉编译工具](https://developer.arm.com/downloads/-/gnu-rm),解压后将这句话添加到.bashrc: `PATH=your/path/to/gcc-arm-none-eabi-10.3-2021.10/bin:$PATH`，使用`arm-none-eabi-gcc --version`和`arm-none-eabi-gdb --version`检查安装了没，如果GDB有问题，请一定要解决。如果报了缺少 error while loading shared libraries: libncurses.so.5，使用`sudo apt install apt-file`，`sudo apt-file update`，`sudo apt-file find libncurses.so.5`，`sudo apt install libncurses5`，`sudo apt install libncurses*`解决
+  - 使用apt安装依赖:`sudo apt-get install build-essential pkg-config autoconf automake libtool libusb-dev libusb-1.0-0-dev libhidapi-dev`，`sudo apt-get install libtool libsysfs-dev`和`sudo apt install libgpiod-dev`
+  - 使用[源码](https://security.ubuntu.com/ubuntu/pool/universe/libj/libjaylink/)安装libjaylink_0.2.0.orig.tar.xz，下载解压后根据文件夹里的README安装该依赖
+  - 使用[源码](https://github.com/openocd-org/openocd/tree/master)安装openocd 0.12.0，因为ubuntu20.04使用apt安装的版本为0.10.0，不支持STM32H7系列，下载解压后`sudo ./bootstrap`，`sudo ./configure --enable-jlink --enable-cmsis-dap --enable-stlink --enable-bitbang`，然后make并install即可，安装之后目录在`/usr/local/bin/openocd`
+  - 使用vscode的调试功能，调试的launch.json文件就在本项目的.vscode里
+

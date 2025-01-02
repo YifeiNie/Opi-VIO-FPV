@@ -449,11 +449,11 @@ STATIC_UNIT_TESTED FAST_CODE_NOINLINE float pidLevel(int axis, const pidProfile_
     float angle = levelAngleLimit * getLevelModeRcDeflection(axis);
     if (FLIGHT_MODE(OFFBOARD_MODE)){
         switch (offboard.data_type) {
-            case angle_command:
+            case ANGLE_COMMAND:
                 // 单位：度
                 angle = angle + offboard.angle[axis];
                 break;
-            case angle_rate_command:
+            case ANGLE_RATE_COMMAND:
                 // 单位：度每秒
                 currentPidSetpoint = currentPidSetpoint + offboard.angle_rate[axis];
                 break;

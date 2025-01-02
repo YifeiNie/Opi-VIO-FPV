@@ -2,8 +2,8 @@
 #pragma once
 
 
-#define angle_command 1
-#define angle_rate_command 0
+#define ANGLE_COMMAND 1
+#define ANGLE_RATE_COMMAND 0
 
 // 数组的顺序是ROLL,PITCH,YAW
 typedef struct offboard {

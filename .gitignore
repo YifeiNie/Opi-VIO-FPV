@@ -38,7 +38,6 @@ stm32.mak
 /support/ozone
 
 # artefacts for VS Code
-/.vscode/
 
 # artefacts for Visual Studio 
 /.vs
