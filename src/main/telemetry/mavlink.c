@@ -109,7 +109,7 @@ mavlink_status_t status;
 mavlink_message_t msg;
 quaternion received_quat = QUATERNION_INITIALIZE;
 quaternionProducts quat_products;
-
+mavlink_set_attitude_target_t command;
 // 串口接收回调，详细见serial.h第62行
 // 参数 uint16_t c是串口接收到的数据，其实应该是8bit就够了，不知道为什么用16位的，而且后面也变成8位的
 //      void* data是一个不关心的参数（按经验应该是数据的大小），所以后面用UNUSED修饰
@@ -135,7 +135,7 @@ static void mavlinkReceive(uint16_t c, void* data) {
         // user code
         switch(msg.msgid) {
             case 82:{
-                mavlink_set_attitude_target_t command;
+                
                 mavlink_msg_set_attitude_target_decode(&msg,&command);
                 // 这里的mask仅仅作为标记，而Mavlink不会置零被mask忽略的字段
                 // 只有在自带autopilot的飞控比如PX4中，飞控固件在后续的控制中会忽略相应数据

@@ -173,4 +173,6 @@
   - 使用[源码](https://security.ubuntu.com/ubuntu/pool/universe/libj/libjaylink/)安装libjaylink_0.2.0.orig.tar.xz，下载解压后根据文件夹里的README安装该依赖
   - 使用[源码](https://github.com/openocd-org/openocd/tree/master)安装openocd 0.12.0，因为ubuntu20.04使用apt安装的版本为0.10.0，不支持STM32H7系列，下载解压后`sudo ./bootstrap`，`sudo ./configure --enable-jlink --enable-cmsis-dap --enable-stlink --enable-bitbang`，然后make并install即可，安装之后目录在`/usr/local/bin/openocd`
   - 使用vscode的调试功能，调试的launch.json文件就在本项目的.vscode里
-
+  - 正式调试前需要修改makefile，其中的DEBUG类型要改为`DEBUG ?= INFO`，然后重新编译下载就额可以使用scode断点调试了
+### 2025.1.3 - 新年快乐，使用ST-Link调试Kakute H7 mini
+- 解决了电脑给飞控发四元数错误的问题，原来是mavros里会给接收到的来自电脑的话题`mavros/setpoint_raw/attitude`下的四元数进行一些坐标变换再转成mavlink发给飞控（详见mavros 1.20.0版本`setpoint_attitude.cpp`文件的`send_attitude_quaternion`函数），对此在发送端进行一个逆变换抵消mavros的变换即可解决，具体查看本人仓库中keyboard_mav_ctr_ros1项目。现在对于控制飞机，既可以给飞控发送角速率，也可以给飞控发送欧拉角或者四元数
