@@ -402,7 +402,7 @@ task_attribute_t task_attributes[TASK_COUNT] = {
 #endif
 
 #ifdef USE_TELEMETRY
-    [TASK_TELEMETRY] = DEFINE_TASK("TELEMETRY", NULL, NULL, taskTelemetry, TASK_PERIOD_HZ(180), TASK_PRIORITY_LOW),
+    [TASK_TELEMETRY] = DEFINE_TASK("TELEMETRY", NULL, NULL, taskTelemetry, TASK_PERIOD_HZ(200), TASK_PRIORITY_LOW),
 #endif
 
 #ifdef USE_LED_STRIP
@@ -559,10 +559,10 @@ void tasksInit(void)
         setTaskEnabled(TASK_TELEMETRY, true);
         if (rxRuntimeState.serialrxProvider == SERIALRX_JETIEXBUS) {
             // Reschedule telemetry to 500hz for Jeti Exbus
-            rescheduleTask(TASK_TELEMETRY, TASK_PERIOD_HZ(500));
+            rescheduleTask(TASK_TELEMETRY, TASK_PERIOD_HZ(200));
         } else if (rxRuntimeState.serialrxProvider == SERIALRX_CRSF) {
             // Reschedule telemetry to 500hz, 2ms for CRSF
-            rescheduleTask(TASK_TELEMETRY, TASK_PERIOD_HZ(500));
+            rescheduleTask(TASK_TELEMETRY, TASK_PERIOD_HZ(200));
         }
     }
 #endif

@@ -16,7 +16,7 @@
 #
 
 # The target to build, see VALID_TARGETS below
-FIRSTNAME ?= Mjh_Ldd
+FIRSTNAME ?= 
 TARGET    ?= STM32H743
 BOARD     ?= 
 
